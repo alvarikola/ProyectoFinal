@@ -8,8 +8,6 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,13 +27,13 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun Menu(context: ComponentActivity, navController: NavHostController) {
-    val colorIcono = MaterialTheme.colorScheme.primaryContainer
+    val colorIcono = MaterialTheme.colorScheme.primary
     ModalDrawerSheet {
         Column(
             verticalArrangement = Arrangement.Top,
             modifier = Modifier.fillMaxHeight()
         ) {
-            Column(Modifier.background(MaterialTheme.colorScheme.primaryContainer)) {
+            Column(Modifier.background(MaterialTheme.colorScheme.primary)) {
                 NavigationDrawerItem(
                     modifier = Modifier.padding(vertical = 12.dp, horizontal = 18.dp),
                     label = {
@@ -47,7 +45,7 @@ fun Menu(context: ComponentActivity, navController: NavHostController) {
                     selected = false,
                     onClick = {},
                     colors = NavigationDrawerItemDefaults.colors(
-                        unselectedContainerColor = MaterialTheme.colorScheme.primaryContainer, // Color de fondo cuando no está seleccionado
+                        unselectedContainerColor = MaterialTheme.colorScheme.primary, // Color de fondo cuando no está seleccionado
                     )
                 )
             }

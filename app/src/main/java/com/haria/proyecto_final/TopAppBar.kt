@@ -18,7 +18,7 @@ import androidx.compose.runtime.Composable
 fun TopAppBar(onNavigationClick: () -> Unit, title: String) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            containerColor = MaterialTheme.colorScheme.primary,
         ),
         title = { Text(text = title) },
         navigationIcon = {
