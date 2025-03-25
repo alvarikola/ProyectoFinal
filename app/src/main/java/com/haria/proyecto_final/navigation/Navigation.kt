@@ -5,6 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.haria.proyecto_final.PerfilScreen
+import com.haria.proyecto_final.SalaScreen
 import com.haria.proyecto_final.main.MainScreen
 
 @Composable
@@ -18,6 +20,12 @@ fun NavigationGraph(
     ) {
         composable("mainScreen") {
             MainScreen(context, navController)
+        }
+        composable("salaScreen") {
+            SalaScreen(context, navController)
+        }
+        composable("perfilScreen") {
+            PerfilScreen(context, navController)
         }
     }
 }

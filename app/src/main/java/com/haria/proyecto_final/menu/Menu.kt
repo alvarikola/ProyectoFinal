@@ -78,7 +78,7 @@ fun Menu(context: ComponentActivity, navController: NavHostController) {
                     },
                     selected = false,
                     onClick = {
-                        navController.navigate("")
+                        navController.navigate("salaScreen")
                     }
                 )
 
@@ -95,7 +95,7 @@ fun Menu(context: ComponentActivity, navController: NavHostController) {
                     },
                     selected = false,
                     onClick = {
-                        navController.navigate("")
+                        navController.navigate("perfilScreen")
                     }
                 )
 
