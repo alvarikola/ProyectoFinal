@@ -1,4 +1,4 @@
-package com.haria.proyecto_final
+package com.haria.proyecto_final.menu
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu

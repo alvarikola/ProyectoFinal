@@ -1,16 +1,14 @@
-package com.haria.proyecto_final
+package com.haria.proyecto_final.main
 
-import android.content.Context
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.haria.proyecto_final.menu.Menu
+import com.haria.proyecto_final.menu.TopAppBar
 import kotlinx.coroutines.launch
 
 @Composable

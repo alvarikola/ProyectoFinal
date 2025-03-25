@@ -1,4 +1,4 @@
-package com.haria.proyecto_final
+package com.haria.proyecto_final.menu
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
