@@ -16,6 +16,7 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,11 +24,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.haria.proyecto_final.SupabaseManager
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun Menu(context: ComponentActivity, navController: NavHostController) {
     val colorIcono = MaterialTheme.colorScheme.primary
+    val scope = rememberCoroutineScope()
     ModalDrawerSheet {
         Column(
             verticalArrangement = Arrangement.Top,
@@ -112,7 +116,10 @@ fun Menu(context: ComponentActivity, navController: NavHostController) {
                     },
                     selected = false,
                     onClick = {
-
+                        scope.launch {
+                            SupabaseManager.logout()
+                            navController.navigate("loginScreen")
+                        }
                     }
                 )
             }
