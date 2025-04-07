@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.haria.proyecto_final.LoginScreen
 import com.haria.proyecto_final.PerfilScreen
 import com.haria.proyecto_final.SalaScreen
 import com.haria.proyecto_final.main.MainScreen
@@ -16,7 +17,7 @@ fun NavigationGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "mainScreen",
+        startDestination = "loginScreen",
     ) {
         composable("mainScreen") {
             MainScreen(context, navController)
@@ -26,6 +27,11 @@ fun NavigationGraph(
         }
         composable("perfilScreen") {
             PerfilScreen(context, navController)
+        }
+        composable("loginScreen") {
+            LoginScreen(onLoginSuccess = {
+                navController.navigate("mainScreen")
+            })
         }
     }
 }
