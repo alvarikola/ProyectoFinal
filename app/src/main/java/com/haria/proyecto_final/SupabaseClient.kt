@@ -6,6 +6,7 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.serializer.KotlinXSerializer
 import kotlinx.serialization.json.Json
 
@@ -70,7 +71,23 @@ object SupabaseManager {
         return client.auth.currentUserOrNull() != null
     }
 
+    fun getCurrentUserEmail(): String? {
+        return client.auth.currentUserOrNull()?.email
+    }
     fun getCurrentUserId(): String? {
         return client.auth.currentUserOrNull()?.id
+    }
+
+    suspend fun getPerfil():Perfil {
+
+        return client.postgrest
+                .from("Perfil")
+                .select(){filter {
+                    getCurrentUserId()?.let { eq("UID", it) }
+                }}
+                .decodeSingle<Perfil>()
+
+
+
     }
 }
