@@ -14,10 +14,11 @@ import com.haria.proyecto_final.main.MainScreen
 fun NavigationGraph(
     context: ComponentActivity,
     navController: NavHostController,
+    checkAuthentication: Boolean
 ) {
     NavHost(
         navController = navController,
-        startDestination = "loginScreen",
+        startDestination = if (checkAuthentication) "mainScreen" else "loginScreen",
     ) {
         composable("mainScreen") {
             MainScreen(context, navController)

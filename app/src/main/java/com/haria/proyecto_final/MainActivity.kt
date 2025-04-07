@@ -1,6 +1,7 @@
 package com.haria.proyecto_final
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,8 +22,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
+            val logeado = SupabaseManager.isLoggedIn()
             ProyectoFinalTheme {
-                NavigationGraph(this, navController)
+                NavigationGraph(this, navController, logeado)
             }
         }
     }
