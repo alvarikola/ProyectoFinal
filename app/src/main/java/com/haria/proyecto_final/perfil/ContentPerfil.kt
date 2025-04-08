@@ -1,4 +1,4 @@
-package com.haria.proyecto_final
+package com.haria.proyecto_final.perfil
 
 import androidx.compose.material3.Text
 import android.content.Context
@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.haria.proyecto_final.SupabaseManager
 
 @Composable
 fun ContentPerfil(innerPadding: PaddingValues, context: Context) {

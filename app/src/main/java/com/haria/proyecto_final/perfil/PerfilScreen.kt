@@ -1,4 +1,4 @@
-package com.haria.proyecto_final
+package com.haria.proyecto_final.perfil
 
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.DrawerValue

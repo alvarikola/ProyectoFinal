@@ -1,5 +1,6 @@
 package com.haria.proyecto_final
 
+import com.haria.proyecto_final.perfil.Perfil
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
@@ -78,7 +79,7 @@ object SupabaseManager {
         return client.auth.currentUserOrNull()?.id
     }
 
-    suspend fun getPerfil():Perfil {
+    suspend fun getPerfil(): Perfil {
 
         return client.postgrest
                 .from("Perfil")
