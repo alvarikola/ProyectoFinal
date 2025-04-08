@@ -11,6 +11,7 @@ import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.serializer.KotlinXSerializer
 import kotlinx.serialization.json.Json
 
+// Jamendo (app para música)
 
 object SupabaseManager {
     private const val SUPABASE_URL = "https://vxyxtbqtbujipctpwjgo.supabase.co"
@@ -91,4 +92,13 @@ object SupabaseManager {
 
 
     }
+
+    suspend fun getCancion(): Cancion {
+
+        return client.postgrest
+            .from("Cancion")
+            .select()
+            .decodeSingle<Cancion>()
+    }
+
 }

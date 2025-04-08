@@ -1,6 +1,8 @@
 package com.haria.proyecto_final.perfil
 
+import android.os.Build
 import androidx.activity.ComponentActivity
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -11,6 +13,7 @@ import com.haria.proyecto_final.menu.Menu
 import com.haria.proyecto_final.menu.TopAppBar
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PerfilScreen(context: ComponentActivity, navController: NavHostController) {
     val drawerState = androidx.compose.material3.rememberDrawerState(initialValue = DrawerValue.Closed)
