@@ -1,4 +1,4 @@
-package com.haria.proyecto_final
+package com.haria.proyecto_final.sala
 
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement

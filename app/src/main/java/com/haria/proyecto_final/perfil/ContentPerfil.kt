@@ -38,8 +38,6 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun ContentPerfil(innerPadding: PaddingValues, context: Context) {
 
-
-
     val formatoEntrada = DateTimeFormatter.ISO_DATE_TIME
     val formatoSalida = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
