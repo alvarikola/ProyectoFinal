@@ -1,5 +1,6 @@
 package com.haria.proyecto_final
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,11 +42,12 @@ fun LoginScreen(onLoginSuccess: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Iniciar sesión", fontSize = 28.sp)
+        Text("Log-in", fontSize = 28.sp, color = MaterialTheme.colorScheme.onBackground)
         Spacer(modifier = Modifier.height(24.dp))
 
         OutlinedTextField(
@@ -92,7 +95,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit = {}) {
                     modifier = Modifier.size(20.dp)
                 )
             } else {
-                Text("Iniciar sesión")
+                Text("Iniciar sesión", color = MaterialTheme.colorScheme.onBackground)
             }
         }
 
