@@ -25,7 +25,7 @@ import coil.compose.rememberImagePainter
 import com.haria.proyecto_final.Cancion
 import com.haria.proyecto_final.MusicService
 import com.haria.proyecto_final.SupabaseManager
-import com.haria.proyecto_final.perfil.Perfil
+
 
 @Composable
 fun ContentMain(innerPadding: PaddingValues, context: Context) {
