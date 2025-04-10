@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.haria.proyecto_final"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -66,8 +66,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.auth0.android:jwtdecode:2.0.2")
 
-    implementation("androidx.media3:media3-exoplayer:1.2.0")
-    implementation("androidx.media3:media3-exoplayer-hls:1.2.0")
+    //implementation("androidx.media3:media3-exoplayer:1.2.0")
     implementation("androidx.media3:media3-ui:1.2.0")
     implementation("androidx.media3:media3-datasource-okhttp:1.2.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
@@ -89,4 +88,8 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:storage-kt")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+
+    implementation("androidx.media3:media3-exoplayer:1.3.1")
+    implementation("androidx.media3:media3-session:1.3.1")
+    implementation("androidx.media3:media3-exoplayer-dash:1.3.1")
 }
