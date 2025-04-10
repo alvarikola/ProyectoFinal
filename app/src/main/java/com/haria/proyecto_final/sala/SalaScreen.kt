@@ -29,7 +29,7 @@ fun SalaScreen(context: ComponentActivity, navController: NavHostController) {
         }
     ) {
         Scaffold(
-            topBar = { TopAppBar(onNavigationClick = openDrawer, title = "Sala") },
+            topBar = { TopAppBar(navController) },
             content = { innerPadding ->
                 // Contenido principal de la pantalla
                 ContentSala(innerPadding, context)

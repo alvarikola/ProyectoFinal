@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Menu(context: ComponentActivity, navController: NavHostController) {
-    val colorIcono = MaterialTheme.colorScheme.primary
+    val colorIcono = MaterialTheme.colorScheme.secondary
     val scope = rememberCoroutineScope()
     ModalDrawerSheet {
         Column(

@@ -29,7 +29,7 @@ fun MainScreen(context: ComponentActivity, navController: NavHostController) {
         }
     ) {
         Scaffold(
-            topBar = { TopAppBar(onNavigationClick = openDrawer, title = "Salas") },
+            topBar = { TopAppBar(navController, main = true) },
             content = { innerPadding ->
                 // Contenido principal de la pantalla
                 ContentMain(innerPadding, context)
