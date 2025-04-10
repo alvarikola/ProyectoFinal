@@ -1,7 +1,19 @@
 package com.haria.proyecto_final.menu
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -11,19 +23,72 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
+import androidx.navigation.NavHostController
+import com.haria.proyecto_final.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBar(onNavigationClick: () -> Unit, title: String) {
+fun TopAppBar(navController: NavHostController, main: Boolean = false) {
+    val expanded = remember { mutableStateOf(false) } // Estado para abrir y cerrar el DropdownMenu
+    val icon = painterResource(id = R.drawable.logo_circular) // Reemplaza con tu recurso de icono
+
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = MaterialTheme.colorScheme.background,
         ),
-        title = { Text(text = title) },
-        navigationIcon = {
-            IconButton(onClick = onNavigationClick) {
-                Icon(imageVector = Icons.Filled.Menu, contentDescription = "Menu")
+        title = {
+            if (main) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth().padding(10.dp)
+                ) {
+                    Image(
+                        painter = icon,
+                        contentDescription = "Icono de aplicación",
+                        Modifier.size(60.dp),
+                    )
+
+                    // Ícono de perfil
+                    IconButton(onClick = { expanded.value = !expanded.value }) {
+                        Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "Perfil", Modifier.size(50.dp))
+                        // DropdownMenu que se abre al hacer clic en el ícono de perfil
+                        DropdownMenu(
+                            expanded = expanded.value,
+                            onDismissRequest = { expanded.value = false } // Cierra el menú si se hace clic fuera
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Tu sala") },
+                                onClick = {
+                                    navController.navigate("salaScreen")
+                                    expanded.value = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Editar perfil") },
+                                onClick = {
+                                    navController.navigate("perfilScreen")
+                                    expanded.value = false
+                                }
+                            )
+                        }
+                    }
+                }
+            } else {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", Modifier.size(50.dp))
+                }
             }
         },
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
