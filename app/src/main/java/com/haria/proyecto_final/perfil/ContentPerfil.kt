@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -31,10 +32,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.haria.proyecto_final.SupabaseManager
+import com.haria.proyecto_final.utils.Loading
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun ContentPerfil(innerPadding: PaddingValues, context: Context) {
 
@@ -52,60 +54,64 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context) {
             Log.e("Error", "Error al obtener el perfil: ${e.message}")
         }
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Filled.AccountCircle,
-                contentDescription = "main",
-                Modifier.size(170.dp).padding(end = 8.dp),
-            )
-            Text("${perfil?.nombre}", fontSize = 60.sp, fontWeight = FontWeight.Bold)
-        }
+    if (perfil == null) {
+        Loading()
+    } else {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 12.dp)
+                .fillMaxSize()
+                .padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            OutlinedButton(
-                onClick = {}
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
             ) {
-                Text("Editar", color = MaterialTheme.colorScheme.onPrimary)
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = "main",
+                    Modifier.size(170.dp).padding(end = 8.dp),
+                )
+                Text("${perfil?.nombre}", fontSize = 60.sp, fontWeight = FontWeight.Bold)
             }
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        ) {
-            Text("Datos del usuario", fontSize = 35.sp, fontWeight = FontWeight.Bold)
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        ) {
-            Text("Correo electrónico: ${perfil?.email}", fontSize = 20.sp)
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        ) {
-            val fechaFormateada = perfil?.created_at?.let {
-                LocalDateTime.parse(it, formatoEntrada).format(formatoSalida)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 12.dp)
+            ) {
+                OutlinedButton(
+                    onClick = {}
+                ) {
+                    Text("Editar", color = MaterialTheme.colorScheme.onPrimary)
+                }
             }
-            Text("Fecha de creación de la cuenta: $fechaFormateada", fontSize = 20.sp)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            ) {
+                Text("Datos del usuario", fontSize = 35.sp, fontWeight = FontWeight.Bold)
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            ) {
+                Text("Correo electrónico: ${perfil?.email}", fontSize = 20.sp)
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            ) {
+                val fechaFormateada = perfil?.created_at?.let {
+                    LocalDateTime.parse(it, formatoEntrada).format(formatoSalida)
+                }
+                Text("Fecha de creación de la cuenta: $fechaFormateada", fontSize = 20.sp)
+            }
         }
     }
 }
