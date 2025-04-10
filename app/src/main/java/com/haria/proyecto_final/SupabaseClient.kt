@@ -93,12 +93,13 @@ object SupabaseManager {
 
     }
 
-    suspend fun getCancion(): Cancion {
-
+    suspend fun getCancionesPorEstilo(estilo: String): List<Cancion> {
         return client.postgrest
-            .from("Cancion")
-            .select()
-            .decodeSingle<Cancion>()
+            .from("cancion")
+            .select(){filter {
+                eq("estilo", estilo)
+            }}
+            .decodeList<Cancion>()
     }
 
 }
