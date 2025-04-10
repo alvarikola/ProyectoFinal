@@ -92,4 +92,5 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.3.1")
     implementation("androidx.media3:media3-session:1.3.1")
     implementation("androidx.media3:media3-exoplayer-dash:1.3.1")
+    implementation("io.coil-kt:coil-compose:2.0.0")
 }

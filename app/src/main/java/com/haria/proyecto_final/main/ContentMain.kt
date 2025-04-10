@@ -3,6 +3,7 @@ package com.haria.proyecto_final.main
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,8 +18,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import com.haria.proyecto_final.Cancion
 import com.haria.proyecto_final.MusicService
 import com.haria.proyecto_final.SupabaseManager
@@ -30,7 +33,7 @@ fun ContentMain(innerPadding: PaddingValues, context: Context) {
 
     LaunchedEffect(key1 = true) {
         try {
-            val canciones = SupabaseManager.getCancionesPorEstilo("electronica")
+            val canciones = SupabaseManager.getCancionesPorEstilo("rock")
             Log.d("CancionesDebug", canciones.toString())
             listaCanciones = canciones
         } catch (e: Exception) {
@@ -50,6 +53,15 @@ fun ContentMain(innerPadding: PaddingValues, context: Context) {
                 modifier = Modifier.padding(8.dp),
                 fontSize = 20.sp
             )
+            if (cancion.imagenUrl == null) {
+                Log.d("CancionImagen", "URL de la imagen: ${cancion.imagenUrl}")
+            } else {
+                Image(
+                    painter = rememberImagePainter(data = cancion.imagenUrl),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
         MusicServicePlayer(context)
     }

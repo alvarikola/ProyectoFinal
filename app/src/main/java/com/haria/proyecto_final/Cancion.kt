@@ -9,4 +9,5 @@ data class Cancion(
     val nombre: String? = null,
     val estilo: String? = null,
     val cantante: String? = null,
+    val imagenUrl: String? = null,
 )
