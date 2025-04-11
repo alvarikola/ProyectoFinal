@@ -22,7 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
-import com.haria.proyecto_final.Cancion
+import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.MusicService
 import com.haria.proyecto_final.SupabaseManager
 
@@ -33,7 +33,7 @@ fun ContentMain(innerPadding: PaddingValues, context: Context) {
 
     LaunchedEffect(key1 = true) {
         try {
-            val canciones = SupabaseManager.getCancionesPorEstilo("rock")
+            val canciones = SupabaseManager.getCancionesPorEstilo("electronica")
             Log.d("CancionesDebug", canciones.toString())
             listaCanciones = canciones
         } catch (e: Exception) {

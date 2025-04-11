@@ -1,4 +1,4 @@
-package com.haria.proyecto_final.perfil
+package com.haria.proyecto_final.data
 
 import kotlinx.serialization.Serializable
 
