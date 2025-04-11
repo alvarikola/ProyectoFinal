@@ -12,7 +12,7 @@ fun SalaScreen(context: ComponentActivity, navController: NavHostController) {
         topBar = { TopAppBar(navController) },
         content = { innerPadding ->
             // Contenido principal de la pantalla
-            ContentSala(innerPadding, context)
+            ContentSala(innerPadding, context, navController)
         }
     )
 }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.haria.proyecto_final.EstiloScreen
 import com.haria.proyecto_final.LoginScreen
 import com.haria.proyecto_final.perfil.PerfilScreen
 import com.haria.proyecto_final.sala.SalaScreen
@@ -33,6 +34,9 @@ fun NavigationGraph(
             LoginScreen(onLoginSuccess = {
                 navController.navigate("mainScreen")
             })
+        }
+        composable("estiloScreen/{estilo}") { backStackEntry ->
+            EstiloScreen()
         }
     }
 }

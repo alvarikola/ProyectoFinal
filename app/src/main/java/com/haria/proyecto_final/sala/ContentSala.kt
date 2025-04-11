@@ -3,6 +3,7 @@ package com.haria.proyecto_final.sala
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,13 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.google.accompanist.flowlayout.FlowRow
 import com.haria.proyecto_final.R
 import com.haria.proyecto_final.SupabaseManager
 import com.haria.proyecto_final.data.Cancion
 
 @Composable
-fun ContentSala(innerPadding: PaddingValues, context: Context) {
+fun ContentSala(innerPadding: PaddingValues, context: Context, navController: NavHostController) {
 
     var listaCanciones by remember { mutableStateOf<List<Cancion>>(emptyList()) }
 
@@ -59,15 +61,16 @@ fun ContentSala(innerPadding: PaddingValues, context: Context) {
 //                )
 //            }
 //        }
-        ContenedorMusica("rock")
-        ContenedorMusica("electronica")
-        ContenedorMusica("hiphop")
-        ContenedorMusica("pop")
+        ContenedorMusica("rock", navController)
+        ContenedorMusica("electronica", navController)
+        ContenedorMusica("hiphop", navController)
+        ContenedorMusica("pop", navController)
+        ContenedorMusica("generica", navController)
     }
 }
 
 @Composable
-fun ContenedorMusica(estilo: String) {
+fun ContenedorMusica(estilo: String, navController: NavHostController) {
     var icon:Painter = painterResource(id = R.drawable.portada_generica)
     when (estilo) {
         "rock" -> {
@@ -82,11 +85,17 @@ fun ContenedorMusica(estilo: String) {
         "pop" -> {
             icon = painterResource(id = R.drawable.portada_pop)
         }
+        else -> {
+            icon
+        }
     }
     Box(
         modifier = Modifier
             .size(200.dp)
-            .padding(16.dp),
+            .padding(16.dp)
+            .clickable {
+                navController.navigate("estiloScreen/$estilo")
+            },
     ) {
         Image(
             painter = icon,
