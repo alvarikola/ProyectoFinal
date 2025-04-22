@@ -3,13 +3,23 @@ package com.haria.proyecto_final
 import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.data.Perfil
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.Realtime
+import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.postgresChangeFlow
+import io.github.jan.supabase.realtime.selectSingleValueAsFlow
 import io.github.jan.supabase.serializer.KotlinXSerializer
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.json.Json
 
 // Jamendo (app para música)
@@ -17,6 +27,8 @@ import kotlinx.serialization.json.Json
 object SupabaseManager {
     private const val SUPABASE_URL = "https://vxyxtbqtbujipctpwjgo.supabase.co"
     private const val SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4eXh0YnF0YnVqaXBjdHB3amdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI0NjgwOTMsImV4cCI6MjA1ODA0NDA5M30.EaXTHXuob_hRCXxDkyqw1oU-hP2Ng2l9JwztyjuA4nM"
+
+    val yourCoroutineScope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main)
 
     lateinit var client: SupabaseClient
         private set
@@ -33,6 +45,7 @@ object SupabaseManager {
             })
             install(Auth)
             install(Postgrest)
+            install(Realtime)
         }
     }
 
@@ -101,6 +114,16 @@ object SupabaseManager {
                 eq("estilo", estilo)
             }}
             .decodeList<Cancion>()
+    }
+
+    @OptIn(SupabaseExperimental::class)
+    suspend fun crearCanal(UID: String) {
+        val flow: Flow<Perfil> = client.from("Perfil").selectSingleValueAsFlow(Perfil::UID) {
+            eq("UID", 1)
+        }
+        flow.collect {
+            println("My country is $it")
+        }
     }
 
 }
