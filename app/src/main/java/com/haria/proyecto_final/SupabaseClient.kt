@@ -28,8 +28,6 @@ object SupabaseManager {
     private const val SUPABASE_URL = "https://vxyxtbqtbujipctpwjgo.supabase.co"
     private const val SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4eXh0YnF0YnVqaXBjdHB3amdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI0NjgwOTMsImV4cCI6MjA1ODA0NDA5M30.EaXTHXuob_hRCXxDkyqw1oU-hP2Ng2l9JwztyjuA4nM"
 
-    val yourCoroutineScope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main)
-
     lateinit var client: SupabaseClient
         private set
 
@@ -97,9 +95,9 @@ object SupabaseManager {
     suspend fun getPerfil(): Perfil {
 
         return client.postgrest
-                .from("Perfil")
+                .from("perfil")
                 .select(){filter {
-                    getCurrentUserId()?.let { eq("UID", it) }
+                    getCurrentUserId()?.let { eq("id", it) }
                 }}
                 .decodeSingle<Perfil>()
 
@@ -117,9 +115,9 @@ object SupabaseManager {
     }
 
     @OptIn(SupabaseExperimental::class)
-    suspend fun crearCanal(UID: String) {
-        val flow: Flow<Perfil> = client.from("Perfil").selectSingleValueAsFlow(Perfil::UID) {
-            eq("UID", 1)
+    suspend fun crearCanal(id: String) {
+        val flow: Flow<Perfil> = client.from("perfil").selectSingleValueAsFlow(Perfil::id) {
+            eq("id", 1)
         }
         flow.collect {
             println("My country is $it")
