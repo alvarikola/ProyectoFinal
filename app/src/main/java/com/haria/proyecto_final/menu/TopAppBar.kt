@@ -22,12 +22,15 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.haria.proyecto_final.R
+import com.haria.proyecto_final.SupabaseManager
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,6 +38,7 @@ import com.haria.proyecto_final.R
 fun TopAppBar(navController: NavHostController, main: Boolean = false) {
     val expanded = remember { mutableStateOf(false) } // Estado para abrir y cerrar el DropdownMenu
     val icon = painterResource(id = R.drawable.logo_circular) // Reemplaza con tu recurso de icono
+    val scope = rememberCoroutineScope()
 
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -71,6 +75,16 @@ fun TopAppBar(navController: NavHostController, main: Boolean = false) {
                                 text = { Text("Editar perfil") },
                                 onClick = {
                                     navController.navigate("perfilScreen")
+                                    expanded.value = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Cerrar sesión") },
+                                onClick = {
+                                    scope.launch {
+                                        SupabaseManager.logout()
+                                        navController.navigate("loginScreen")
+                                    }
                                     expanded.value = false
                                 }
                             )
