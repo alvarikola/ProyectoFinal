@@ -1,5 +1,6 @@
 package com.haria.proyecto_final
 
+import android.util.Log
 import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.data.Perfil
 import io.github.jan.supabase.SupabaseClient
@@ -69,6 +70,7 @@ object SupabaseManager {
             true
         } catch (e: Exception) {
             e.printStackTrace()
+            Log.i("Error", "Error al registrar: ${e.message}")
             false
         }
     }
@@ -124,4 +126,23 @@ object SupabaseManager {
         }
     }
 
+    suspend fun actualizarPerfil(perfil: Perfil?): Boolean {
+        try {
+            // Actualizar los datos en la tabla de perfiles
+            client.from("perfil")
+                .update({
+                    set("nombre", perfil?.nombre)
+                    set("pais", perfil?.pais)
+                }
+                ) {
+                    filter {
+                        perfil?.id?.let { eq("id", it) }
+                    }
+                }
+            return true
+        } catch (e: Exception) {
+            Log.i("Error", "Error al actualizar el perfil: ${e.message}")
+            return false
+        }
+    }
 }
