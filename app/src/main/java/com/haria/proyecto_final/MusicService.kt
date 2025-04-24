@@ -1,68 +1,223 @@
-package com.haria.proyecto_final
+package com.example.pruebas
 
-
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.MediaPlayer
+import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
+import androidx.core.app.NotificationManagerCompat
+import com.haria.proyecto_final.MainActivity
+import com.haria.proyecto_final.R
 
 class MusicService : Service() {
+    private val binder = MusicBinder()
+    private var mediaPlayer: MediaPlayer? = null
+    private var currentUrl: String? = null
 
-    private lateinit var player: ExoPlayer
-    private val CHANNEL_ID = "music_channel"
+    inner class MusicBinder : Binder() {
+        fun getService(): MusicService = this@MusicService
+    }
 
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
-        player = ExoPlayer.Builder(this).build()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val url = intent?.getStringExtra("url") ?: return START_NOT_STICKY
-
-        val mediaItem = MediaItem.fromUri(url)
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.play()
-
-        val notification = buildNotification()
-        startForeground(1, notification)
-
-        return START_STICKY
+        when (intent?.action) {
+            ACTION_PLAY -> {
+                val musicUrl = intent.getStringExtra(EXTRA_MUSIC_URL)
+                if (!musicUrl.isNullOrEmpty()) {
+                    playMusic(musicUrl)
+                }
+            }
+            ACTION_PAUSE -> pauseMusic()
+            ACTION_STOP -> {
+                stopMusic()
+                stopSelf()
+            }
+        }
+        return START_NOT_STICKY
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        player.release()
+    fun getCurrentPositionInLoop(startTimeMillis: Long): Int {
+        val currentTimeMillis = 1682347200000
+        val elapsedTimeMillis = currentTimeMillis - startTimeMillis
+
+        val durationMillis = mediaPlayer?.duration
+
+        Log.i("MusicService", "Duración: $durationMillis")
+        Log.i("MusicService", "elapsedTimeMillis: $elapsedTimeMillis")
+        if (durationMillis != null) {
+            if (durationMillis <= 0) return 0
+        } // Evitar división por cero o errores
+
+        val currentPositionInLoopMillis = elapsedTimeMillis % durationMillis!!
+        Log.i("MusicService", "currentPositionInLoopMillis: $currentPositionInLoopMillis")
+        return (currentPositionInLoopMillis / 1000).toInt() // Devolvemos los segundos
     }
 
-    override fun onBind(intent: Intent?): IBinder? = null
+    fun seekToCurrentLoopPosition(startTimeMillis: Long) {
+        mediaPlayer?.let {
+            val position = getCurrentPositionInLoop(startTimeMillis) * 1000
+            if (it.isPlaying || it.isLooping) {
+                it.seekTo(position)
+            } else {
+                it.seekTo(position)
+                it.start()
+            }
+        }
+    }
 
-    private fun buildNotification(): Notification {
-        return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Reproduciendo música")
-            .setContentText("Tu canción está sonando...")
-            .setSmallIcon(android.R.drawable.ic_media_play)
-            .setOngoing(true)
-            .build()
+    fun playMusic(url: String) {
+        // Si ya hay un MediaPlayer activo y es la misma URL, reanudamos
+        if (mediaPlayer != null && url == currentUrl && !mediaPlayer!!.isPlaying) {
+            mediaPlayer?.start()
+            updateNotification("Reproduciendo música")
+            return
+        }
+
+        // Si es una nueva URL o no hay MediaPlayer, lo creamos
+        releaseMediaPlayer()
+
+        mediaPlayer = MediaPlayer().apply {
+            setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .build()
+            )
+
+            try {
+                setDataSource(url)
+                prepareAsync()
+                setOnPreparedListener {
+                    val startTimeMillis = 1682330000000
+                    if (startTimeMillis != null) {
+                        seekToCurrentLoopPosition(startTimeMillis)
+                    } else {
+                        it.start()
+                    }
+                    currentUrl = url
+                    updateNotification("Reproduciendo música")
+                }
+                setOnCompletionListener {
+                    updateNotification("Reproducción completada")
+                }
+                setOnErrorListener { _, _, _ ->
+                    updateNotification("Error al reproducir")
+                    false
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                updateNotification("Error al preparar la reproducción")
+            }
+        }
+    }
+
+    fun pauseMusic() {
+        mediaPlayer?.let {
+            if (it.isPlaying) {
+                it.pause()
+                updateNotification("Música en pausa")
+            }
+        }
+    }
+
+    fun stopMusic() {
+        releaseMediaPlayer()
+        stopForeground(true)
+    }
+
+    private fun releaseMediaPlayer() {
+        mediaPlayer?.apply {
+            if (isPlaying) {
+                stop()
+            }
+            release()
+        }
+        mediaPlayer = null
     }
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "Reproductor de música",
+                "Reproductor de Música",
                 NotificationManager.IMPORTANCE_LOW
-            )
-            val manager = getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(channel)
+            ).apply {
+                description = "Canal para el servicio de reproducción de música"
+            }
+
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
         }
+    }
+
+    private fun updateNotification(contentText: String) {
+        val notificationIntent = Intent(this, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, notificationIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val playIntent = Intent(this, MusicService::class.java).apply {
+            action = ACTION_PLAY
+            putExtra(EXTRA_MUSIC_URL, currentUrl)
+        }
+        val playPendingIntent = PendingIntent.getService(
+            this, 1, playIntent, PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val pauseIntent = Intent(this, MusicService::class.java).apply {
+            action = ACTION_PAUSE
+        }
+        val pausePendingIntent = PendingIntent.getService(
+            this, 2, pauseIntent, PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val stopIntent = Intent(this, MusicService::class.java).apply {
+            action = ACTION_STOP
+        }
+        val stopPendingIntent = PendingIntent.getService(
+            this, 3, stopIntent, PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("Reproductor de Música")
+            .setContentText(contentText)
+            .setSmallIcon(R.drawable.ic_music_note)
+            .setContentIntent(pendingIntent)
+            .addAction(R.drawable.ic_play, "Reproducir", playPendingIntent)
+            .addAction(R.drawable.ic_pause, "Pausar", pausePendingIntent)
+            .addAction(R.drawable.ic_stop, "Detener", stopPendingIntent)
+            .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
+                .setShowActionsInCompactView(0, 1, 2))
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
+
+        startForeground(NOTIFICATION_ID, notification)
+    }
+
+    override fun onBind(intent: Intent?): IBinder {
+        return binder
+    }
+
+    override fun onDestroy() {
+        releaseMediaPlayer()
+        super.onDestroy()
+    }
+
+    companion object {
+        const val ACTION_PLAY = "com.example.musicplayer.ACTION_PLAY"
+        const val ACTION_PAUSE = "com.example.musicplayer.ACTION_PAUSE"
+        const val ACTION_STOP = "com.example.musicplayer.ACTION_STOP"
+        const val EXTRA_MUSIC_URL = "com.example.musicplayer.EXTRA_MUSIC_URL"
+        private const val CHANNEL_ID = "MusicPlayerServiceChannel"
+        private const val NOTIFICATION_ID = 1
     }
 }
