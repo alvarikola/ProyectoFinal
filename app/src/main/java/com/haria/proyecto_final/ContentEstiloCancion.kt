@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -40,6 +42,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.utils.Loading
@@ -89,6 +92,7 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                         modifier = Modifier
                             .padding(8.dp)
                             .fillMaxWidth()
+                            .height(130.dp)
                             .background(MaterialTheme.colorScheme.primary),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -96,47 +100,56 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                             Log.d("CancionImagen", "URL de la imagen: ${cancion.imagenUrl}")
                         } else {
                             Image(
-                                painter = rememberImagePainter(data = cancion.imagenUrl),
+                                painter = rememberAsyncImagePainter(model = cancion.imagenUrl),
                                 contentDescription = null,
                                 modifier = Modifier
-                                    .size(100.dp),
+                                    .fillMaxHeight(),
                                 contentScale = ContentScale.Crop
                             )
                         }
-                        Text(
-                            text = "${cancion.nombre}",
-                            modifier = Modifier.padding(8.dp),
-                            fontSize = 20.sp
-                        )
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        Button(
-                            onClick = { onAction(PlayerAction.Play, cancion) },
-                            enabled = !isPlaying
+                        Column(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .weight(1f) // hace que el texto y botones ocupen el resto del espacio
                         ) {
-                            Icon(Icons.Default.PlayArrow, contentDescription = "Play")
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("Reproducir")
-                        }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                            ) {
+                                Text(
+                                    text = "${cancion.nombre}",
+                                    modifier = Modifier.padding(8.dp),
+                                    fontSize = 20.sp
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceAround
+                            ) {
+                                Button(
+                                    onClick = { onAction(PlayerAction.Play, cancion) },
+                                    enabled = !isPlaying
+                                ) {
+                                    Icon(Icons.Default.PlayArrow, contentDescription = "Play")
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                }
 
-                        Button(
-                            onClick = { onAction(PlayerAction.Pause, cancion) },
-                            enabled = isPlaying
-                        ) {
-                            Icon(Icons.Default.Lock, contentDescription = "Pause")
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("Pausar")
-                        }
+                                Button(
+                                    onClick = { onAction(PlayerAction.Pause, cancion) },
+                                    enabled = isPlaying
+                                ) {
+                                    Icon(Icons.Default.Lock, contentDescription = "Pause")
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                }
 
-                        Button(
-                            onClick = { onAction(PlayerAction.Stop, cancion) }
-                        ) {
-                            Icon(Icons.Default.Close, contentDescription = "Stop")
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("Detener")
+                                Button(
+                                    onClick = { onAction(PlayerAction.Stop, cancion) }
+                                ) {
+                                    Icon(Icons.Default.Close, contentDescription = "Stop")
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                }
+                            }
                         }
                     }
                     HorizontalDivider(
