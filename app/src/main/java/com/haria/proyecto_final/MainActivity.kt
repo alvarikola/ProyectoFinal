@@ -1,6 +1,7 @@
 package com.haria.proyecto_final
 
 import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -15,7 +16,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
-import com.example.pruebas.MusicService
 import com.haria.proyecto_final.SupabaseManager.init
 import com.haria.proyecto_final.navigation.NavigationGraph
 import com.haria.proyecto_final.ui.theme.ProyectoFinalTheme
@@ -71,8 +71,7 @@ class MainActivity : ComponentActivity() {
         private const val NOTIFICATION_PERMISSION_REQUEST_CODE = 100
     }
 
-    private fun playMusic() {
-        val musicUrl = "https://prod-1.storage.jamendo.com/?trackid=1879171&format=mp31&from=GQoxWTIMiLV%2F8Pt0zM4C9g%3D%3D%7CjxNKDeGf%2FsG%2B5bwWJa%2FnDQ%3D%3D"
+    private fun playMusic(musicUrl: String) {
         val intent = Intent(this, MusicService::class.java).apply {
             action = MusicService.ACTION_PLAY
             putExtra(MusicService.EXTRA_MUSIC_URL, musicUrl)
@@ -102,6 +101,13 @@ class MainActivity : ComponentActivity() {
             isBound = false
         }
         super.onDestroy()
+    }
+
+    private val musicReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val musicUrl = intent?.getStringExtra("music_url")
+            musicUrl?.let { playMusic(it) }
+        }
     }
 
 }
