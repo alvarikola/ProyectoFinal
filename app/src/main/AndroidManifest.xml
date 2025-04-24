@@ -23,14 +23,13 @@
             android:theme="@style/Theme.ProyectoFinal">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <service
             android:name=".MusicService"
+            android:foregroundServiceType="mediaPlayback"
             android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="mediaPlayback" />
+            android:exported="false" />
     </application>
 </manifest>
