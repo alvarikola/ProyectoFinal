@@ -3,8 +3,6 @@ package com.haria.proyecto_final
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -43,7 +40,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.utils.Loading
 
@@ -57,12 +53,15 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
     var listaCanciones by remember { mutableStateOf<List<Cancion>>(emptyList()) }
     val scrollState = rememberScrollState()
     val isPlaying by viewModel.isPlaying.collectAsState()
+    val currentSong by viewModel.currentSong.collectAsState()
 
     LaunchedEffect(key1 = true) {
         try {
+            Log.d("ContentEstilo", "Obteniendo canciones para estilo: $estilo")
             listaCanciones = SupabaseManager.getCancionesPorEstilo(estilo)
+            Log.d("ContentEstilo", "Canciones obtenidas: ${listaCanciones.size}")
         } catch (e: Exception) {
-            Log.e("Error", "Error al obtener las canciones: ${e.message}")
+            Log.e("ContentEstilo", "Error al obtener las canciones: ${e.message}")
         }
     }
 
@@ -88,6 +87,7 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                     .verticalScroll(scrollState),
             ) {
                 listaCanciones.forEach { cancion ->
+                    val isCurrentSong = currentSong?.id == cancion.id
                     Row(
                         modifier = Modifier
                             .padding(8.dp)
@@ -128,26 +128,35 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                                 horizontalArrangement = Arrangement.SpaceAround
                             ) {
                                 Button(
-                                    onClick = { onAction(PlayerAction.Play, cancion) },
-                                    enabled = !isPlaying
+                                    onClick = {
+                                        viewModel.setCurrentSong(cancion)
+                                        onAction(PlayerAction.Play, cancion)
+                                    },
+                                    enabled = !isPlaying || !isCurrentSong
                                 ) {
                                     Icon(Icons.Default.PlayArrow, contentDescription = "Play")
                                     Spacer(modifier = Modifier.width(4.dp))
+                                    Text("Play")
                                 }
 
                                 Button(
                                     onClick = { onAction(PlayerAction.Pause, cancion) },
-                                    enabled = isPlaying
+                                    enabled = isPlaying && isCurrentSong
                                 ) {
                                     Icon(Icons.Default.Lock, contentDescription = "Pause")
                                     Spacer(modifier = Modifier.width(4.dp))
+                                    Text("Pause")
                                 }
 
                                 Button(
-                                    onClick = { onAction(PlayerAction.Stop, cancion) }
+                                    onClick = {
+                                        onAction(PlayerAction.Stop, cancion)
+                                        viewModel.setCurrentSong(null)
+                                    }
                                 ) {
                                     Icon(Icons.Default.Close, contentDescription = "Stop")
                                     Spacer(modifier = Modifier.width(4.dp))
+                                    Text("Stop")
                                 }
                             }
                         }

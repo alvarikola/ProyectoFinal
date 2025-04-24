@@ -22,12 +22,15 @@ class MusicService : Service() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
+        Log.d("MusicService", "Servicio creado")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d("MusicService", "onStartCommand: ${intent?.action}")
         when (intent?.action) {
             ACTION_PLAY -> {
                 val musicUrl = intent.getStringExtra(EXTRA_MUSIC_URL)
+                Log.d("MusicService", "URL de música recibida en servicio: $musicUrl")
                 if (!musicUrl.isNullOrEmpty()) {
                     playMusic(musicUrl)
                 }
@@ -41,36 +44,8 @@ class MusicService : Service() {
         return START_NOT_STICKY
     }
 
-    fun getCurrentPositionInLoop(startTimeMillis: Long): Int {
-        val currentTimeMillis = 1682347200000
-        val elapsedTimeMillis = currentTimeMillis - startTimeMillis
-
-        val durationMillis = mediaPlayer?.duration
-
-        Log.i("MusicService", "Duración: $durationMillis")
-        Log.i("MusicService", "elapsedTimeMillis: $elapsedTimeMillis")
-        if (durationMillis != null) {
-            if (durationMillis <= 0) return 0
-        } // Evitar división por cero o errores
-
-        val currentPositionInLoopMillis = elapsedTimeMillis % durationMillis!!
-        Log.i("MusicService", "currentPositionInLoopMillis: $currentPositionInLoopMillis")
-        return (currentPositionInLoopMillis / 1000).toInt() // Devolvemos los segundos
-    }
-
-    fun seekToCurrentLoopPosition(startTimeMillis: Long) {
-        mediaPlayer?.let {
-            val position = getCurrentPositionInLoop(startTimeMillis) * 1000
-            if (it.isPlaying || it.isLooping) {
-                it.seekTo(position)
-            } else {
-                it.seekTo(position)
-                it.start()
-            }
-        }
-    }
-
     fun playMusic(url: String) {
+        Log.d("MusicService", "Intentando reproducir música: $url")
         // Si ya hay un MediaPlayer activo y es la misma URL, reanudamos
         if (mediaPlayer != null && url == currentUrl && !mediaPlayer!!.isPlaying) {
             mediaPlayer?.start()
@@ -91,25 +66,25 @@ class MusicService : Service() {
 
             try {
                 setDataSource(url)
+                Log.d("MusicService", "Preparando MediaPlayer con URL: $url")
                 prepareAsync()
                 setOnPreparedListener {
-                    val startTimeMillis = 1682330000000
-                    if (startTimeMillis != null) {
-                        seekToCurrentLoopPosition(startTimeMillis)
-                    } else {
-                        it.start()
-                    }
+                    Log.d("MusicService", "MediaPlayer preparado, iniciando reproducción")
+                    it.start()
                     currentUrl = url
                     updateNotification("Reproduciendo música")
                 }
                 setOnCompletionListener {
+                    Log.d("MusicService", "Reproducción completada")
                     updateNotification("Reproducción completada")
                 }
-                setOnErrorListener { _, _, _ ->
+                setOnErrorListener { _, what, extra ->
+                    Log.e("MusicService", "Error en MediaPlayer: $what, $extra")
                     updateNotification("Error al reproducir")
                     false
                 }
             } catch (e: Exception) {
+                Log.e("MusicService", "Error al preparar MediaPlayer: ${e.message}")
                 e.printStackTrace()
                 updateNotification("Error al preparar la reproducción")
             }
@@ -119,6 +94,7 @@ class MusicService : Service() {
     fun pauseMusic() {
         mediaPlayer?.let {
             if (it.isPlaying) {
+                Log.d("MusicService", "Pausando MediaPlayer")
                 it.pause()
                 updateNotification("Música en pausa")
             }
@@ -126,6 +102,7 @@ class MusicService : Service() {
     }
 
     fun stopMusic() {
+        Log.d("MusicService", "Deteniendo y liberando MediaPlayer")
         releaseMediaPlayer()
         stopForeground(true)
     }
@@ -136,6 +113,7 @@ class MusicService : Service() {
                 stop()
             }
             release()
+            Log.d("MusicService", "MediaPlayer liberado")
         }
         mediaPlayer = null
     }
@@ -152,10 +130,12 @@ class MusicService : Service() {
 
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
+            Log.d("MusicService", "Canal de notificación creado")
         }
     }
 
     private fun updateNotification(contentText: String) {
+        Log.d("MusicService", "Actualizando notificación: $contentText")
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             this, 0, notificationIntent,
@@ -197,23 +177,29 @@ class MusicService : Service() {
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
 
-        startForeground(NOTIFICATION_ID, notification)
+        try {
+            startForeground(NOTIFICATION_ID, notification)
+        } catch (e: Exception) {
+            Log.e("MusicService", "Error al mostrar notificación: ${e.message}")
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder {
+        Log.d("MusicService", "Service bound")
         return binder
     }
 
     override fun onDestroy() {
+        Log.d("MusicService", "Servicio destruido")
         releaseMediaPlayer()
         super.onDestroy()
     }
 
     companion object {
-        const val ACTION_PLAY = "com.example.musicplayer.ACTION_PLAY"
-        const val ACTION_PAUSE = "com.example.musicplayer.ACTION_PAUSE"
-        const val ACTION_STOP = "com.example.musicplayer.ACTION_STOP"
-        const val EXTRA_MUSIC_URL = "com.example.musicplayer.EXTRA_MUSIC_URL"
+        const val ACTION_PLAY = "com.haria.proyecto_final.ACTION_PLAY"
+        const val ACTION_PAUSE = "com.haria.proyecto_final.ACTION_PAUSE"
+        const val ACTION_STOP = "com.haria.proyecto_final.ACTION_STOP"
+        const val EXTRA_MUSIC_URL = "com.haria.proyecto_final.EXTRA_MUSIC_URL"
         private const val CHANNEL_ID = "MusicPlayerServiceChannel"
         private const val NOTIFICATION_ID = 1
     }

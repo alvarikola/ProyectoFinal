@@ -1,6 +1,7 @@
 package com.haria.proyecto_final
 
 import android.content.Intent
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -20,15 +21,23 @@ fun EstiloCancionScreen(context: ComponentActivity, estilo: String, icon: Painte
             ContentEstiloCancion(innerPadding, estilo, icon, viewModel) { action, cancion ->
                 when (action) {
                     PlayerAction.Play -> {
+                        // Construir la URL completa usando el ID de la canción
+                        val musicUrl = "https://prod-1.storage.jamendo.com/?trackid=${cancion.id}&format=mp31&from=GQoxWTIMiLV%2F8Pt0zM4C9g%3D%3D%7CjxNKDeGf%2FsG%2B5bwWJa%2FnDQ%3D%3D"
+                        Log.d("EstiloCancionScreen", "Enviando broadcast para reproducir: ${cancion.nombre}, URL: $musicUrl")
+
                         val intent = Intent("PLAY_MUSIC")
-                        intent.putExtra("music_url", "https://prod-1.storage.jamendo.com/?trackid=${cancion.id}&format=mp31&from=GQoxWTIMiLV%2F8Pt0zM4C9g%3D%3D%7CjxNKDeGf%2FsG%2B5bwWJa%2FnDQ%3D%3D")
+                        intent.putExtra("music_url", musicUrl)
                         context.sendBroadcast(intent)
                     }
                     PlayerAction.Pause -> {
-                        // Lógica para pausar la canción
+                        Log.d("EstiloCancionScreen", "Enviando broadcast para pausar")
+                        val intent = Intent("PAUSE_MUSIC")
+                        context.sendBroadcast(intent)
                     }
                     PlayerAction.Stop -> {
-                        // Lógica para detener la canción
+                        Log.d("EstiloCancionScreen", "Enviando broadcast para detener")
+                        val intent = Intent("STOP_MUSIC")
+                        context.sendBroadcast(intent)
                     }
                 }
             }

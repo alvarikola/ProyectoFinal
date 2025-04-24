@@ -100,7 +100,7 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context) {
                             .size(170.dp)
                             .padding(end = 8.dp),
                     )
-                    Text(perfil?.nombre ?: "Nombre", fontSize = 50.sp, fontWeight = FontWeight.Bold)
+                    Text(perfil?.nombre ?: "Nombre", fontSize = 50.sp, fontWeight = FontWeight.Bold, lineHeight = 60.sp)
                 }
 
                 // Botón de editar
@@ -122,7 +122,7 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context) {
                         .fillMaxWidth()
                         .padding(10.dp)
                 ) {
-                    Text("Datos del usuario", fontSize = 35.sp, fontWeight = FontWeight.Bold)
+                    Text("Datos del usuario", fontSize = 35.sp, fontWeight = FontWeight.Bold, lineHeight = 40.sp)
                 }
 
                 Column(

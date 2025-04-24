@@ -63,18 +63,17 @@ fun ContentMain(innerPadding: PaddingValues, context: Context) {
                 )
             }
         }
-        MusicServicePlayer(context)
     }
 }
 
 
-@Composable
-fun MusicServicePlayer(context: Context) {
-    Button(onClick = {
-        val intent = Intent(context, MusicService::class.java)
-        intent.putExtra("url", "https://prod-1.storage.jamendo.com/?trackid=1879171&format=mp31&from=GQoxWTIMiLV%2F8Pt0zM4C9g%3D%3D%7CjxNKDeGf%2FsG%2B5bwWJa%2FnDQ%3D%3D")
-        context.startForegroundService(intent)
-    }) {
-        Text("Reproducir en segundo plano")
-    }
-}
+//@Composable
+//fun MusicServicePlayer(context: Context) {
+//    Button(onClick = {
+//        val intent = Intent(context, MusicService::class.java)
+//        intent.putExtra("url", "https://prod-1.storage.jamendo.com/?trackid=1879171&format=mp31&from=GQoxWTIMiLV%2F8Pt0zM4C9g%3D%3D%7CjxNKDeGf%2FsG%2B5bwWJa%2FnDQ%3D%3D")
+//        context.startForegroundService(intent)
+//    }) {
+//        Text("Reproducir en segundo plano")
+//    }
+//}
