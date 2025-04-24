@@ -22,8 +22,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
-import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.MusicService
+import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.SupabaseManager
 
 
