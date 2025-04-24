@@ -1,4 +1,4 @@
-package com.example.pruebas
+package com.haria.proyecto_final
 
 import android.app.*
 import android.content.Intent
@@ -9,9 +9,6 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import com.haria.proyecto_final.MainActivity
-import com.haria.proyecto_final.R
 
 class MusicService : Service() {
     private val binder = MusicBinder()
