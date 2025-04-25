@@ -2,6 +2,7 @@ package com.haria.proyecto_final.navigation
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -9,6 +10,7 @@ import androidx.navigation.compose.composable
 import com.haria.proyecto_final.estiloCancion.EstiloCancionScreen
 import com.haria.proyecto_final.LoginScreen
 import com.haria.proyecto_final.R
+import com.haria.proyecto_final.SalaScreen
 import com.haria.proyecto_final.perfil.PerfilScreen
 import com.haria.proyecto_final.seleccionMusica.MusicaScreen
 import com.haria.proyecto_final.main.MainScreen
@@ -51,6 +53,9 @@ fun NavigationGraph(
                 icon = painterResource(id = iconResId),
                 navController = navController
             )
+        }
+        composable("salaScreen") {
+            SalaScreen(context, navController)
         }
     }
 }

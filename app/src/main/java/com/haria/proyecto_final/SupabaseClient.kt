@@ -102,9 +102,6 @@ object SupabaseManager {
                     getCurrentUserId()?.let { eq("id", it) }
                 }}
                 .decodeSingle<Perfil>()
-
-
-
     }
 
     suspend fun getCancionesPorEstilo(estilo: String): List<Cancion> {
@@ -164,4 +161,5 @@ object SupabaseManager {
             }}
             .decodeSingle<Cancion>()
     }
+
 }
