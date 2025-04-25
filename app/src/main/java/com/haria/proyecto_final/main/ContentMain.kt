@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.haria.proyecto_final.SupabaseManager
@@ -44,7 +45,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun ContentMain(innerPadding: PaddingValues, context: Context) {
+fun ContentMain(innerPadding: PaddingValues, context: Context, navController: NavHostController) {
     var perfilesEmitiendo by remember { mutableStateOf<List<Perfil>>(emptyList()) }
     val scrollState = rememberScrollState()
     val frasesMain = listOf(
@@ -100,7 +101,7 @@ fun ContentMain(innerPadding: PaddingValues, context: Context) {
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(8.dp)
-                        .clickable {  },
+                        .clickable { navController.navigate("salaScreen") },
                 ) {
                     Image(
                         painter = rememberAsyncImagePainter(model = cancion?.imagenUrl),

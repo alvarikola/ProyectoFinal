@@ -12,7 +12,7 @@ fun MainScreen(context: ComponentActivity, navController: NavHostController) {
         topBar = { TopAppBar(navController, main = true) },
         content = { innerPadding ->
             // Contenido principal de la pantalla
-            ContentMain(innerPadding, context)
+            ContentMain(innerPadding, context, navController)
         }
     )
 }
