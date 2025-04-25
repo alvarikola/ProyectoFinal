@@ -26,6 +26,8 @@ import com.haria.proyecto_final.data.Perfil
 fun ContentSala(innerPadding: PaddingValues, context: Context) {
     var perfil by remember { mutableStateOf<Perfil?>(null) }
     var cancion by remember { mutableStateOf<Cancion?>(null) }
+    // Cambiar la forma de obtener el trackid porque aqui estas obteniedno el de tu propio perfil
+    // y tiene que ser el que seleccionas
     LaunchedEffect(key1 = true) {
         try {
             perfil = SupabaseManager.getPerfil()
