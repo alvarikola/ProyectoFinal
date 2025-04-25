@@ -9,4 +9,6 @@ data class Perfil(
     val nombre: String? = null,
     val email: String? = null,
     var pais: String? = null,
+    var fecha_inicio_cancion: String? = null,
+    var trackid: Int? = null,
 )
