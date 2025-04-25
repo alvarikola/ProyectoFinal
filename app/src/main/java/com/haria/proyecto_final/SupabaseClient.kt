@@ -145,4 +145,23 @@ object SupabaseManager {
             return false
         }
     }
+
+    suspend fun getPerfiles(): List<Perfil> {
+        return client.postgrest
+            .from("perfil")
+            .select(){filter {
+                getCurrentUserId()?.let { neq("id", it) }
+                //eq("emitiendo", true)
+            }}
+            .decodeList<Perfil>()
+    }
+
+    suspend fun getCancionPorId(id: Int): Cancion {
+        return client.postgrest
+            .from("cancion")
+            .select(){filter {
+                eq("id", id)
+            }}
+            .decodeSingle<Cancion>()
+    }
 }
