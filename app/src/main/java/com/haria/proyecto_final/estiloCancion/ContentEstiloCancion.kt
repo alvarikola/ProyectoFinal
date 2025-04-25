@@ -1,4 +1,4 @@
-package com.haria.proyecto_final
+package com.haria.proyecto_final.estiloCancion
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -40,6 +40,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.haria.proyecto_final.musicaService.MusicViewModel
+import com.haria.proyecto_final.SupabaseManager
 import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.utils.Loading
 

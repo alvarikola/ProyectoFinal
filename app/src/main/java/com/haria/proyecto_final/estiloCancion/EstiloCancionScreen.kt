@@ -1,4 +1,4 @@
-package com.haria.proyecto_final
+package com.haria.proyecto_final.estiloCancion
 
 import android.content.Intent
 import android.util.Log
@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.haria.proyecto_final.musicaService.MusicViewModel
 import com.haria.proyecto_final.menu.TopAppBar
 
 

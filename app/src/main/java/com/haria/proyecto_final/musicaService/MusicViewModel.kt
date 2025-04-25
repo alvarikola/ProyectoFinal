@@ -1,4 +1,4 @@
-package com.haria.proyecto_final
+package com.haria.proyecto_final.musicaService
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
