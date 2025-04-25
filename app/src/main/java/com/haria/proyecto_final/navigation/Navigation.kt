@@ -28,7 +28,7 @@ fun NavigationGraph(
         composable("mainScreen") {
             MainScreen(context, navController)
         }
-        composable("salaScreen") {
+        composable("musicaScreen") {
             MusicaScreen(context, navController)
         }
         composable("perfilScreen") {

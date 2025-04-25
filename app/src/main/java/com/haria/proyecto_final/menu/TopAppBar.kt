@@ -67,7 +67,7 @@ fun TopAppBar(navController: NavHostController, main: Boolean = false) {
                             DropdownMenuItem(
                                 text = { Text("Tu sala") },
                                 onClick = {
-                                    navController.navigate("salaScreen")
+                                    navController.navigate("musicaScreen")
                                     expanded.value = false
                                 }
                             )
