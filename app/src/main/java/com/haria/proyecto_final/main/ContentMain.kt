@@ -4,76 +4,125 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
-import com.haria.proyecto_final.MusicService
-import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.SupabaseManager
+import com.haria.proyecto_final.data.Cancion
+import com.haria.proyecto_final.data.Perfil
+import com.haria.proyecto_final.utils.Loading
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun ContentMain(innerPadding: PaddingValues, context: Context) {
-    var listaCanciones by remember { mutableStateOf<List<Cancion>>(emptyList()) }
+    var perfilesEmitiendo by remember { mutableStateOf<List<Perfil>>(emptyList()) }
+    val scrollState = rememberScrollState()
+    val frasesMain = listOf(
+        "Entra al flow. Comparte la vibra",
+        "Las salas te esperan. ¿Cuál es tu mood hoy?",
+        "El ritmo se comparte mejor en grupo",
+        "Dale play con quien vibra como tú",
+        "Tu música, tu gente, tu flow"
+    )
+    val fraseAleatoria = remember { frasesMain.random() }
 
     LaunchedEffect(key1 = true) {
         try {
-            val canciones = SupabaseManager.getCancionesPorEstilo("electronica")
-            Log.d("CancionesDebug", canciones.toString())
-            listaCanciones = canciones
+            val perfiles = SupabaseManager.getPerfiles()
+            perfilesEmitiendo = perfiles
         } catch (e: Exception) {
             Log.e("Error", "Error al obtener canciones: ${e.message}")
         }
     }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        listaCanciones.forEach { cancion ->
+    if(perfilesEmitiendo.isEmpty()) {
+        Loading()
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(12.dp)
+                .padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
-                text = "Nombre de la canción: ${cancion.nombre}, Estilo: ${cancion.estilo}",
+                text = fraseAleatoria,
                 modifier = Modifier.padding(8.dp),
-                fontSize = 20.sp
+                fontWeight = FontWeight.Bold,
+                lineHeight = 30.sp,
+                fontSize = 30.sp,
+                color = MaterialTheme.colorScheme.primary
             )
-            if (cancion.imagenUrl == null) {
-                Log.d("CancionImagen", "URL de la imagen: ${cancion.imagenUrl}")
-            } else {
-                Image(
-                    painter = rememberImagePainter(data = cancion.imagenUrl),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop
-                )
+            perfilesEmitiendo.forEach { perfil ->
+                var cancion by remember(perfil.trackid) { mutableStateOf<Cancion?>(null) }
+
+                LaunchedEffect(perfil.trackid) {
+                    try {
+                        cancion = perfil.trackid?.let { SupabaseManager.getCancionPorId(it) }
+                    } catch (e: Exception) {
+                        Log.e("Error", "Error al obtener canción: ${e.message}")
+                    }
+                }
+
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .padding(8.dp)
+                        .clickable {  },
+                ) {
+                    Image(
+                        painter = rememberAsyncImagePainter(model = cancion?.imagenUrl),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(100.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                    Column {
+                        Text(
+                            text = "${perfil.nombre}, ${perfil.pais}",
+                            modifier = Modifier.padding(8.dp),
+                            fontSize = 20.sp
+                        )
+                        Text(
+                            text = "Escuchando: ${cancion?.nombre ?: "Cargando..."}",
+                            modifier = Modifier.padding(8.dp),
+                            fontSize = 20.sp
+                        )
+                    }
+                }
             }
         }
     }
 }
-
-
-//@Composable
-//fun MusicServicePlayer(context: Context) {
-//    Button(onClick = {
-//        val intent = Intent(context, MusicService::class.java)
-//        intent.putExtra("url", "https://prod-1.storage.jamendo.com/?trackid=1879171&format=mp31&from=GQoxWTIMiLV%2F8Pt0zM4C9g%3D%3D%7CjxNKDeGf%2FsG%2B5bwWJa%2FnDQ%3D%3D")
-//        context.startForegroundService(intent)
-//    }) {
-//        Text("Reproducir en segundo plano")
-//    }
-//}
