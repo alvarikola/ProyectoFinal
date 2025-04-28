@@ -45,18 +45,12 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String)
     // Escucha cambios en tiempo real
     LaunchedEffect(perfilId) {
         try {
-            if (perfilId != null) {
-                // Assume escucharCambiosPerfil returns a Cancellable or a Job
-                SupabaseManager.escucharCambiosPerfil(perfilId) { nuevoPerfil ->
-                    perfil = nuevoPerfil
-                    // Fetch cancion asynchronously to avoid blocking the main thread
-                    scope.launch(Dispatchers.IO) {
-                        nuevoPerfil.trackid?.let { trackId ->
-                            val nuevaCancion = SupabaseManager.getCancionPorId(trackId)
-                            cancion = nuevaCancion
-                        } ?: run {
-                            cancion = null // Handle case when trackid is null
-                        }
+            SupabaseManager.escucharCambiosPerfil(perfilId) { nuevoPerfil ->
+                perfil = nuevoPerfil
+                scope.launch(Dispatchers.IO) {
+                    nuevoPerfil.trackid?.let { trackId ->
+                        val nuevaCancion = SupabaseManager.getCancionPorId(trackId)
+                        cancion = nuevaCancion
                     }
                 }
             }
