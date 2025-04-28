@@ -12,13 +12,18 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.filter.FilterOperation
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.postgresChangeFlow
+import io.github.jan.supabase.realtime.realtime
+import io.github.jan.supabase.realtime.selectAsFlow
 import io.github.jan.supabase.realtime.selectSingleValueAsFlow
 import io.github.jan.supabase.serializer.KotlinXSerializer
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.json.Json
@@ -113,16 +118,6 @@ object SupabaseManager {
             .decodeList<Cancion>()
     }
 
-    @OptIn(SupabaseExperimental::class)
-    suspend fun crearCanal(id: String) {
-        val flow: Flow<Perfil> = client.from("perfil").selectSingleValueAsFlow(Perfil::id) {
-            eq("id", 1)
-        }
-        flow.collect {
-            println("My country is $it")
-        }
-    }
-
     suspend fun actualizarPerfil(perfil: Perfil?): Boolean {
         try {
             // Actualizar los datos en la tabla de perfiles
@@ -179,5 +174,21 @@ object SupabaseManager {
             Log.i("Error", "Error al actualizar el perfil: ${e.message}")
             return false
         }
+    }
+
+    @OptIn(SupabaseExperimental::class)
+    suspend fun escucharCambiosPerfil(id: String, onProfileUpdate: (Perfil) -> Unit) {
+        val flow: Flow<Perfil> = client.from("perfil").selectSingleValueAsFlow(Perfil::id) {
+            eq("id", id)
+        }
+        flow.collect {
+           onProfileUpdate(it)
+        }
+    }
+
+    @OptIn(SupabaseExperimental::class)
+    fun escucharCambiosPerfiles(): Flow<List<Perfil>> {
+        return client.from("perfil")
+            .selectAsFlow(Perfil::id, filter = FilterOperation("id", FilterOperator.NEQ, getCurrentUserId() ?: ""))
     }
 }
