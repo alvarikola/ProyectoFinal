@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -114,15 +116,19 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
                         .background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(8.dp)
                         .clickable { navController.navigate("salaScreen/${perfil.id}") },
+                    verticalAlignment = Alignment.CenterVertically // Centra verticalmente el contenido
                 ) {
                     Image(
                         painter = rememberAsyncImagePainter(model = cancion?.imagenUrl),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(100.dp),
-                        contentScale = ContentScale.Crop
+                            .weight(0.35f)
+                            .aspectRatio(1f),
                     )
-                    Column {
+                    Column(
+                        modifier = Modifier
+                            .weight(0.65f)
+                    ) {
                         Text(
                             text = "${perfil.nombre}, ${perfil.pais}",
                             modifier = Modifier.padding(8.dp),
