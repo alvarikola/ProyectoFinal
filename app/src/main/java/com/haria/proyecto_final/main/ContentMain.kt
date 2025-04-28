@@ -113,7 +113,7 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(8.dp)
-                        .clickable { navController.navigate("salaScreen") },
+                        .clickable { navController.navigate("salaScreen/${perfil.id}") },
                 ) {
                     Image(
                         painter = rememberAsyncImagePainter(model = cancion?.imagenUrl),

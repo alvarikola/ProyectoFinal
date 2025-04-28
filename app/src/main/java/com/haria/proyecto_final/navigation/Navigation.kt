@@ -54,8 +54,9 @@ fun NavigationGraph(
                 navController = navController
             )
         }
-        composable("salaScreen") {
-            SalaScreen(context, navController)
+        composable("salaScreen/{perfilId}") { backStackEntry ->
+            val perfilId = backStackEntry.arguments?.getString("perfilId") ?: "default"
+            SalaScreen(context, navController, perfilId)
         }
     }
 }

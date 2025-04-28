@@ -26,7 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun ContentSala(innerPadding: PaddingValues, context: Context) {
+fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String) {
     var perfil by remember { mutableStateOf<Perfil?>(null) }
     var cancion by remember { mutableStateOf<Cancion?>(null) }
     val scope = rememberCoroutineScope()
@@ -35,7 +35,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context) {
 
     LaunchedEffect(key1 = true) {
         try {
-            perfil = SupabaseManager.getPerfil()
+            perfil = SupabaseManager.getPerfilPorId(perfilId)
             cancion = perfil?.trackid?.let { SupabaseManager.getCancionPorId(it) }
         } catch (e: Exception) {
             Log.e("Error", "Error al obtener el perfil: ${e.message}")
@@ -43,12 +43,11 @@ fun ContentSala(innerPadding: PaddingValues, context: Context) {
     }
 
     // Escucha cambios en tiempo real
-    val userId = SupabaseManager.getCurrentUserId()
-    LaunchedEffect(userId) {
+    LaunchedEffect(perfilId) {
         try {
-            if (userId != null) {
+            if (perfilId != null) {
                 // Assume escucharCambiosPerfil returns a Cancellable or a Job
-                val cancellable = SupabaseManager.escucharCambiosPerfil(userId) { nuevoPerfil ->
+                SupabaseManager.escucharCambiosPerfil(perfilId) { nuevoPerfil ->
                     perfil = nuevoPerfil
                     // Fetch cancion asynchronously to avoid blocking the main thread
                     scope.launch(Dispatchers.IO) {
