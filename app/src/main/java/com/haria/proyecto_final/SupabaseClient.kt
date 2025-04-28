@@ -109,6 +109,16 @@ object SupabaseManager {
                 .decodeSingle<Perfil>()
     }
 
+    suspend fun getPerfilPorId(perfilId: String): Perfil {
+
+        return client.postgrest
+            .from("perfil")
+            .select(){filter {
+                eq("id", perfilId)
+            }}
+            .decodeSingle<Perfil>()
+    }
+
     suspend fun getCancionesPorEstilo(estilo: String): List<Cancion> {
         return client.postgrest
             .from("cancion")
