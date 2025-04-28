@@ -65,6 +65,18 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
             Log.e("Error", "Error al obtener canciones: ${e.message}")
         }
     }
+
+    // Escuchamos cambios en todos los perfiles en tiempo real
+    LaunchedEffect(Unit) {
+        try {
+            SupabaseManager.escucharCambiosPerfiles().collect() { nuevosPerfiles ->
+                perfilesEmitiendo = nuevosPerfiles
+            }
+        } catch (e: Exception) {
+            Log.e("Error", "Error al escuchar cambios en perfiles: ${e.message}", e)
+        }
+    }
+
     if(perfilesEmitiendo.isEmpty()) {
         Loading()
     } else {
