@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,19 +22,47 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.data.Perfil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun ContentSala(innerPadding: PaddingValues, context: Context) {
     var perfil by remember { mutableStateOf<Perfil?>(null) }
     var cancion by remember { mutableStateOf<Cancion?>(null) }
+    val scope = rememberCoroutineScope()
     // Cambiar la forma de obtener el trackid porque aqui estas obteniedno el de tu propio perfil
     // y tiene que ser el que seleccionas
+
     LaunchedEffect(key1 = true) {
         try {
             perfil = SupabaseManager.getPerfil()
             cancion = perfil?.trackid?.let { SupabaseManager.getCancionPorId(it) }
         } catch (e: Exception) {
             Log.e("Error", "Error al obtener el perfil: ${e.message}")
+        }
+    }
+
+    // Escucha cambios en tiempo real
+    val userId = SupabaseManager.getCurrentUserId()
+    LaunchedEffect(userId) {
+        try {
+            if (userId != null) {
+                // Assume escucharCambiosPerfil returns a Cancellable or a Job
+                val cancellable = SupabaseManager.escucharCambiosPerfil(userId) { nuevoPerfil ->
+                    perfil = nuevoPerfil
+                    // Fetch cancion asynchronously to avoid blocking the main thread
+                    scope.launch(Dispatchers.IO) {
+                        nuevoPerfil.trackid?.let { trackId ->
+                            val nuevaCancion = SupabaseManager.getCancionPorId(trackId)
+                            cancion = nuevaCancion
+                        } ?: run {
+                            cancion = null // Handle case when trackid is null
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("Error", "Error al escuchar cambios en el perfil: ${e.message}", e)
         }
     }
 
