@@ -162,4 +162,22 @@ object SupabaseManager {
             .decodeSingle<Cancion>()
     }
 
+    suspend fun establecerCancion(trackid: Int): Boolean {
+        try {
+            // Actualizar los datos en la tabla de perfiles
+            client.from("perfil")
+                .update({
+                    set("trackid", trackid)
+                }
+                ) {
+                    filter {
+                        getCurrentUserId()?.let { eq("id", it) }
+                    }
+                }
+            return true
+        } catch (e: Exception) {
+            Log.i("Error", "Error al actualizar el perfil: ${e.message}")
+            return false
+        }
+    }
 }
