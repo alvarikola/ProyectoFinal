@@ -27,7 +27,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.data.Perfil
@@ -130,7 +129,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                     Image(
                         painter = painterResource(id = R.drawable.ic_pause),
                         contentDescription = "pausa",
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(35.dp)
                     )
                 }
             } else {
@@ -140,7 +139,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                     Image(
                         painter = painterResource(id = R.drawable.ic_play),
                         contentDescription = "Play",
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(35.dp)
                     )
                 }
             }
