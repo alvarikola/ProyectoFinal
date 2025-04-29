@@ -46,6 +46,35 @@ class MusicService : Service() {
         return START_NOT_STICKY
     }
 
+    fun getCurrentPositionInLoop(startTimeMillis: Long): Int {
+        val currentTimeMillis = 1682347200000
+        val elapsedTimeMillis = currentTimeMillis - startTimeMillis
+
+        val durationMillis = mediaPlayer?.duration
+
+        Log.i("MusicService", "Duración: $durationMillis")
+        Log.i("MusicService", "elapsedTimeMillis: $elapsedTimeMillis")
+        if (durationMillis != null) {
+            if (durationMillis <= 0) return 0
+        } // Evitar división por cero o errores
+
+        val currentPositionInLoopMillis = elapsedTimeMillis % durationMillis!!
+        Log.i("MusicService", "currentPositionInLoopMillis: $currentPositionInLoopMillis")
+        return (currentPositionInLoopMillis / 1000).toInt() // Devolvemos los segundos
+    }
+
+    fun seekToCurrentLoopPosition(startTimeMillis: Long) {
+        mediaPlayer?.let {
+            val position = getCurrentPositionInLoop(startTimeMillis) * 1000
+            if (it.isPlaying || it.isLooping) {
+                it.seekTo(position)
+            } else {
+                it.seekTo(position)
+                it.start()
+            }
+        }
+    }
+
     fun playMusic(url: String) {
         Log.d("MusicService", "Intentando reproducir música: $url")
         // Si ya hay un MediaPlayer activo y es la misma URL, reanudamos
