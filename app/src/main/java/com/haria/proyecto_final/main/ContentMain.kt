@@ -55,7 +55,17 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
         "Las salas te esperan. ¿Cuál es tu mood hoy?",
         "El ritmo se comparte mejor en grupo",
         "Dale play con quien vibra como tú",
-        "Tu música, tu gente, tu flow"
+        "Tu música, tu gente, tu flow",
+        "Conecta con quienes sienten el mismo beat",
+        "Siente el flow, vive el momento",
+        "Crea tu sala, crea tu ambiente",
+        "Una canción, mil conexiones",
+        "La música te une, tu mood elige",
+        "Súbete al beat del día",
+        "Haz del sonido una fiesta compartida",
+        "La vibra que buscas, la gente que conecta",
+        "Explora salas, descubre vibes",
+        "Rompe el silencio con tu Flow Rosa"
     )
     val fraseAleatoria = remember { frasesMain.random() }
 
