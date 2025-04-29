@@ -99,46 +99,55 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
                 fontSize = 30.sp,
                 color = MaterialTheme.colorScheme.primary
             )
-            perfilesEmitiendo.forEach { perfil ->
-                var cancion by remember(perfil.trackid) { mutableStateOf<Cancion?>(null) }
+            if (perfilesEmitiendo.all { it.trackid == null }) {
+                Text(
+                    text = "Nadie está escuchando. Sé el primero en compartir tu música",
+                    modifier = Modifier.padding(8.dp),
+                    fontSize = 20.sp
+                )
+            } else {
+                perfilesEmitiendo.forEach { perfil ->
+                    var cancion by remember(perfil.trackid) { mutableStateOf<Cancion?>(null) }
 
-                LaunchedEffect(perfil.trackid) {
-                    try {
-                        cancion = perfil.trackid?.let { SupabaseManager.getCancionPorId(it) }
-                    } catch (e: Exception) {
-                        Log.e("Error", "Error al obtener canción: ${e.message}")
+                    LaunchedEffect(perfil.trackid) {
+                        try {
+                            cancion = perfil.trackid?.let { SupabaseManager.getCancionPorId(it) }
+                        } catch (e: Exception) {
+                            Log.e("Error", "Error al obtener canción: ${e.message}")
+                        }
                     }
-                }
-
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.primaryContainer)
-                        .padding(8.dp)
-                        .clickable { navController.navigate("salaScreen/${perfil.id}") },
-                    verticalAlignment = Alignment.CenterVertically // Centra verticalmente el contenido
-                ) {
-                    Image(
-                        painter = rememberAsyncImagePainter(model = cancion?.imagenUrl),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .weight(0.35f)
-                            .aspectRatio(1f),
-                    )
-                    Column(
-                        modifier = Modifier
-                            .weight(0.65f)
-                    ) {
-                        Text(
-                            text = "${perfil.nombre}, ${perfil.pais}",
-                            modifier = Modifier.padding(8.dp),
-                            fontSize = 20.sp
-                        )
-                        Text(
-                            text = "Escuchando: ${cancion?.nombre ?: "Cargando..."}",
-                            modifier = Modifier.padding(8.dp),
-                            fontSize = 20.sp
-                        )
+                    if(perfil.trackid != null) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.primaryContainer)
+                                .padding(8.dp)
+                                .clickable { navController.navigate("salaScreen/${perfil.id}") },
+                            verticalAlignment = Alignment.CenterVertically // Centra verticalmente el contenido
+                        ) {
+                            Image(
+                                painter = rememberAsyncImagePainter(model = cancion?.imagenUrl),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .weight(0.35f)
+                                    .aspectRatio(1f),
+                            )
+                            Column(
+                                modifier = Modifier
+                                    .weight(0.65f)
+                            ) {
+                                Text(
+                                    text = "${perfil.nombre}, ${perfil.pais}",
+                                    modifier = Modifier.padding(8.dp),
+                                    fontSize = 20.sp
+                                )
+                                Text(
+                                    text = "Escuchando: ${cancion?.nombre ?: "Cargando..."}",
+                                    modifier = Modifier.padding(8.dp),
+                                    fontSize = 20.sp
+                                )
+                            }
+                        }
                     }
                 }
             }
