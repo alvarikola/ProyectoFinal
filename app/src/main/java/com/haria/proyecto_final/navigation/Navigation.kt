@@ -14,12 +14,14 @@ import com.haria.proyecto_final.SalaScreen
 import com.haria.proyecto_final.perfil.PerfilScreen
 import com.haria.proyecto_final.seleccionMusica.MusicaScreen
 import com.haria.proyecto_final.main.MainScreen
+import com.haria.proyecto_final.musicaService.MusicViewModel
 
 @Composable
 fun NavigationGraph(
     context: ComponentActivity,
     navController: NavHostController,
-    checkAuthentication: Boolean
+    checkAuthentication: Boolean,
+    musicViewModel: MusicViewModel
 ) {
     NavHost(
         navController = navController,
@@ -51,12 +53,13 @@ fun NavigationGraph(
                 context,
                 estilo = backStackEntry.arguments?.getString("estilo") ?: "default",
                 icon = painterResource(id = iconResId),
-                navController = navController
+                navController = navController,
+                musicViewModel = musicViewModel
             )
         }
         composable("salaScreen/{perfilId}") { backStackEntry ->
             val perfilId = backStackEntry.arguments?.getString("perfilId") ?: "default"
-            SalaScreen(context, navController, perfilId)
+            SalaScreen(context, navController, perfilId, musicViewModel)
         }
     }
 }

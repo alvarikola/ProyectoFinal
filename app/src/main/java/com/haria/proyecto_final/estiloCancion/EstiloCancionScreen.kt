@@ -16,14 +16,13 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun EstiloCancionScreen(context: ComponentActivity, estilo: String, icon: Painter, navController: NavHostController) {
-    val viewModel: MusicViewModel = viewModel()
+fun EstiloCancionScreen(context: ComponentActivity, estilo: String, icon: Painter, navController: NavHostController, musicViewModel: MusicViewModel) {
     val scope = rememberCoroutineScope()
     Scaffold(
         topBar = { TopAppBar(navController) },
         content = { innerPadding ->
             // Contenido principal de la pantalla
-            ContentEstiloCancion(innerPadding, estilo, icon, viewModel) { action, cancion ->
+            ContentEstiloCancion(innerPadding, estilo, icon, musicViewModel) { action, cancion ->
                 when (action) {
                     PlayerAction.Play -> {
                         // Construir la URL completa usando el ID de la canción

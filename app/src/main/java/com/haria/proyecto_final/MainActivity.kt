@@ -17,6 +17,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import com.haria.proyecto_final.SupabaseManager.init
 import com.haria.proyecto_final.musicaService.MusicService
@@ -54,6 +55,7 @@ class MainActivity : ComponentActivity() {
                     musicUrl?.let {
                         playMusic(it)
                         musicViewModel.setPlaying(true)
+                        Log.d("MainActivity", musicViewModel.isPlaying.value.toString())
                     }
                 }
                 "PAUSE_MUSIC" -> {
@@ -71,7 +73,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        musicViewModel = MusicViewModel()
+        musicViewModel = ViewModelProvider(this)[MusicViewModel::class.java]
 
         // Registrar todos los receivers necesarios
         val intentFilter = IntentFilter().apply {
@@ -104,7 +106,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val logeado = SupabaseManager.isLoggedIn()
             ProyectoFinalTheme {
-                NavigationGraph(this, navController, logeado)
+                NavigationGraph(this, navController, logeado, musicViewModel)
             }
         }
     }
