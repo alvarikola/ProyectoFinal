@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -103,8 +104,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                     modifier = Modifier.padding(8.dp)
                 )
             }
-            // TODO interfaz de chatgpt: DJ de la sala, boton para para musica,
-            //  que suene la musica y chat para hablar
+            // TODO interfaz de chatgpt: chat para hablar y quitar musica al salir
             Row(
                 modifier = Modifier
                     .padding(12.dp)
@@ -125,6 +125,9 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
             if (isPlaying) {
                 Button(
                     onClick = { onAction(PlayerAction.Pause, perfil?.trackid ?: 0) },
+                    shape = CircleShape,
+                    contentPadding = PaddingValues(0.dp),
+                    modifier = Modifier.size(60.dp) // Tamaño del botón redondo
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_pause),
@@ -135,6 +138,9 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
             } else {
                 Button(
                     onClick = { onAction(PlayerAction.Play, perfil?.trackid ?: 0) },
+                    shape = CircleShape,
+                    contentPadding = PaddingValues(0.dp),
+                    modifier = Modifier.size(60.dp) // Tamaño del botón redondo
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_play),
