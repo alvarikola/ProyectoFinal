@@ -2,6 +2,7 @@ package com.haria.proyecto_final
 
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -20,7 +21,12 @@ fun SalaScreen(context: ComponentActivity, navController: NavHostController, per
         topBar = { TopAppBar(navController) },
         content = { innerPadding ->
             // Contenido principal de la pantalla
-            ContentSala(innerPadding, context, perfilId, musicViewModel) { action, cancion, startTimeMilis->
+            ContentSala(
+                innerPadding,
+                context,
+                perfilId,
+                musicViewModel,
+                onAction = { action, cancion, startTimeMilis->
                 when (action) {
                     PlayerAction.Play -> {
                         // Construir la URL completa usando el ID de la canción
@@ -44,7 +50,12 @@ fun SalaScreen(context: ComponentActivity, navController: NavHostController, per
                         context.sendBroadcast(intent)
                     }
                 }
-            }
+            },
+                onExit = { reason ->
+                    Toast.makeText(context, reason, Toast.LENGTH_SHORT).show()
+                    navController.navigate("mainScreen")
+                }
+            )
         }
     )
 }

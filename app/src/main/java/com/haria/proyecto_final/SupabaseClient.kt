@@ -167,7 +167,7 @@ object SupabaseManager {
             .decodeSingle<Cancion>()
     }
 
-    suspend fun establecerCancion(trackid: Int): Boolean {
+    suspend fun establecerCancion(trackid: Int?): Boolean {
         try {
             // Actualizar los datos en la tabla de perfiles
             client.from("perfil")

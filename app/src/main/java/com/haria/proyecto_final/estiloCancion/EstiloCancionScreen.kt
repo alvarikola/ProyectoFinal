@@ -45,6 +45,9 @@ fun EstiloCancionScreen(context: ComponentActivity, estilo: String, icon: Painte
                         Log.d("EstiloCancionScreen", "Enviando broadcast para detener")
                         val intent = Intent("STOP_MUSIC")
                         context.sendBroadcast(intent)
+                        scope.launch {
+                            SupabaseManager.establecerCancion(null)
+                        }
                     }
                 }
             }

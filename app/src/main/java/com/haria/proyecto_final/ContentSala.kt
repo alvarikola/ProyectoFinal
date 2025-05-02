@@ -28,6 +28,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.data.Perfil
@@ -39,7 +41,7 @@ import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
 
 @Composable
-fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String, musicViewModel: MusicViewModel, onAction: (PlayerAction, Int, Long?) -> Unit) {
+fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String, musicViewModel: MusicViewModel, onAction: (PlayerAction, Int, Long?) -> Unit, onExit: (reason: String) -> Unit) {
     var perfil by remember { mutableStateOf<Perfil?>(null) }
     var cancion by remember { mutableStateOf<Cancion?>(null) }
     var startTimeMillis by remember { mutableStateOf<Long?>(null) }
@@ -50,6 +52,10 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
         try {
             perfil = SupabaseManager.getPerfilPorId(perfilId)
             cancion = perfil?.trackid?.let { SupabaseManager.getCancionPorId(it) }
+            if (cancion == null) {
+                onExit("La sala se ha cerrado")
+                return@LaunchedEffect
+            }
             startTimeMillis = OffsetDateTime.parse(perfil?.fecha_inicio_cancion)
                 .toInstant()
                 .toEpochMilli()
@@ -65,12 +71,19 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
         try {
             SupabaseManager.escucharCambiosPerfil(perfilId) { nuevoPerfil ->
                 perfil = nuevoPerfil
+                if (nuevoPerfil.trackid == null) {
+                    onExit("La sala se ha cerrado")
+                    return@escucharCambiosPerfil
+                }
                 scope.launch(Dispatchers.IO) {
                     nuevoPerfil.trackid?.let { trackId ->
                         val nuevaCancion = SupabaseManager.getCancionPorId(trackId)
                         cancion = nuevaCancion
                     }
                 }
+                startTimeMillis = OffsetDateTime.parse(perfil?.fecha_inicio_cancion)
+                    .toInstant()
+                    .toEpochMilli()
                 onAction(PlayerAction.Play, perfil?.trackid ?: 0, startTimeMillis)
             }
         } catch (e: Exception) {
