@@ -165,17 +165,17 @@ fun LoginScreen(onLoginSuccess: () -> Unit = {}) {
                 if (isRegisterMode) "¿Ya tienes una cuenta? " else "¿No tienes una cuenta? ",
                 color = MaterialTheme.colorScheme.onBackground
             )
-            TextButton(
-                onClick = {
-                    isRegisterMode = !isRegisterMode
-                    errorMessage = ""
-                }
-            ) {
-                Text(
-                    if (isRegisterMode) "Iniciar sesión" else "Registrarse",
-                    color = MaterialTheme.colorScheme.primary
-                )
+        }
+        TextButton(
+            onClick = {
+                isRegisterMode = !isRegisterMode
+                errorMessage = ""
             }
+        ) {
+            Text(
+                if (isRegisterMode) "Iniciar sesión" else "Registrarse",
+                color = MaterialTheme.colorScheme.primary
+            )
         }
 
         if (errorMessage.isNotEmpty()) {
