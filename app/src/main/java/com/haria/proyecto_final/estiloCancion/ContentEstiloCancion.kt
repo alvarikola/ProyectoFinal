@@ -123,7 +123,7 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                             ) {
                                 Text(
                                     text = "${cancion.nombre}",
-                                    modifier = Modifier.padding(8.dp),
+                                    modifier = Modifier.padding(6.dp),
                                     fontSize = 20.sp
                                 )
                             }
@@ -140,7 +140,6 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                                 ) {
                                     Icon(Icons.Default.PlayArrow, contentDescription = "Play")
                                     Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Play")
                                 }
 
                                 Button(
@@ -152,7 +151,6 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                                         contentDescription = "pausa",
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Pause")
                                 }
 
                                 Button(
@@ -161,9 +159,11 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                                         viewModel.setCurrentSong(null)
                                     }
                                 ) {
-                                    Icon(Icons.Default.Close, contentDescription = "Stop")
+                                    Image(
+                                        painter = painterResource(id = R.drawable.ic_stop),
+                                        contentDescription = "pausa",
+                                    )
                                     Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Stop")
                                 }
                             }
                         }
