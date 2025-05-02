@@ -37,9 +37,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.haria.proyecto_final.R
 import com.haria.proyecto_final.musicaService.MusicViewModel
 import com.haria.proyecto_final.SupabaseManager
 import com.haria.proyecto_final.data.Cancion
@@ -145,7 +147,10 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                                     onClick = { onAction(PlayerAction.Pause, cancion) },
                                     enabled = isPlaying && isCurrentSong
                                 ) {
-                                    Icon(Icons.Default.Lock, contentDescription = "Pause")
+                                    Image(
+                                        painter = painterResource(id = R.drawable.ic_pause),
+                                        contentDescription = "pausa",
+                                    )
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text("Pause")
                                 }
