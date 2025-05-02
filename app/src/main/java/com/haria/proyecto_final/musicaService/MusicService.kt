@@ -32,9 +32,10 @@ class MusicService : Service() {
         when (intent?.action) {
             ACTION_PLAY -> {
                 val musicUrl = intent.getStringExtra(EXTRA_MUSIC_URL)
+                val startTimeMillis = intent.getLongExtra("start_time_millis", -1L).takeIf { it != -1L }
                 Log.d("MusicService", "URL de música recibida en servicio: $musicUrl")
                 if (!musicUrl.isNullOrEmpty()) {
-                    playMusic(musicUrl)
+                    playMusic(musicUrl, startTimeMillis)
                 }
             }
             ACTION_PAUSE -> pauseMusic()
@@ -47,7 +48,7 @@ class MusicService : Service() {
     }
 
     fun getCurrentPositionInLoop(startTimeMillis: Long): Int {
-        val currentTimeMillis = 1682347200000
+        val currentTimeMillis = System.currentTimeMillis()
         val elapsedTimeMillis = currentTimeMillis - startTimeMillis
 
         val durationMillis = mediaPlayer?.duration
@@ -75,7 +76,7 @@ class MusicService : Service() {
         }
     }
 
-    fun playMusic(url: String) {
+    fun playMusic(url: String, startTimeMillis: Long? = null) {
         Log.d("MusicService", "Intentando reproducir música: $url")
         // Si ya hay un MediaPlayer activo y es la misma URL, reanudamos
         if (mediaPlayer != null && url == currentUrl && !mediaPlayer!!.isPlaying) {
@@ -100,8 +101,11 @@ class MusicService : Service() {
                 Log.d("MusicService", "Preparando MediaPlayer con URL: $url")
                 prepareAsync()
                 setOnPreparedListener {
-                    Log.d("MusicService", "MediaPlayer preparado, iniciando reproducción")
-                    it.start()
+                    if (startTimeMillis != null) {
+                        seekToCurrentLoopPosition(startTimeMillis)
+                    } else {
+                        it.start()
+                    }
                     currentUrl = url
                     updateNotification("Reproduciendo música")
                 }

@@ -36,11 +36,13 @@ import com.haria.proyecto_final.musicaService.MusicViewModel
 import com.haria.proyecto_final.utils.Loading
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
 
 @Composable
-fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String, musicViewModel: MusicViewModel, onAction: (PlayerAction, Int) -> Unit) {
+fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String, musicViewModel: MusicViewModel, onAction: (PlayerAction, Int, Long?) -> Unit) {
     var perfil by remember { mutableStateOf<Perfil?>(null) }
     var cancion by remember { mutableStateOf<Cancion?>(null) }
+    var startTimeMillis by remember { mutableStateOf<Long?>(null) }
     val scope = rememberCoroutineScope()
     val isPlaying by musicViewModel.isPlaying.collectAsState()
 
@@ -48,7 +50,11 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
         try {
             perfil = SupabaseManager.getPerfilPorId(perfilId)
             cancion = perfil?.trackid?.let { SupabaseManager.getCancionPorId(it) }
-            onAction(PlayerAction.Play, perfil?.trackid ?: 0)
+            startTimeMillis = OffsetDateTime.parse(perfil?.fecha_inicio_cancion)
+                .toInstant()
+                .toEpochMilli()
+            onAction(PlayerAction.Play, perfil?.trackid ?: 0, startTimeMillis)
+            Log.i("Perfil",startTimeMillis.toString())
         } catch (e: Exception) {
             Log.e("Error", "Error al obtener el perfil: ${e.message}")
         }
@@ -65,7 +71,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                         cancion = nuevaCancion
                     }
                 }
-                onAction(PlayerAction.Play, perfil?.trackid ?: 0)
+                onAction(PlayerAction.Play, perfil?.trackid ?: 0, startTimeMillis)
             }
         } catch (e: Exception) {
             Log.e("Error", "Error al escuchar cambios en el perfil: ${e.message}", e)
@@ -124,7 +130,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
             }
             if (isPlaying) {
                 Button(
-                    onClick = { onAction(PlayerAction.Pause, perfil?.trackid ?: 0) },
+                    onClick = { onAction(PlayerAction.Pause, perfil?.trackid ?: 0, null) },
                     shape = CircleShape,
                     contentPadding = PaddingValues(0.dp),
                     modifier = Modifier.size(60.dp) // Tamaño del botón redondo
@@ -137,7 +143,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                 }
             } else {
                 Button(
-                    onClick = { onAction(PlayerAction.Play, perfil?.trackid ?: 0) },
+                    onClick = { onAction(PlayerAction.Play, perfil?.trackid ?: 0, null) },
                     shape = CircleShape,
                     contentPadding = PaddingValues(0.dp),
                     modifier = Modifier.size(60.dp) // Tamaño del botón redondo

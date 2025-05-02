@@ -51,9 +51,10 @@ class MainActivity : ComponentActivity() {
             when (intent?.action) {
                 "PLAY_MUSIC" -> {
                     val musicUrl = intent.getStringExtra("music_url")
+                    val startTimeMilis = intent.getLongExtra("start_time_millis", -1L).takeIf { it != -1L }
                     Log.d("MainActivity", "URL de música recibida: $musicUrl")
                     musicUrl?.let {
-                        playMusic(it)
+                        playMusic(it, startTimeMilis)
                         musicViewModel.setPlaying(true)
                         Log.d("MainActivity", musicViewModel.isPlaying.value.toString())
                     }
@@ -115,11 +116,14 @@ class MainActivity : ComponentActivity() {
         private const val NOTIFICATION_PERMISSION_REQUEST_CODE = 100
     }
 
-    private fun playMusic(musicUrl: String) {
+    private fun playMusic(musicUrl: String, startTimeMilis: Long?) {
         Log.d("MainActivity", "Iniciando servicio de música con URL: $musicUrl")
         val intent = Intent(this, MusicService::class.java).apply {
             action = MusicService.ACTION_PLAY
             putExtra(MusicService.EXTRA_MUSIC_URL, musicUrl)
+            if (startTimeMilis != null) {
+                putExtra("start_time_millis", startTimeMilis)
+            }
         }
         startService(intent)
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)

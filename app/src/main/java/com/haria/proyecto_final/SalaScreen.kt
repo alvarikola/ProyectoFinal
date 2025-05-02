@@ -20,15 +20,17 @@ fun SalaScreen(context: ComponentActivity, navController: NavHostController, per
         topBar = { TopAppBar(navController) },
         content = { innerPadding ->
             // Contenido principal de la pantalla
-            ContentSala(innerPadding, context, perfilId, musicViewModel) { action, cancion ->
+            ContentSala(innerPadding, context, perfilId, musicViewModel) { action, cancion, startTimeMilis->
                 when (action) {
                     PlayerAction.Play -> {
                         // Construir la URL completa usando el ID de la canción
                         val musicUrl = "https://prod-1.storage.jamendo.com/?trackid=${cancion}&format=mp31&from=GQoxWTIMiLV%2F8Pt0zM4C9g%3D%3D%7CjxNKDeGf%2FsG%2B5bwWJa%2FnDQ%3D%3D"
                         Log.d("EstiloCancionScreen", "Enviando broadcast para reproducir: ${cancion}, URL: $musicUrl")
 
-                        val intent = Intent("PLAY_MUSIC")
-                        intent.putExtra("music_url", musicUrl)
+                        val intent = Intent("PLAY_MUSIC").apply {
+                            putExtra("music_url", musicUrl)
+                            startTimeMilis?.let { putExtra("start_time_millis", it) }
+                        }
                         context.sendBroadcast(intent)
                     }
                     PlayerAction.Pause -> {
