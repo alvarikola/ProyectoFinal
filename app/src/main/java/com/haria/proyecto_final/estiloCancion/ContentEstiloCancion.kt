@@ -8,13 +8,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.waterfall
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -75,6 +80,7 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(scrollState)
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -87,43 +93,44 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
             )
             Column(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .verticalScroll(scrollState),
+                    .padding(8.dp),
             ) {
                 listaCanciones.forEach { cancion ->
                     val isCurrentSong = currentSong?.id == cancion.id
                     Row(
                         modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth()
-                            .height(130.dp)
-                            .background(MaterialTheme.colorScheme.primary),
+                            .fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         if (cancion.imagenUrl == null) {
                             Log.d("CancionImagen", "URL de la imagen: ${cancion.imagenUrl}")
                         } else {
-                            Image(
-                                painter = rememberAsyncImagePainter(model = cancion.imagenUrl),
-                                contentDescription = null,
+                            Column(
                                 modifier = Modifier
-                                    .fillMaxHeight(),
-                                contentScale = ContentScale.Crop
-                            )
+                                    .weight(0.3f)
+                            ) {
+                                Image(
+                                    painter = rememberAsyncImagePainter(model = cancion.imagenUrl),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .height(100.dp)
+                                        .fillMaxWidth(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
                         }
                         Column(
                             modifier = Modifier
-                                .padding(8.dp)
-                                .weight(1f) // hace que el texto y botones ocupen el resto del espacio
+                                .weight(0.7f) // hace que el texto y botones ocupen el resto del espacio
+                                .background(MaterialTheme.colorScheme.primary)
                         ) {
                             Row(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
+                                    .fillMaxWidth(),
                             ) {
                                 Text(
                                     text = "${cancion.nombre}",
-                                    modifier = Modifier.padding(6.dp),
+                                    modifier = Modifier.padding(2.dp),
                                     fontSize = 20.sp
                                 )
                             }
@@ -139,7 +146,6 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                                     enabled = !isPlaying || !isCurrentSong
                                 ) {
                                     Icon(Icons.Default.PlayArrow, contentDescription = "Play")
-                                    Spacer(modifier = Modifier.width(4.dp))
                                 }
 
                                 Button(
@@ -150,7 +156,6 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                                         painter = painterResource(id = R.drawable.ic_pause),
                                         contentDescription = "pausa",
                                     )
-                                    Spacer(modifier = Modifier.width(4.dp))
                                 }
 
                                 Button(
@@ -163,7 +168,6 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                                         painter = painterResource(id = R.drawable.ic_stop),
                                         contentDescription = "pausa",
                                     )
-                                    Spacer(modifier = Modifier.width(4.dp))
                                 }
                             }
                         }
