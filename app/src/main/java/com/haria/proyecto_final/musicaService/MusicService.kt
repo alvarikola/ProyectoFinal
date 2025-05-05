@@ -8,14 +8,24 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.app.NotificationCompat
 import com.haria.proyecto_final.MainActivity
+import com.haria.proyecto_final.MusicServiceEvents
 import com.haria.proyecto_final.R
+import com.haria.proyecto_final.SupabaseManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 
 class MusicService : Service() {
     private val binder = MusicBinder()
     private var mediaPlayer: MediaPlayer? = null
     private var currentUrl: String? = null
+    private val serviceScope = CoroutineScope(Dispatchers.IO)
+
 
     inner class MusicBinder : Binder() {
         fun getService(): MusicService = this@MusicService
@@ -40,7 +50,7 @@ class MusicService : Service() {
             }
             ACTION_PAUSE -> pauseMusic()
             ACTION_STOP -> {
-                stopMusic()
+                stopMusicAndClearTrack()
                 stopSelf()
             }
         }
@@ -82,6 +92,7 @@ class MusicService : Service() {
         if (mediaPlayer != null && url == currentUrl && !mediaPlayer!!.isPlaying) {
             mediaPlayer?.start()
             updateNotification("Reproduciendo música")
+            MusicServiceEvents.setIsPlaying(true)
             return
         }
 
@@ -107,6 +118,7 @@ class MusicService : Service() {
                         it.start()
                     }
                     currentUrl = url
+                    MusicServiceEvents.setIsPlaying(true)
                     updateNotification("Reproduciendo música")
                 }
                 setOnCompletionListener {
@@ -131,6 +143,7 @@ class MusicService : Service() {
             if (it.isPlaying) {
                 Log.d("MusicService", "Pausando MediaPlayer")
                 it.pause()
+                MusicServiceEvents.setIsPlaying(false)
                 updateNotification("Música en pausa")
             }
         }
@@ -140,6 +153,26 @@ class MusicService : Service() {
         Log.d("MusicService", "Deteniendo y liberando MediaPlayer")
         releaseMediaPlayer()
         stopForeground(true)
+        MusicServiceEvents.resetState()
+
+    }
+
+    fun stopMusicAndClearTrack() {
+        stopMusic() // Detiene la reproducción y libera recursos
+
+        // Usamos una coroutine para actualizar la base de datos en un hilo de fondo
+        serviceScope.launch {
+            try {
+                val result = SupabaseManager.establecerCancion(null)
+                if (result) {
+                    Log.d("MusicService", "TrackID establecido como null correctamente")
+                } else {
+                    Log.e("MusicService", "No se pudo establecer el trackID como null")
+                }
+            } catch (e: Exception) {
+                Log.e("MusicService", "Error al establecer trackID como null: ${e.message}")
+            }
+        }
     }
 
     private fun releaseMediaPlayer() {
