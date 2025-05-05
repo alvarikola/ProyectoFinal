@@ -191,7 +191,7 @@ class MusicService : Service() {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 "Reproductor de Música",
-                NotificationManager.IMPORTANCE_LOW
+                NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
                 description = "Canal para el servicio de reproducción de música"
             }
@@ -236,13 +236,14 @@ class MusicService : Service() {
             .setContentTitle("Reproductor de Música")
             .setContentText(contentText)
             .setSmallIcon(R.drawable.ic_music_note)
+            .setOngoing(true)
             .setContentIntent(pendingIntent)
             .addAction(R.drawable.ic_play, "Reproducir", playPendingIntent)
             .addAction(R.drawable.ic_pause, "Pausar", pausePendingIntent)
             .addAction(R.drawable.ic_stop, "Detener", stopPendingIntent)
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                 .setShowActionsInCompactView(0, 1, 2))
-            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
 
         try {
