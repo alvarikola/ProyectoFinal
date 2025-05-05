@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -113,7 +114,7 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                                     painter = rememberAsyncImagePainter(model = cancion.imagenUrl),
                                     contentDescription = null,
                                     modifier = Modifier
-                                        .height(100.dp)
+                                        .height(130.dp)
                                         .fillMaxWidth(),
                                     contentScale = ContentScale.Crop
                                 )
@@ -123,10 +124,15 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                             modifier = Modifier
                                 .weight(0.7f) // hace que el texto y botones ocupen el resto del espacio
                                 .background(MaterialTheme.colorScheme.primary)
+                                .defaultMinSize(minHeight = 130.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Row(
                                 modifier = Modifier
-                                    .fillMaxWidth(),
+                                    .fillMaxWidth()
+                                    .padding(6.dp),
+                                horizontalArrangement = Arrangement.Center
                             ) {
                                 Text(
                                     text = "${cancion.nombre}",
