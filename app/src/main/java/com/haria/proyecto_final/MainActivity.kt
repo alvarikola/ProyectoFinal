@@ -24,6 +24,9 @@ import com.haria.proyecto_final.musicaService.MusicService
 import com.haria.proyecto_final.musicaService.MusicViewModel
 import com.haria.proyecto_final.navigation.NavigationGraph
 import com.haria.proyecto_final.ui.theme.ProyectoFinalTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private var musicService: MusicService? = null
@@ -70,6 +73,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    private val serviceScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -156,6 +161,15 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         try {
+            // Obtener el id del usuario logeado y quitar el trackId
+            val userId = SupabaseManager.getCurrentUserId()
+            if (userId != null) {
+                serviceScope.launch {
+                    SupabaseManager.establecerCancion(null)
+                }
+            }
+
+            stopMusic()
             unregisterReceiver(musicReceiver)
             if (isBound) {
                 unbindService(serviceConnection)
