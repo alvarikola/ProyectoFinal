@@ -1,31 +1,27 @@
 package com.haria.proyecto_final
 
+import android.content.Context
 import android.util.Log
 import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.data.Perfil
+import com.haria.proyecto_final.utils.UserSessionManager
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.auth.user.UserSession
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.filter.FilterOperation
 import io.github.jan.supabase.postgrest.query.filter.FilterOperator
-import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.Realtime
-import io.github.jan.supabase.realtime.channel
-import io.github.jan.supabase.realtime.postgresChangeFlow
-import io.github.jan.supabase.realtime.realtime
 import io.github.jan.supabase.realtime.selectAsFlow
 import io.github.jan.supabase.realtime.selectSingleValueAsFlow
 import io.github.jan.supabase.serializer.KotlinXSerializer
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.json.Json
 
 // Jamendo (app para música)
@@ -37,7 +33,10 @@ object SupabaseManager {
     lateinit var client: SupabaseClient
         private set
 
-    fun init(){
+    private lateinit var appContext: Context
+
+    fun init(context: Context){
+        appContext = context.applicationContext
         client = createSupabaseClient(
             supabaseUrl = SUPABASE_URL,
             supabaseKey = SUPABASE_API_KEY
@@ -83,6 +82,7 @@ object SupabaseManager {
     suspend fun logout() {
         try {
             client.auth.signOut()
+            UserSessionManager.limpiarUserId(appContext)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -98,6 +98,7 @@ object SupabaseManager {
     fun getCurrentUserId(): String? {
         return client.auth.currentUserOrNull()?.id
     }
+
 
     suspend fun getPerfil(): Perfil {
 
@@ -153,7 +154,6 @@ object SupabaseManager {
             .from("perfil")
             .select(){filter {
                 getCurrentUserId()?.let { neq("id", it) }
-                //eq("emitiendo", true)
             }}
             .decodeList<Perfil>()
     }
@@ -168,20 +168,22 @@ object SupabaseManager {
     }
 
     suspend fun establecerCancion(trackid: Int?): Boolean {
+        val userId = UserSessionManager.obtenerUserId(appContext)
+        Log.d("SupabaseManager", "Usuario ID obtenido: $userId") // Log adicional
+        if (userId == null) {
+            Log.e("Supabase", "No hay usuario autenticado. No se actualizó el trackId.")
+            return false
+        }
         try {
-            // Actualizar los datos en la tabla de perfiles
             client.from("perfil")
-                .update({
-                    set("trackid", trackid)
+                .update({ set("trackid", trackid) }) {
+                    filter { eq("id", userId) }
                 }
-                ) {
-                    filter {
-                        getCurrentUserId()?.let { eq("id", it) }
-                    }
-                }
+            Log.e("Supabase", "Track ID actualizado: $trackid")
+            Log.e("Supabase", "cliente $client.")
             return true
         } catch (e: Exception) {
-            Log.i("Error", "Error al actualizar el perfil: ${e.message}")
+            Log.e("Supabase", "Error al actualizar el perfil: ${e.message}", e)
             return false
         }
     }

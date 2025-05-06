@@ -3,6 +3,7 @@ package com.haria.proyecto_final.navigation
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -11,10 +12,13 @@ import com.haria.proyecto_final.estiloCancion.EstiloCancionScreen
 import com.haria.proyecto_final.LoginScreen
 import com.haria.proyecto_final.R
 import com.haria.proyecto_final.SalaScreen
+import com.haria.proyecto_final.SupabaseManager
 import com.haria.proyecto_final.perfil.PerfilScreen
 import com.haria.proyecto_final.seleccionMusica.MusicaScreen
 import com.haria.proyecto_final.main.MainScreen
 import com.haria.proyecto_final.musicaService.MusicViewModel
+import com.haria.proyecto_final.utils.UserSessionManager
+import kotlinx.coroutines.launch
 
 @Composable
 fun NavigationGraph(
@@ -39,6 +43,10 @@ fun NavigationGraph(
         composable("loginScreen") {
             LoginScreen(onLoginSuccess = {
                 navController.navigate("mainScreen")
+                val userId = SupabaseManager.getCurrentUserId()
+                if (userId != null) {
+                    UserSessionManager.guardarUserId(context, userId)
+                }
             })
         }
         composable("estiloCancionScreen/{estilo}/{iconName}") { backStackEntry ->

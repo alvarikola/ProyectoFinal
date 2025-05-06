@@ -18,13 +18,13 @@ import com.haria.proyecto_final.SupabaseManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 class MusicService : Service() {
     private val binder = MusicBinder()
     private var mediaPlayer: MediaPlayer? = null
     private var currentUrl: String? = null
-    private val serviceScope = CoroutineScope(Dispatchers.IO)
 
 
     inner class MusicBinder : Binder() {
@@ -159,19 +159,16 @@ class MusicService : Service() {
 
     fun stopMusicAndClearTrack() {
         stopMusic() // Detiene la reproducción y libera recursos
-
-        // Usamos una coroutine para actualizar la base de datos en un hilo de fondo
-        serviceScope.launch {
-            try {
-                val result = SupabaseManager.establecerCancion(null)
-                if (result) {
-                    Log.d("MusicService", "TrackID establecido como null correctamente")
-                } else {
-                    Log.e("MusicService", "No se pudo establecer el trackID como null")
-                }
-            } catch (e: Exception) {
-                Log.e("MusicService", "Error al establecer trackID como null: ${e.message}")
+        try {
+            // Ejecutar de forma sincrónica para asegurar la actualización
+            val result = runBlocking { SupabaseManager.establecerCancion(null) }
+            if (result) {
+                Log.d("MusicService", "TrackID establecido como null correctamente")
+            } else {
+                Log.e("MusicService", "No se pudo establecer el trackID como null")
             }
+        } catch (e: Exception) {
+            Log.e("MusicService", "Error al establecer trackID como null: ${e.message}")
         }
     }
 
@@ -258,9 +255,16 @@ class MusicService : Service() {
         return binder
     }
 
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        Log.d("MusicService", "onTaskRemoved: app cerrada desde recientes")
+        stopMusicAndClearTrack()
+        stopSelf() // Asegura que el servicio se detenga
+        super.onTaskRemoved(rootIntent)
+    }
+
     override fun onDestroy() {
         Log.d("MusicService", "Servicio destruido")
-        releaseMediaPlayer()
+        stopMusicAndClearTrack() // Limpia el trackId al destruir
         super.onDestroy()
     }
 

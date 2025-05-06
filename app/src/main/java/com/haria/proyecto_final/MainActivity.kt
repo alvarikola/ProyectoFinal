@@ -27,6 +27,7 @@ import com.haria.proyecto_final.ui.theme.ProyectoFinalTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity() {
     private var musicService: MusicService? = null
@@ -105,7 +106,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        init()
+        init(applicationContext)
 
         enableEdgeToEdge()
         setContent {
@@ -161,14 +162,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         try {
-            // Obtener el id del usuario logeado y quitar el trackId
-            val userId = SupabaseManager.getCurrentUserId()
-            if (userId != null) {
-                serviceScope.launch {
-                    SupabaseManager.establecerCancion(null)
-                }
-            }
-
             stopMusic()
             unregisterReceiver(musicReceiver)
             if (isBound) {
