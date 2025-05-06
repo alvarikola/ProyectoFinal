@@ -42,6 +42,7 @@ import com.haria.proyecto_final.SupabaseManager
 import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.data.Perfil
 import com.haria.proyecto_final.utils.Loading
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
@@ -68,6 +69,7 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
         "Rompe el silencio con tu Flow Rosa"
     )
     val fraseAleatoria = remember { frasesMain.random() }
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = true) {
         try {
@@ -132,7 +134,12 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
                                 .fillMaxWidth()
                                 .background(MaterialTheme.colorScheme.primaryContainer)
                                 .padding(8.dp)
-                                .clickable { navController.navigate("salaScreen/${perfil.id}") },
+                                .clickable {
+                                    navController.navigate("salaScreen/${perfil.id}")
+                                   coroutineScope.launch{
+                                        SupabaseManager.establecerCancion(null)
+                                   }
+                               },
                             verticalAlignment = Alignment.CenterVertically // Centra verticalmente el contenido
                         ) {
                             Image(
