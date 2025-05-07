@@ -36,6 +36,7 @@ import com.haria.proyecto_final.R
 import com.haria.proyecto_final.SupabaseManager
 import com.haria.proyecto_final.data.Perfil
 import com.haria.proyecto_final.estiloCancion.PlayerAction
+import com.haria.proyecto_final.musicaService.MusicService
 import com.haria.proyecto_final.utils.BotonFlotante
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -113,6 +114,10 @@ fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropi
                                 text = { Text("Cerrar sesión") },
                                 onClick = {
                                     scope.launch {
+                                        val job = launch {
+                                            MusicService.ACTION_STOP
+                                        }
+                                        job.join() // Espera a que termine
                                         SupabaseManager.logout()
                                         navController.navigate("loginScreen")
                                     }

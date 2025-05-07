@@ -28,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -123,7 +124,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.4f),
+                    .weight(0.40f),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -167,7 +168,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.045f),
+                    .weight(0.075f),
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -185,7 +186,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.055f),
+                    .weight(0.075f),
                 horizontalArrangement = Arrangement.Center,
             ) {
                 if (isPlaying) {
@@ -218,7 +219,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
             }
             Row(
                 modifier = Modifier
-                    .weight(0.5f)
+                    .weight(0.45f)
             ) {
                 Column {
                     Box(
@@ -248,12 +249,11 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
 
 @Composable
 fun ChatScreen(userId: String) {
-    //var mensajes by remember { mutableStateOf(listOf<Mensaje>()) }
     val mensajes = remember { mutableStateListOf<Mensaje>() }
-    //var input by remember { mutableStateOf(TextFieldValue("")) }
     var input by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
     var user by remember { mutableStateOf<Perfil?>(null) }
     val coroutineScope = rememberCoroutineScope()
+    val userColors = remember { mutableStateMapOf<String, Color>() }
 
     // Crear canal
     val channel = SupabaseManager.obtenerCanal(userId)
@@ -284,7 +284,7 @@ fun ChatScreen(userId: String) {
             reverseLayout = true
         ) {
             items(mensajes.reversed()) { message ->
-                MessageBubble(message)
+                MessageBubble(message, userColors)
             }
         }
 
@@ -328,8 +328,10 @@ fun ChatScreen(userId: String) {
 }
 
 @Composable
-fun MessageBubble(mensaje: Mensaje) {
+fun MessageBubble(mensaje: Mensaje, userColors: MutableMap<String, Color>) {
     val userDefecto by remember { mutableStateOf("User${(1..100).random()}") }
+    val userName = mensaje.userNombre ?: userDefecto
+    val userColor = userColors.getOrPut(userName) { generateRandomColor() }
 
     FlowRow (
         modifier = Modifier
@@ -338,10 +340,17 @@ fun MessageBubble(mensaje: Mensaje) {
     ) {
         Text(
             text = (mensaje.userNombre ?: userDefecto) + ": ",
-            color = Color.Red
+            color = userColor
         )
         Text(
             text = mensaje.text
         )
     }
+}
+
+fun generateRandomColor(): Color {
+    val red = (100..255).random()
+    val green = (100..255).random()
+    val blue = (100..255).random()
+    return Color(red, green, blue)
 }
