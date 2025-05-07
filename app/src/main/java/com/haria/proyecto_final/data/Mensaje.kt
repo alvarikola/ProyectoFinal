@@ -1,3 +1,10 @@
 package com.haria.proyecto_final.data
 
-data class Message(val user: String?, val text: String)
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Mensaje(
+    val userNombre: String?,
+    val text: String,
+    val userId: String
+)
