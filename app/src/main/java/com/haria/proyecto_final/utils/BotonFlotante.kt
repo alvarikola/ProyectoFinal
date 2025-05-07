@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -30,6 +32,7 @@ fun BotonFlotante(
 ) {
     // Animación de desplazamiento vertical
     val infiniteTransition = rememberInfiniteTransition()
+
     val offsetY by infiniteTransition.animateFloat(
         initialValue = -10f,
         targetValue = 10f,
@@ -39,20 +42,30 @@ fun BotonFlotante(
         )
     )
 
+    // Movimiento horizontal (izquierda a derecha)
+    val offsetX by infiniteTransition.animateFloat(
+        initialValue = -6f,
+        targetValue = 6f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 4000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
     Box(
         modifier = modifier
-            .offset(y = offsetY.dp)
-            .size(80.dp)
+            .offset(x = offsetX.dp, y = offsetY.dp)
+            .size(40.dp)
             .clip(CircleShape)
-            .background(Color.Cyan)
+            .background(MaterialTheme.colorScheme.primary)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            imageVector = Icons.Default.Add,
+            imageVector = Icons.Default.Send,
             contentDescription = "Bubble Button",
             tint = Color.White,
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(15.dp)
         )
     }
 }

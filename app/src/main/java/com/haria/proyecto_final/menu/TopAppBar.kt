@@ -1,5 +1,6 @@
 package com.haria.proyecto_final.menu
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -20,9 +21,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -30,15 +34,42 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.haria.proyecto_final.R
 import com.haria.proyecto_final.SupabaseManager
+import com.haria.proyecto_final.data.Perfil
+import com.haria.proyecto_final.estiloCancion.PlayerAction
+import com.haria.proyecto_final.utils.BotonFlotante
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBar(navController: NavHostController, main: Boolean = false) {
+fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropia: Boolean = false) {
     val expanded = remember { mutableStateOf(false) } // Estado para abrir y cerrar el DropdownMenu
     val icon = painterResource(id = R.drawable.logo_circular) // Reemplaza con tu recurso de icono
     val scope = rememberCoroutineScope()
+    var perfil by remember { mutableStateOf<Perfil?>(null) }
+
+    LaunchedEffect(key1 = true) {
+        try {
+            perfil = SupabaseManager.getPerfil()
+        } catch (e: Exception) {
+            Log.e("Error", "Error al obtener el perfil: ${e.message}")
+        }
+    }
+
+    // Escucha cambios en tiempo real
+    LaunchedEffect(perfil?.id) {
+        try {
+            perfil?.id?.let {
+                SupabaseManager.escucharCambiosPerfil(it) { nuevoPerfil ->
+                    perfil = nuevoPerfil
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("Error", "Error al escuchar cambios en el perfil: ${e.message}", e)
+        }
+    }
 
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -92,8 +123,22 @@ fun TopAppBar(navController: NavHostController, main: Boolean = false) {
                     }
                 }
             } else {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", Modifier.size(50.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", Modifier.size(50.dp))
+                    }
+                    if(perfil?.trackid != null && !salaPropia) {
+                        BotonFlotante(
+                            onClick = {
+                                navController.navigate("salaScreen/${perfil?.id}")
+                            },
+                            modifier = Modifier.padding(10.dp)
+                        )
+                    }
                 }
             }
         },

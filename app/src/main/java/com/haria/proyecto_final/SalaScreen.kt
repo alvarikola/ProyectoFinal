@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SalaScreen(context: ComponentActivity, navController: NavHostController, perfilId: String, musicViewModel: MusicViewModel) {
     Scaffold(
-        topBar = { TopAppBar(navController) },
+        topBar = { TopAppBar(navController, salaPropia = true) },
         content = { innerPadding ->
             // Contenido principal de la pantalla
             ContentSala(
