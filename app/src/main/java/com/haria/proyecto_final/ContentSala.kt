@@ -27,9 +27,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,13 +44,18 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.google.accompanist.flowlayout.FlowRow
 import com.haria.proyecto_final.data.Cancion
-import com.haria.proyecto_final.data.Message
+import com.haria.proyecto_final.data.Mensaje
 import com.haria.proyecto_final.data.Perfil
 import com.haria.proyecto_final.estiloCancion.PlayerAction
 import com.haria.proyecto_final.musicaService.MusicViewModel
 import com.haria.proyecto_final.utils.Loading
+import io.github.jan.supabase.realtime.broadcastFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.encodeToJsonElement
 import java.time.OffsetDateTime
 
 
@@ -130,13 +137,13 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                             model = cancion!!.imagenUrl,
                             contentDescription = cancion!!.nombre ?: "Portada de la canción",
                             modifier = Modifier
-                                .weight(0.7f),
+                                .weight(0.65f),
                             contentScale = ContentScale.Fit
                         )
                     }
                     Column(
                         modifier = Modifier
-                            .weight(0.3f)
+                            .weight(0.35f)
                             .fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
@@ -160,24 +167,25 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.05f),
+                    .weight(0.045f),
                 horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = "DJ ${perfil?.nombre}",
-                    fontSize = 18.sp,
+                    fontSize = 14.sp,
                     modifier = Modifier.padding(8.dp)
                 )
                 Text(
                     text = "10 personas",
-                    fontSize = 18.sp,
+                    fontSize = 14.sp,
                     modifier = Modifier.padding(8.dp)
                 )
             }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.05f),
+                    .weight(0.055f),
                 horizontalArrangement = Arrangement.Center,
             ) {
                 if (isPlaying) {
@@ -185,12 +193,12 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                         onClick = { onAction(PlayerAction.Pause, perfil?.trackid ?: 0, null) },
                         shape = CircleShape,
                         contentPadding = PaddingValues(0.dp),
-                        modifier = Modifier.size(60.dp) // Tamaño del botón redondo
+                        modifier = Modifier.size(45.dp) // Tamaño del botón redondo
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_pause),
                             contentDescription = "pausa",
-                            modifier = Modifier.size(35.dp)
+                            modifier = Modifier.size(25.dp)
                         )
                     }
                 } else {
@@ -198,12 +206,12 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                         onClick = { onAction(PlayerAction.Play, perfil?.trackid ?: 0, null) },
                         shape = CircleShape,
                         contentPadding = PaddingValues(0.dp),
-                        modifier = Modifier.size(60.dp) // Tamaño del botón redondo
+                        modifier = Modifier.size(45.dp) // Tamaño del botón redondo
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_play),
                             contentDescription = "Play",
-                            modifier = Modifier.size(35.dp)
+                            modifier = Modifier.size(25.dp)
                         )
                     }
                 }
@@ -230,7 +238,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                             .fillMaxSize()
                             .padding(8.dp)
                     ) {
-                        ChatScreen()
+                        ChatScreen(perfilId)
                     }
                 }
             }
@@ -239,13 +247,32 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
 }
 
 @Composable
-fun ChatScreen() {
-    var messages by remember { mutableStateOf(listOf<Message>()) }
-    var input by remember { mutableStateOf(TextFieldValue("")) }
+fun ChatScreen(userId: String) {
+    //var mensajes by remember { mutableStateOf(listOf<Mensaje>()) }
+    val mensajes = remember { mutableStateListOf<Mensaje>() }
+    //var input by remember { mutableStateOf(TextFieldValue("")) }
+    var input by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
     var user by remember { mutableStateOf<Perfil?>(null) }
+    val coroutineScope = rememberCoroutineScope()
+
+    // Crear canal
+    val channel = SupabaseManager.obtenerCanal(userId)
 
     LaunchedEffect(key1 = true) {
         user = SupabaseManager.getPerfil()
+    }
+
+    // Escuchar mensajes entrantes
+    LaunchedEffect(Unit) {
+        val flow = channel.broadcastFlow<Mensaje>(event = "message")
+        flow.collect { message ->
+            mensajes.add(message)
+        }
+    }
+
+    // Suscribirse al canal (iniciar conexión)
+    LaunchedEffect(Unit) {
+        channel.subscribe(blockUntilSubscribed = true)
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
@@ -256,7 +283,7 @@ fun ChatScreen() {
                 .fillMaxWidth(),
             reverseLayout = true
         ) {
-            items(messages.reversed()) { message ->
+            items(mensajes.reversed()) { message ->
                 MessageBubble(message)
             }
         }
@@ -269,15 +296,27 @@ fun ChatScreen() {
         ) {
             TextField(
                 value = input,
-                onValueChange = { input = it },
+                onValueChange = {
+                    input = it
+                    Log.i("prueba", "Nuevo valor: ${it.text}")
+                },
                 modifier = Modifier.weight(1f),
                 placeholder = { Text("Escribe un mensaje...") }
             )
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = {
-                    if (input.text.isNotBlank()) {
-                        messages = messages + Message(user?.nombre, input.text)
+                    val currentText = input.text
+                    if (currentText.isNotBlank()) {
+                        coroutineScope.launch {
+                            val msg = Mensaje(user?.nombre, currentText, userId)
+                            val jsonMessage = Json.encodeToJsonElement(msg) as JsonObject
+                            channel.broadcast(
+                                event = "message",
+                                message = jsonMessage
+                            )
+                            mensajes.add(msg) // Mostrar tu mensaje también
+                        }
                         input = TextFieldValue("")
                     }
                 }
@@ -289,7 +328,7 @@ fun ChatScreen() {
 }
 
 @Composable
-fun MessageBubble(message: Message) {
+fun MessageBubble(mensaje: Mensaje) {
     val userDefecto by remember { mutableStateOf("User${(1..100).random()}") }
 
     FlowRow (
@@ -298,11 +337,11 @@ fun MessageBubble(message: Message) {
             .padding(vertical = 4.dp)
     ) {
         Text(
-            text = (message.user ?: userDefecto) + ": ",
+            text = (mensaje.userNombre ?: userDefecto) + ": ",
             color = Color.Red
         )
         Text(
-            text = message.text
+            text = mensaje.text
         )
     }
 }
