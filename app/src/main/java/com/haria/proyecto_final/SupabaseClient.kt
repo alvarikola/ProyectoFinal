@@ -18,6 +18,7 @@ import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.filter.FilterOperation
 import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import io.github.jan.supabase.realtime.Realtime
+import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.selectAsFlow
 import io.github.jan.supabase.realtime.selectSingleValueAsFlow
 import io.github.jan.supabase.serializer.KotlinXSerializer
@@ -203,4 +204,6 @@ object SupabaseManager {
         return client.from("perfil")
             .selectAsFlow(Perfil::id, filter = FilterOperation("id", FilterOperator.NEQ, getCurrentUserId() ?: ""))
     }
+
+    fun obtenerCanal(nombre: String) = client.channel(nombre)
 }
