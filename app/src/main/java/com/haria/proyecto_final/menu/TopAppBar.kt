@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,7 +46,7 @@ import java.time.OffsetDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropia: Boolean = false) {
+fun TopAppBar(onNavigationClick: () -> Unit, navController: NavHostController, main: Boolean = false, salaPropia: Boolean = false) {
     val expanded = remember { mutableStateOf(false) } // Estado para abrir y cerrar el DropdownMenu
     val icon = painterResource(id = R.drawable.logo_circular) // Reemplaza con tu recurso de icono
     val scope = rememberCoroutineScope()
@@ -139,7 +140,7 @@ fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropi
                     if(perfil?.trackid != null && !salaPropia) {
                         BotonFlotante(
                             onClick = {
-                                navController.navigate("salaScreen/${perfil?.id}")
+                                onNavigationClick()
                             },
                             modifier = Modifier.padding(10.dp)
                         )
