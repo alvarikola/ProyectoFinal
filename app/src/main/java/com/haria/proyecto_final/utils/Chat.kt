@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -46,6 +47,7 @@ fun Chat(userId: String) {
     val coroutineScope = rememberCoroutineScope()
     val userColors = remember { mutableStateMapOf<String, Color>() }
 
+
     // Crear canal
     val channel = SupabaseManager.obtenerCanal(userId)
 
@@ -53,18 +55,35 @@ fun Chat(userId: String) {
         user = SupabaseManager.getPerfil()
     }
 
-    // Escuchar mensajes entrantes
-    LaunchedEffect(Unit) {
-        val flow = channel.broadcastFlow<Mensaje>(event = "message")
-        flow.collect { message ->
-            mensajes.add(message)
+    // Manejar la suscripción y desuscripción del canal
+    DisposableEffect(userId) {
+        // Suscribirse al canal al inicio
+        coroutineScope.launch {
+            channel.subscribe(blockUntilSubscribed = true)
+
+            // Configurar la recolección de mensajes después de suscribirse
+            val flow = channel.broadcastFlow<Mensaje>(event = "message")
+            coroutineScope.launch {
+                flow.collect { message ->
+                    mensajes.add(message)
+                }
+            }
+        }
+
+        // Cleanup: desuscribirse del canal cuando el composable sea removido
+        onDispose {
+            coroutineScope.launch {
+                try {
+                    channel.unsubscribe()
+                    Log.d("Chat", "Desuscrito del canal: $userId")
+                } catch (e: Exception) {
+                    Log.e("Chat", "Error al desuscribirse del canal: ${e.message}", e)
+                }
+            }
         }
     }
 
-    // Suscribirse al canal (iniciar conexión)
-    LaunchedEffect(Unit) {
-        channel.subscribe(blockUntilSubscribed = true)
-    }
+
 
     Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
 

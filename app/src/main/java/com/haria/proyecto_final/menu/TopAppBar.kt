@@ -46,7 +46,7 @@ import java.time.OffsetDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBar(onNavigationClick: () -> Unit, navController: NavHostController, main: Boolean = false, salaPropia: Boolean = false) {
+fun TopAppBar(onNavigationClick: () -> Unit = {}, navController: NavHostController, main: Boolean = false, salaPropia: Boolean = false) {
     val expanded = remember { mutableStateOf(false) } // Estado para abrir y cerrar el DropdownMenu
     val icon = painterResource(id = R.drawable.logo_circular) // Reemplaza con tu recurso de icono
     val scope = rememberCoroutineScope()
@@ -117,6 +117,7 @@ fun TopAppBar(onNavigationClick: () -> Unit, navController: NavHostController, m
                                     scope.launch {
                                         val job = launch {
                                             MusicService.ACTION_STOP
+                                            SupabaseManager.establecerCancion(null)
                                         }
                                         job.join() // Espera a que termine
                                         SupabaseManager.logout()
