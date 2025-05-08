@@ -129,15 +129,13 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     if (cancion != null) {
-//                        AsyncImage(
-//                            model = cancion!!.imagenUrl,
-//                            contentDescription = cancion!!.nombre ?: "Portada de la canción",
-//                            modifier = Modifier
-//                                .weight(0.65f),
-//                            contentScale = ContentScale.Fit
-//                        )
-                        AVIFEmoteWithLoader()
-                        //AVIFEmoteExample()
+                        AsyncImage(
+                            model = cancion!!.imagenUrl,
+                            contentDescription = cancion!!.nombre ?: "Portada de la canción",
+                            modifier = Modifier
+                                .weight(0.65f),
+                            contentScale = ContentScale.Fit
+                        )
                     }
                     Column(
                         modifier = Modifier
