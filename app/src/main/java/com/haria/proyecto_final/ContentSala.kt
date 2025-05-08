@@ -1,6 +1,7 @@
 package com.haria.proyecto_final
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,49 +16,42 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.ImageLoader
 import coil.compose.AsyncImage
-import com.google.accompanist.flowlayout.FlowRow
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
 import com.haria.proyecto_final.data.Cancion
-import com.haria.proyecto_final.data.Mensaje
 import com.haria.proyecto_final.data.Perfil
 import com.haria.proyecto_final.estiloCancion.PlayerAction
 import com.haria.proyecto_final.musicaService.MusicViewModel
 import com.haria.proyecto_final.utils.Chat
 import com.haria.proyecto_final.utils.Loading
-import com.haria.proyecto_final.utils.generateRandomColor
-import io.github.jan.supabase.realtime.broadcastFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.encodeToJsonElement
 import java.time.OffsetDateTime
 
 
@@ -135,13 +129,15 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     if (cancion != null) {
-                        AsyncImage(
-                            model = cancion!!.imagenUrl,
-                            contentDescription = cancion!!.nombre ?: "Portada de la canción",
-                            modifier = Modifier
-                                .weight(0.65f),
-                            contentScale = ContentScale.Fit
-                        )
+//                        AsyncImage(
+//                            model = cancion!!.imagenUrl,
+//                            contentDescription = cancion!!.nombre ?: "Portada de la canción",
+//                            modifier = Modifier
+//                                .weight(0.65f),
+//                            contentScale = ContentScale.Fit
+//                        )
+                        AVIFEmoteWithLoader()
+                        //AVIFEmoteExample()
                     }
                     Column(
                         modifier = Modifier
@@ -246,4 +242,58 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
             }
         }
     }
+}
+
+@Composable
+fun AVIFEmoteExample() {
+    val imageUrl = "https://cdn.7tv.app/emote/01FJ9019000005ZW4QCZF2JSZQ/4x.gif "
+
+    Image(
+        painter = rememberImagePainter(
+            data = imageUrl,
+            builder = {
+                // Opcional: Imagen de respaldo para dispositivos sin soporte AVIF
+                error(android.R.drawable.ic_menu_report_image)
+            }
+        ),
+        contentDescription = "Emote AVIF",
+        modifier = Modifier
+            .size(100.dp)
+            .padding(8.dp)
+    )
+}
+
+@Composable
+fun AVIFEmoteWithLoader() {
+    val context = LocalContext.current
+
+    // Configuración explícita del ImageLoader (opcional pero recomendado para control avanzado)
+    val imageLoader = ImageLoader.Builder(context)
+        .components {
+            if (Build.VERSION.SDK_INT >= 28) {
+                // Prioriza ImageDecoder para AVIF en Android 9+
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                // Fallback a GIF decoder en dispositivos antiguos (si necesitas compatibilidad con GIF)
+                add(GifDecoder.Factory())
+            }
+        }
+        .build()
+
+    val imageUrl = "https://cdn.7tv.app/emote/01FJ9019000005ZW4QCZF2JSZQ/4x.gif"
+
+    Image(
+        painter = rememberAsyncImagePainter(
+            model = ImageRequest.Builder(context)
+                .data(imageUrl)
+                .placeholder(android.R.drawable.ic_menu_camera) // Mientras carga
+                .error(android.R.drawable.stat_notify_error)    // Si falla
+                .build(),
+            imageLoader = imageLoader
+        ),
+        contentDescription = "Emote AVIF con Coil",
+        modifier = Modifier
+            .size(120.dp)
+            .padding(10.dp)
+    )
 }
