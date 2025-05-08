@@ -49,13 +49,14 @@ import com.haria.proyecto_final.data.Mensaje
 import com.haria.proyecto_final.data.Perfil
 import com.haria.proyecto_final.estiloCancion.PlayerAction
 import com.haria.proyecto_final.musicaService.MusicViewModel
+import com.haria.proyecto_final.utils.Chat
 import com.haria.proyecto_final.utils.Loading
+import com.haria.proyecto_final.utils.generateRandomColor
 import io.github.jan.supabase.realtime.broadcastFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import java.time.OffsetDateTime
 
@@ -239,118 +240,10 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                             .fillMaxSize()
                             .padding(8.dp)
                     ) {
-                        ChatScreen(perfilId)
+                        Chat(perfilId)
                     }
                 }
             }
         }
     }
-}
-
-@Composable
-fun ChatScreen(userId: String) {
-    val mensajes = remember { mutableStateListOf<Mensaje>() }
-    var input by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
-    var user by remember { mutableStateOf<Perfil?>(null) }
-    val coroutineScope = rememberCoroutineScope()
-    val userColors = remember { mutableStateMapOf<String, Color>() }
-
-    // Crear canal
-    val channel = SupabaseManager.obtenerCanal(userId)
-
-    LaunchedEffect(key1 = true) {
-        user = SupabaseManager.getPerfil()
-    }
-
-    // Escuchar mensajes entrantes
-    LaunchedEffect(Unit) {
-        val flow = channel.broadcastFlow<Mensaje>(event = "message")
-        flow.collect { message ->
-            mensajes.add(message)
-        }
-    }
-
-    // Suscribirse al canal (iniciar conexión)
-    LaunchedEffect(Unit) {
-        channel.subscribe(blockUntilSubscribed = true)
-    }
-
-    Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-
-        LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            reverseLayout = true
-        ) {
-            items(mensajes.reversed()) { message ->
-                MessageBubble(message, userColors)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TextField(
-                value = input,
-                onValueChange = {
-                    input = it
-                    Log.i("prueba", "Nuevo valor: ${it.text}")
-                },
-                modifier = Modifier.weight(1f),
-                placeholder = { Text("Escribe un mensaje...") }
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Button(
-                onClick = {
-                    val currentText = input.text
-                    if (currentText.isNotBlank()) {
-                        coroutineScope.launch {
-                            val msg = Mensaje(user?.nombre, currentText, userId)
-                            val jsonMessage = Json.encodeToJsonElement(msg) as JsonObject
-                            channel.broadcast(
-                                event = "message",
-                                message = jsonMessage
-                            )
-                            mensajes.add(msg) // Mostrar tu mensaje también
-                        }
-                        input = TextFieldValue("")
-                    }
-                }
-            ) {
-                Text("Enviar")
-            }
-        }
-    }
-}
-
-@Composable
-fun MessageBubble(mensaje: Mensaje, userColors: MutableMap<String, Color>) {
-    val userDefecto by remember { mutableStateOf("User${(1..100).random()}") }
-    val userName = mensaje.userNombre ?: userDefecto
-    val userColor = userColors.getOrPut(userName) { generateRandomColor() }
-
-    FlowRow (
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-    ) {
-        Text(
-            text = (mensaje.userNombre ?: userDefecto) + ": ",
-            color = userColor
-        )
-        Text(
-            text = mensaje.text
-        )
-    }
-}
-
-fun generateRandomColor(): Color {
-    val red = (100..255).random()
-    val green = (100..255).random()
-    val blue = (100..255).random()
-    return Color(red, green, blue)
 }
