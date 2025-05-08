@@ -92,7 +92,8 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.3.1")
     implementation("androidx.media3:media3-session:1.3.1")
     implementation("androidx.media3:media3-exoplayer-dash:1.3.1")
-    implementation("io.coil-kt:coil-compose:2.0.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-gif:2.4.0")
     implementation("androidx.media:media:1.6.0")
 
     implementation("com.google.accompanist:accompanist-flowlayout:0.30.1")
