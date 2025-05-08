@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -40,7 +41,7 @@ import java.time.OffsetDateTime
 
 
 @Composable
-fun Menu(context: ComponentActivity, navController: NavHostController) {
+fun Menu(context: ComponentActivity, navController: NavHostController, drawerState: DrawerState) {
     val colorIcono = MaterialTheme.colorScheme.secondary
     var perfil by remember { mutableStateOf<Perfil?>(null) }
     LaunchedEffect(true) {

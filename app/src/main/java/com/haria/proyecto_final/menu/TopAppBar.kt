@@ -46,7 +46,7 @@ import java.time.OffsetDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBar(onNavigationClick: () -> Unit = {}, navController: NavHostController, main: Boolean = false, salaPropia: Boolean = false) {
+fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropia: Boolean = false) {
     val expanded = remember { mutableStateOf(false) } // Estado para abrir y cerrar el DropdownMenu
     val icon = painterResource(id = R.drawable.logo_circular) // Reemplaza con tu recurso de icono
     val scope = rememberCoroutineScope()
@@ -137,14 +137,6 @@ fun TopAppBar(onNavigationClick: () -> Unit = {}, navController: NavHostControll
                 ){
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", Modifier.size(50.dp))
-                    }
-                    if(perfil?.trackid != null && !salaPropia) {
-                        BotonFlotante(
-                            onClick = {
-                                onNavigationClick()
-                            },
-                            modifier = Modifier.padding(10.dp)
-                        )
                     }
                 }
             }

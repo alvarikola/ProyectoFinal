@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -34,6 +35,7 @@ import com.haria.proyecto_final.SupabaseManager
 import com.haria.proyecto_final.data.Mensaje
 import com.haria.proyecto_final.data.Perfil
 import io.github.jan.supabase.realtime.broadcastFlow
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -47,6 +49,7 @@ fun Chat(userId: String) {
     val coroutineScope = rememberCoroutineScope()
     val userColors = remember { mutableStateMapOf<String, Color>() }
 
+    // TODO: cambiar el drawer por una pantalla nueva de chat
 
     // Crear canal
     val channel = SupabaseManager.obtenerCanal(userId)
@@ -72,7 +75,7 @@ fun Chat(userId: String) {
 
         // Cleanup: desuscribirse del canal cuando el composable sea removido
         onDispose {
-            coroutineScope.launch {
+            MainScope().launch {
                 try {
                     channel.unsubscribe()
                     Log.d("Chat", "Desuscrito del canal: $userId")
