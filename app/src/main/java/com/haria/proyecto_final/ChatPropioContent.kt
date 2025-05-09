@@ -64,8 +64,10 @@ fun ChatPropioContent(innerPadding: PaddingValues, context: ComponentActivity) {
             Modifier.background(MaterialTheme.colorScheme.primary)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically) {
+                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
                 Text(text = "Tú Chat", fontSize = 40.sp, fontWeight = FontWeight.Bold)
             }
         }

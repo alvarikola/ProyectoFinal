@@ -5,6 +5,9 @@ import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerState
@@ -143,19 +147,31 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                             .fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        cancion?.nombre?.let {
-                            Text(
-                                text = it,
-                                fontSize = 30.sp,
-                                modifier = Modifier.padding(8.dp)
-                            )
+                        Row(
+                            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.Center,
+                        ) {
+                            cancion?.nombre?.let {
+                                Text(
+                                    text = it,
+                                    fontSize = 30.sp,
+                                    modifier = Modifier.padding(8.dp),
+                                    maxLines = 1
+                                )
+                            }
                         }
-                        cancion?.cantante?.let {
-                            Text(
-                                text = it,
-                                fontSize = 24.sp,
-                                modifier = Modifier.padding(8.dp)
-                            )
+                        Row(
+                            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.Center,
+                        ) {
+                            cancion?.cantante?.let {
+                                Text(
+                                    text = it,
+                                    fontSize = 24.sp,
+                                    modifier = Modifier.padding(8.dp),
+                                    maxLines = 1
+                                )
+                            }
                         }
                     }
                 }
@@ -169,11 +185,6 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
             ) {
                 Text(
                     text = "DJ ${perfil?.nombre}",
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(8.dp)
-                )
-                Text(
-                    text = "10 personas",
                     fontSize = 14.sp,
                     modifier = Modifier.padding(8.dp)
                 )
