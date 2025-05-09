@@ -7,7 +7,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
-import com.haria.proyecto_final.menu.Menu
 import com.haria.proyecto_final.menu.TopAppBar
 import kotlinx.coroutines.launch
 
