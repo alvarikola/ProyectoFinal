@@ -49,6 +49,7 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.haria.proyecto_final.data.Cancion
+import com.haria.proyecto_final.data.Emote
 import com.haria.proyecto_final.data.Perfil
 import com.haria.proyecto_final.estiloCancion.PlayerAction
 import com.haria.proyecto_final.musicaService.MusicViewModel
@@ -66,11 +67,14 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
     var startTimeMillis by remember { mutableStateOf<Long?>(null) }
     val scope = rememberCoroutineScope()
     val isPlaying by musicViewModel.isPlaying.collectAsState()
+    var emotes by remember { mutableStateOf<List<Emote>>(emptyList()) }
+
 
     LaunchedEffect(key1 = true) {
         try {
             perfil = SupabaseManager.getPerfilPorId(perfilId)
             cancion = perfil?.trackid?.let { SupabaseManager.getCancionPorId(it) }
+            emotes = SupabaseManager.getEmotes()
             if (cancion == null) {
                 onExit("La sala se ha cerrado")
                 return@LaunchedEffect
@@ -245,7 +249,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                             .fillMaxSize()
                             .padding(8.dp)
                     ) {
-                        Chat(perfilId)
+                        Chat(perfilId, emotes)
                     }
                 }
             }
@@ -253,6 +257,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
     }
 }
 
+//Imagenes estaticas
 @Composable
 fun AVIFEmoteExample() {
     val imageUrl = "https://cdn.7tv.app/emote/01FJ9019000005ZW4QCZF2JSZQ/4x.gif "
@@ -272,6 +277,7 @@ fun AVIFEmoteExample() {
     )
 }
 
+// Imagenes con movimiento
 @Composable
 fun AVIFEmoteWithLoader() {
     val context = LocalContext.current

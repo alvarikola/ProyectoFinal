@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.haria.proyecto_final.data.Emote
 import com.haria.proyecto_final.data.Perfil
 import com.haria.proyecto_final.utils.Chat
 
@@ -38,9 +39,12 @@ import com.haria.proyecto_final.utils.Chat
 fun ChatPropioContent(innerPadding: PaddingValues, context: ComponentActivity) {
 
     var perfil by remember { mutableStateOf<Perfil?>(null) }
+    var emotes by remember { mutableStateOf<List<Emote>>(emptyList()) }
 
     LaunchedEffect(true) {
         perfil = SupabaseManager.getPerfil()
+        emotes = SupabaseManager.getEmotes()
+        Log.i("Perfil", emotes.toString())
     }
 
     // Escucha cambios en tiempo real
@@ -72,7 +76,7 @@ fun ChatPropioContent(innerPadding: PaddingValues, context: ComponentActivity) {
             }
         }
         Column(modifier = Modifier.padding(top = 20.dp, bottom = 20.dp)) {
-            perfil?.let { Chat(it.id) }
+            perfil?.let { Chat(it.id, emotes) }
         }
     }
 }
