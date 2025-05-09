@@ -3,6 +3,7 @@ package com.haria.proyecto_final
 import android.content.Context
 import android.util.Log
 import com.haria.proyecto_final.data.Cancion
+import com.haria.proyecto_final.data.Emote
 import com.haria.proyecto_final.data.Perfil
 import com.haria.proyecto_final.utils.UserSessionManager
 import io.github.jan.supabase.SupabaseClient
@@ -206,4 +207,11 @@ object SupabaseManager {
     }
 
     fun obtenerCanal(nombre: String) = client.channel(nombre)
+
+    suspend fun getEmotes(): List<Emote> {
+        return client.postgrest
+            .from("emote")
+            .select()
+            .decodeList<Emote>()
+    }
 }
