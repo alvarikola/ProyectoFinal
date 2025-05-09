@@ -138,6 +138,14 @@ fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropi
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", Modifier.size(50.dp))
                     }
+                    if(perfil?.trackid != null && !salaPropia) {
+                        BotonFlotante(
+                            onClick = {
+                                navController.navigate("chatPropioScreen")
+                            },
+                            modifier = Modifier.padding(10.dp)
+                        )
+                    }
                 }
             }
         },

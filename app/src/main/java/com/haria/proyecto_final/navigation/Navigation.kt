@@ -8,6 +8,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.haria.proyecto_final.ChatPropioScreen
 import com.haria.proyecto_final.estiloCancion.EstiloCancionScreen
 import com.haria.proyecto_final.LoginScreen
 import com.haria.proyecto_final.R
@@ -68,6 +69,9 @@ fun NavigationGraph(
         composable("salaScreen/{perfilId}") { backStackEntry ->
             val perfilId = backStackEntry.arguments?.getString("perfilId") ?: "default"
             SalaScreen(context, navController, perfilId, musicViewModel)
+        }
+        composable("chatPropioScreen") {
+            ChatPropioScreen(context, navController)
         }
     }
 }
