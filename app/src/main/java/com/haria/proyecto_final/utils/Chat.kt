@@ -34,7 +34,9 @@ import androidx.compose.ui.unit.dp
 import com.haria.proyecto_final.SupabaseManager
 import com.haria.proyecto_final.data.Mensaje
 import com.haria.proyecto_final.data.Perfil
+import com.haria.proyecto_final.data.PresenceState
 import io.github.jan.supabase.realtime.broadcastFlow
+import io.github.jan.supabase.realtime.presenceDataFlow
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -48,8 +50,7 @@ fun Chat(userId: String) {
     var user by remember { mutableStateOf<Perfil?>(null) }
     val coroutineScope = rememberCoroutineScope()
     val userColors = remember { mutableStateMapOf<String, Color>() }
-
-    // TODO: cambiar el drawer por una pantalla nueva de chat
+    var subscribersCount by remember { mutableStateOf(0) }
 
     // Crear canal
     val channel = SupabaseManager.obtenerCanal(userId)
@@ -71,6 +72,17 @@ fun Chat(userId: String) {
                     mensajes.add(message)
                 }
             }
+
+            val id = PresenceState(userId)
+            val jsonMessageUserId = Json.encodeToJsonElement(id) as JsonObject
+            channel.track(jsonMessageUserId)
+
+            // 3. Coleccionar el flujo de presencia para obtener usuarios conectados
+            channel.presenceDataFlow<PresenceState>()
+                .collect { presenceList ->
+                    subscribersCount = presenceList.size // Actualizar contador
+                    Log.i("Chat", "Usuarios conectados: $presenceList")
+                }
         }
 
         // Cleanup: desuscribirse del canal cuando el composable sea removido
@@ -87,8 +99,12 @@ fun Chat(userId: String) {
     }
 
 
-
     Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+
+        Text(
+            text = "Usuarios en línea: $subscribersCount",
+            modifier = Modifier.padding(8.dp)
+        )
 
         LazyColumn(
             modifier = Modifier
