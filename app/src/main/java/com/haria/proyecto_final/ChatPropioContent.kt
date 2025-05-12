@@ -44,7 +44,7 @@ fun ChatPropioContent(innerPadding: PaddingValues, context: ComponentActivity, i
 
     LaunchedEffect(true) {
         perfil = SupabaseManager.getPerfil()
-        emotes = SupabaseManager.getEmotes()
+        emotes = SupabaseManager.getEmotesAnimados()
         Log.i("Perfil", emotes.toString())
     }
 

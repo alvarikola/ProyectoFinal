@@ -23,7 +23,7 @@ fun PerfilScreen(context: ComponentActivity, navController: NavHostController) {
 
     var emotes by remember { mutableStateOf<List<Emote>>(emptyList()) }
     LaunchedEffect(true) {
-        emotes = SupabaseManager.getEmotes()
+        emotes = SupabaseManager.getEmotesEstaticos()
         Log.i("Perfil", emotes.toString())
     }
 

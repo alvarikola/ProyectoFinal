@@ -78,7 +78,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
         try {
             perfil = SupabaseManager.getPerfilPorId(perfilId)
             cancion = perfil?.trackid?.let { SupabaseManager.getCancionPorId(it) }
-            emotes = SupabaseManager.getEmotes()
+            emotes = SupabaseManager.getEmotesAnimados()
             if (cancion == null) {
                 onExit("La sala se ha cerrado")
                 return@LaunchedEffect

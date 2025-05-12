@@ -1,5 +1,6 @@
 package com.haria.proyecto_final.utils
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -10,14 +11,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import coil.ImageLoader
 import com.google.accompanist.flowlayout.FlowRow
+import com.haria.proyecto_final.data.Emote
 import com.haria.proyecto_final.data.Mensaje
 
 @Composable
-fun MessageBubble(mensaje: Mensaje, userColors: MutableMap<String, Color>) {
+fun MessageBubble(mensaje: Mensaje, userColors: MutableMap<String, Color>, imageLoader: ImageLoader) {
     val userDefecto by remember { mutableStateOf("User${(1..100).random()}") }
     val userName = mensaje.userNombre ?: userDefecto
     val userColor = userColors.getOrPut(userName) { generateRandomColor() }
+    val text = splitTextWithEmojis(mensaje.text)
 
     FlowRow (
         modifier = Modifier
@@ -28,8 +32,27 @@ fun MessageBubble(mensaje: Mensaje, userColors: MutableMap<String, Color>) {
             text = (mensaje.userNombre ?: userDefecto) + ": ",
             color = userColor
         )
-        Text(
-            text = mensaje.text
-        )
+        text.forEach{
+            if(it.startsWith("#emoji:") && it.endsWith("#")) {
+                val emoteId = it.substring(7, it.length - 1)
+                Log.i("Mensaje", "Emote ID: $emoteId")
+                AVIFEmoteWithLoader(emoteId, imageLoader = imageLoader)
+            } else {
+                Text(
+                    text = it,
+                )
+            }
+        }
     }
+}
+
+fun splitTextWithEmojis(input: String): List<String> {
+    // Regular expression to match text or emoji codes
+    val pattern = """([^#]+|#emoji:[^#]+#)""".toRegex()
+
+    // Find all matches in the input string
+    return pattern.findAll(input)
+        .map { it.value.trim() } // Trim any whitespace
+        .filter { it.isNotEmpty() } // Remove any empty matches
+        .toList()
 }

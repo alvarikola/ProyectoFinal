@@ -18,27 +18,25 @@ import coil.request.ImageRequest
 import com.haria.proyecto_final.data.Emote
 
 @Composable
-fun AVIFEmoteWithLoader(emote: Emote, imageLoader: ImageLoader) {
+fun AVIFEmoteWithLoader(emoteid: String, imageLoader: ImageLoader) {
     val context = LocalContext.current
-    val imageUrl = "https://cdn.7tv.app/emote/${emote.id.trim()}/2x.gif"
-    Log.i("Emote", "Cargando emote desde: $imageUrl")
+    val imageUrl = "https://cdn.7tv.app/emote/${emoteid.trim()}/2x.gif"
+    Image(
+        painter = rememberAsyncImagePainter(
+            model = ImageRequest.Builder(context)
+                .data(imageUrl)
+                .placeholder(android.R.drawable.stat_sys_download) // Mientras carga
+                .error(android.R.drawable.stat_notify_error)    // Si falla
+                .build(),
+            imageLoader = imageLoader,
 
-    if(emote.animado) {
-        Image(
-            painter = rememberAsyncImagePainter(
-                model = ImageRequest.Builder(context)
-                    .data(imageUrl)
-                    .placeholder(android.R.drawable.stat_sys_download) // Mientras carga
-                    .error(android.R.drawable.stat_notify_error)    // Si falla
-                    .build(),
-                imageLoader = imageLoader,
+            ),
+        contentDescription = "Emote AVIF con Coil",
+        modifier = Modifier
+            .size(80.dp)
+            .padding(10.dp)
+    )
 
-                ),
-            contentDescription = "Emote AVIF con Coil",
-            modifier = Modifier
-                .size(80.dp)
-                .padding(10.dp)
-                .clickable{Log.i("Emote", "Emote clickeado: ${emote.id}")}, // Acción al hacer clic
-        )
-    }
 }
+
+

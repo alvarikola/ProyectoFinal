@@ -156,7 +156,15 @@ fun Chat(userId: String, emotes: List<Emote>, imageLoader: ImageLoader) {
                         maxItemsInEachRow = 6
                     ) {
                         emotes.forEach{ emote ->
-                            AVIFEmoteWithLoader(emote, imageLoader)
+                            Box(
+                                Modifier.clickable{
+                                    val currentText = input.text
+                                    input = TextFieldValue(currentText + "#emoji:" + emote.id.trim() + "#")
+                                    showEmojiMenu = false
+                                }
+                            ) {
+                                AVIFEmoteWithLoader(emote.id, imageLoader)
+                            }
                         }
                     }
                 }
@@ -186,7 +194,7 @@ fun Chat(userId: String, emotes: List<Emote>, imageLoader: ImageLoader) {
             reverseLayout = true
         ) {
             items(mensajes.reversed()) { message ->
-                MessageBubble(message, userColors)
+                MessageBubble(message, userColors, imageLoader)
             }
         }
 
@@ -238,4 +246,5 @@ fun Chat(userId: String, emotes: List<Emote>, imageLoader: ImageLoader) {
         }
     }
 }
+
 

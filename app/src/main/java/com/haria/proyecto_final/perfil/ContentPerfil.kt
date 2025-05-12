@@ -228,18 +228,16 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Em
                             onDismissRequest = { expandedEmoteMenu = false },
                         ) {
                             emotes.forEach { emote ->
-                                if(!emote.animado) {
-                                    DropdownMenuItem(
-                                        text = { AVIFEmoteExample(emote.id, 100) },
-                                        onClick = {
-                                            scope.launch {
-                                                SupabaseManager.establecerEmote(emote.id)
-                                            }
-                                            expandedEmoteMenu = false
-                                        },
-                                        modifier = Modifier.height(100.dp)
-                                    )
-                                }
+                                DropdownMenuItem(
+                                    text = { AVIFEmoteExample(emote.id, 100) },
+                                    onClick = {
+                                        scope.launch {
+                                            SupabaseManager.establecerEmote(emote.id)
+                                        }
+                                        expandedEmoteMenu = false
+                                    },
+                                    modifier = Modifier.height(100.dp)
+                                )
                             }
                         }
 
