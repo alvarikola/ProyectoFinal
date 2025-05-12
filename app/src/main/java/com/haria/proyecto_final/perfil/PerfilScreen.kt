@@ -21,8 +21,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun PerfilScreen(context: ComponentActivity, navController: NavHostController) {
 
-
-    // TODO: Poner de fotos de perfil algunos emotes que se vean bien quietos
     var emotes by remember { mutableStateOf<List<Emote>>(emptyList()) }
     LaunchedEffect(true) {
         emotes = SupabaseManager.getEmotes()

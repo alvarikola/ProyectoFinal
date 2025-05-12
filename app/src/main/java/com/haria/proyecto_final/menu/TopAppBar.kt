@@ -38,6 +38,7 @@ import com.haria.proyecto_final.SupabaseManager
 import com.haria.proyecto_final.data.Perfil
 import com.haria.proyecto_final.estiloCancion.PlayerAction
 import com.haria.proyecto_final.musicaService.MusicService
+import com.haria.proyecto_final.utils.AVIFEmoteExample
 import com.haria.proyecto_final.utils.BotonFlotante
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -91,7 +92,16 @@ fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropi
                     )
                     // Ícono de perfil
                     IconButton(onClick = { expanded.value = !expanded.value }) {
-                        Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "Perfil", Modifier.size(50.dp))
+                        if(perfil?.emoteid == null) {
+                            Icon(
+                                imageVector = Icons.Filled.AccountCircle,
+                                contentDescription = "Perfil",
+                                Modifier.size(50.dp)
+                            )
+                        }
+                        else {
+                            AVIFEmoteExample(perfil?.emoteid!!, 100)
+                        }
                         // DropdownMenu que se abre al hacer clic en el ícono de perfil
                         DropdownMenu(
                             expanded = expanded.value,
