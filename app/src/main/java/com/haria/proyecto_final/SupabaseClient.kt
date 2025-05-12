@@ -190,6 +190,24 @@ object SupabaseManager {
         }
     }
 
+    suspend fun establecerEmote(emoteId: String): Boolean {
+        val userId = UserSessionManager.obtenerUserId(appContext)
+        if (userId == null) {
+            return false
+        }
+        try {
+            client.from("perfil")
+                .update({ set("emoteid", emoteId) }) {
+                    filter { eq("id", userId) }
+                }
+            Log.e("Supabase", "Emote actualizado: $emoteId")
+            return true
+        } catch (e: Exception) {
+            Log.e("Supabase", "Error al actualizar el perfil: ${e.message}", e)
+            return false
+        }
+    }
+
     @OptIn(SupabaseExperimental::class)
     suspend fun escucharCambiosPerfil(id: String, onProfileUpdate: (Perfil) -> Unit) {
         val flow: Flow<Perfil> = client.from("perfil").selectSingleValueAsFlow(Perfil::id) {
