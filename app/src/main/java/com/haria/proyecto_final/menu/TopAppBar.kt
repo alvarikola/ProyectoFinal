@@ -91,7 +91,7 @@ fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropi
                         Modifier.size(60.dp),
                     )
                     // Ícono de perfil
-                    IconButton(onClick = { expanded.value = !expanded.value }) {
+                    IconButton(onClick = { expanded.value = !expanded.value }, modifier = Modifier.size(50.dp)) {
                         if(perfil?.emoteid == null) {
                             Icon(
                                 imageVector = Icons.Filled.AccountCircle,
@@ -100,7 +100,7 @@ fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropi
                             )
                         }
                         else {
-                            AVIFEmoteExample(perfil?.emoteid!!, 100)
+                            AVIFEmoteExample(perfil?.emoteid!!, 50)
                         }
                         // DropdownMenu que se abre al hacer clic en el ícono de perfil
                         DropdownMenu(
