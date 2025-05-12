@@ -195,7 +195,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                     Icon(
                         imageVector = Icons.Filled.AccountCircle,
                         contentDescription = "Icono de perfil",
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.size(60.dp)
                     )
                 } else {
                     AVIFEmoteExample(perfil?.emoteid!!, 60)

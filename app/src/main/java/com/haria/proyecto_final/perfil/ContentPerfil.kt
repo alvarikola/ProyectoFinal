@@ -308,7 +308,6 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Em
                                         pais = paisEditado
                                     )
 
-                                    // Simular la llamada a Supabase para guardar
                                     try {
                                         scope.launch {
                                             SupabaseManager.actualizarPerfil(perfil)
