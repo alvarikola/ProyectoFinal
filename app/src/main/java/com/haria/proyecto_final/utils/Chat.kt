@@ -156,7 +156,7 @@ fun Chat(userId: String, emotes: List<Emote>, imageLoader: ImageLoader) {
                         maxItemsInEachRow = 6
                     ) {
                         emotes.forEach{ emote ->
-                            AVIFEmoteWithLoader(emote.id, imageLoader)
+                            AVIFEmoteWithLoader(emote, imageLoader)
                         }
                     }
                 }
