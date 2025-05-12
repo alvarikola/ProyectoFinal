@@ -21,8 +21,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,6 +56,7 @@ import com.haria.proyecto_final.data.Emote
 import com.haria.proyecto_final.data.Perfil
 import com.haria.proyecto_final.estiloCancion.PlayerAction
 import com.haria.proyecto_final.musicaService.MusicViewModel
+import com.haria.proyecto_final.utils.AVIFEmoteExample
 import com.haria.proyecto_final.utils.Chat
 import com.haria.proyecto_final.utils.Loading
 import kotlinx.coroutines.Dispatchers
@@ -184,9 +188,19 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(0.075f),
-                horizontalArrangement = Arrangement.SpaceAround,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                if (perfil?.emoteid == null) {
+                    Icon(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = "Icono de perfil",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    AVIFEmoteExample(perfil?.emoteid!!, 60)
+                }
+
                 Text(
                     text = "DJ ${perfil?.nombre}",
                     fontSize = 14.sp,
