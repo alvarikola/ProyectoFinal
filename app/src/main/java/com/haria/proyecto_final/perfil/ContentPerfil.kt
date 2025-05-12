@@ -3,9 +3,11 @@ package com.haria.proyecto_final.perfil
 import androidx.compose.material3.Text
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -40,16 +42,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import com.haria.proyecto_final.SupabaseManager
+import com.haria.proyecto_final.data.Emote
 import com.haria.proyecto_final.data.Perfil
+import com.haria.proyecto_final.estiloCancion.PlayerAction
+import com.haria.proyecto_final.utils.AVIFEmoteExample
 import com.haria.proyecto_final.utils.Loading
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
 
 @Composable
-fun ContentPerfil(innerPadding: PaddingValues, context: Context) {
+fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Emote>) {
     val formatoEntrada = DateTimeFormatter.ISO_DATE_TIME
     val formatoSalida = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
@@ -58,6 +66,8 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context) {
     var nombreEditado by remember { mutableStateOf("") }
     var paisEditado by remember { mutableStateOf("") }
     var expandedPaisMenu by remember { mutableStateOf(false) }
+    var expandedEmoteMenu by remember { mutableStateOf(false) } // Estado para el menú de emotes
+
 
     val scope = rememberCoroutineScope()
 
@@ -72,6 +82,19 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context) {
             paisEditado = perfil?.pais ?: ""
         } catch (e: Exception) {
             Log.e("Error", "Error al obtener el perfil: ${e.message}")
+        }
+    }
+
+    // Escucha cambios en tiempo real
+    LaunchedEffect(perfil?.id) {
+        try {
+            perfil?.id?.let {
+                SupabaseManager.escucharCambiosPerfil(it) { nuevoPerfil ->
+                    perfil = nuevoPerfil
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("Error", "Error al escuchar cambios en el perfil: ${e.message}", e)
         }
     }
 
@@ -93,13 +116,18 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context) {
                         .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.AccountCircle,
-                        contentDescription = "perfil",
-                        modifier = Modifier
-                            .size(170.dp)
-                            .padding(end = 8.dp),
-                    )
+                    if (perfil?.emoteid == null) {
+                        Icon(
+                            imageVector = Icons.Filled.AccountCircle,
+                            contentDescription = "perfil",
+                            modifier = Modifier
+                                .size(170.dp)
+                                .padding(end = 8.dp),
+                        )
+                    }
+                    else {
+                        AVIFEmoteExample(perfil?.emoteid!!, 170)
+                    }
                     Text(perfil?.nombre ?: "Nombre", fontSize = 50.sp, fontWeight = FontWeight.Bold, lineHeight = 60.sp)
                 }
 
@@ -172,14 +200,48 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context) {
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
 
-                        // Icono de perfil (no editable)
-                        Icon(
-                            imageVector = Icons.Filled.AccountCircle,
-                            contentDescription = "Icono de perfil",
+                        // Imagen seleccionable (reemplaza al ícono)
+                        Box(
                             modifier = Modifier
                                 .size(150.dp)
                                 .padding(bottom = 16.dp)
-                        )
+                                .clickable {
+                                    expandedEmoteMenu = true // Abrir menú de emotes
+                                }
+                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                        ) {
+                            if (perfil?.emoteid != null) {
+                                // Muestra la imagen del emote seleccionado
+                                AVIFEmoteExample(perfil?.emoteid!!, 150)
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Filled.AccountCircle,
+                                    contentDescription = "Icono de perfil",
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+                        }
+
+                        // Menú desplegable de emotes
+                        DropdownMenu(
+                            expanded = expandedEmoteMenu,
+                            onDismissRequest = { expandedEmoteMenu = false },
+                        ) {
+                            emotes.forEach { emote ->
+                                if(!emote.animado) {
+                                    DropdownMenuItem(
+                                        text = { AVIFEmoteExample(emote.id, 100) },
+                                        onClick = {
+                                            scope.launch {
+                                                SupabaseManager.establecerEmote(emote.id)
+                                            }
+                                            expandedEmoteMenu = false
+                                        },
+                                        modifier = Modifier.height(100.dp)
+                                    )
+                                }
+                            }
+                        }
 
                         // Campo para editar nombre
                         OutlinedTextField(
@@ -268,3 +330,4 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context) {
         }
     }
 }
+

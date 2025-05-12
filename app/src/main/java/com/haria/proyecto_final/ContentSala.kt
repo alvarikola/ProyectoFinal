@@ -256,23 +256,3 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
         }
     }
 }
-
-//Imagenes estaticas
-@Composable
-fun AVIFEmoteExample() {
-    val imageUrl = "https://cdn.7tv.app/emote/01FJ9019000005ZW4QCZF2JSZQ/4x.gif "
-
-    Image(
-        painter = rememberImagePainter(
-            data = imageUrl,
-            builder = {
-                // Opcional: Imagen de respaldo para dispositivos sin soporte AVIF
-                error(android.R.drawable.ic_menu_report_image)
-            }
-        ),
-        contentDescription = "Emote AVIF",
-        modifier = Modifier
-            .size(100.dp)
-            .padding(8.dp)
-    )
-}
