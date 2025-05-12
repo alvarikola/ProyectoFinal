@@ -11,4 +11,5 @@ data class Perfil(
     var pais: String? = null,
     var fecha_inicio_cancion: String? = null,
     var trackid: Int? = null,
+    var emoteid: String? = null,
 )
