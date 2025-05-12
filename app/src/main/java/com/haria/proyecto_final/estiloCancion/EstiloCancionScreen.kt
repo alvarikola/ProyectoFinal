@@ -11,6 +11,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.ImageLoader
 import com.haria.proyecto_final.SupabaseManager
 import com.haria.proyecto_final.musicaService.MusicViewModel
 import com.haria.proyecto_final.menu.TopAppBar
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun EstiloCancionScreen(context: ComponentActivity, estilo: String, icon: Painter, navController: NavHostController, musicViewModel: MusicViewModel) {
+fun EstiloCancionScreen(context: ComponentActivity, estilo: String, icon: Painter, navController: NavHostController, musicViewModel: MusicViewModel, imageLoader: ImageLoader) {
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -29,7 +30,8 @@ fun EstiloCancionScreen(context: ComponentActivity, estilo: String, icon: Painte
                 innerPadding,
                 estilo,
                 icon,
-                musicViewModel
+                musicViewModel,
+                imageLoader
             ) { action, cancion ->
                 when (action) {
                     PlayerAction.Play -> {

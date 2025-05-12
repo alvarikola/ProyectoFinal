@@ -36,6 +36,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.ImageLoader
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.haria.proyecto_final.SupabaseManager
@@ -48,7 +50,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun ContentMain(innerPadding: PaddingValues, context: Context, navController: NavHostController) {
+fun ContentMain(innerPadding: PaddingValues, context: Context, navController: NavHostController, imageLoader: ImageLoader) {
     var perfilesEmitiendo by remember { mutableStateOf<List<Perfil>>(emptyList()) }
     val scrollState = rememberScrollState()
     val frasesMain = listOf(
@@ -143,7 +145,7 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
                             verticalAlignment = Alignment.CenterVertically // Centra verticalmente el contenido
                         ) {
                             Image(
-                                painter = rememberAsyncImagePainter(model = cancion?.imagenUrl),
+                                painter = rememberAsyncImagePainter(model = cancion?.imagenUrl, imageLoader = imageLoader),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .weight(0.35f)

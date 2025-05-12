@@ -46,6 +46,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import com.haria.proyecto_final.R
 import com.haria.proyecto_final.musicaService.MusicViewModel
@@ -58,7 +59,7 @@ enum class PlayerAction {
 }
 
 @Composable
-fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Painter, viewModel: MusicViewModel, onAction: (PlayerAction, Cancion) -> Unit) {
+fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Painter, viewModel: MusicViewModel, imageLoader: ImageLoader, onAction: (PlayerAction, Cancion) -> Unit) {
 
     var listaCanciones by remember { mutableStateOf<List<Cancion>>(emptyList()) }
     val scrollState = rememberScrollState()
@@ -111,7 +112,7 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                                     .weight(0.3f)
                             ) {
                                 Image(
-                                    painter = rememberAsyncImagePainter(model = cancion.imagenUrl),
+                                    painter = rememberAsyncImagePainter(model = cancion.imagenUrl, imageLoader = imageLoader),
                                     contentDescription = null,
                                     modifier = Modifier
                                         .height(130.dp)

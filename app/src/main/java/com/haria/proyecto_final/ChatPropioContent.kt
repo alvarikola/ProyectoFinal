@@ -31,12 +31,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.ImageLoader
 import com.haria.proyecto_final.data.Emote
 import com.haria.proyecto_final.data.Perfil
 import com.haria.proyecto_final.utils.Chat
 
 @Composable
-fun ChatPropioContent(innerPadding: PaddingValues, context: ComponentActivity) {
+fun ChatPropioContent(innerPadding: PaddingValues, context: ComponentActivity, imageLoader: ImageLoader) {
 
     var perfil by remember { mutableStateOf<Perfil?>(null) }
     var emotes by remember { mutableStateOf<List<Emote>>(emptyList()) }
@@ -76,7 +77,7 @@ fun ChatPropioContent(innerPadding: PaddingValues, context: ComponentActivity) {
             }
         }
         Column(modifier = Modifier.padding(top = 20.dp, bottom = 20.dp)) {
-            perfil?.let { Chat(it.id, emotes) }
+            perfil?.let { Chat(it.id, emotes, imageLoader) }
         }
     }
 }

@@ -61,7 +61,7 @@ import java.time.OffsetDateTime
 
 
 @Composable
-fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String, musicViewModel: MusicViewModel, onAction: (PlayerAction, Int, Long?) -> Unit, onExit: (reason: String) -> Unit) {
+fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String, musicViewModel: MusicViewModel, imageLoader: ImageLoader, onAction: (PlayerAction, Int, Long?) -> Unit, onExit: (reason: String) -> Unit) {
     var perfil by remember { mutableStateOf<Perfil?>(null) }
     var cancion by remember { mutableStateOf<Cancion?>(null) }
     var startTimeMillis by remember { mutableStateOf<Long?>(null) }
@@ -249,7 +249,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                             .fillMaxSize()
                             .padding(8.dp)
                     ) {
-                        Chat(perfilId, emotes)
+                        Chat(perfilId, emotes, imageLoader)
                     }
                 }
             }
@@ -274,41 +274,5 @@ fun AVIFEmoteExample() {
         modifier = Modifier
             .size(100.dp)
             .padding(8.dp)
-    )
-}
-
-// Imagenes con movimiento
-@Composable
-fun AVIFEmoteWithLoader() {
-    val context = LocalContext.current
-
-    // Configuración explícita del ImageLoader (opcional pero recomendado para control avanzado)
-    val imageLoader = ImageLoader.Builder(context)
-        .components {
-            if (Build.VERSION.SDK_INT >= 28) {
-                // Prioriza ImageDecoder para AVIF en Android 9+
-                add(ImageDecoderDecoder.Factory())
-            } else {
-                // Fallback a GIF decoder en dispositivos antiguos (si necesitas compatibilidad con GIF)
-                add(GifDecoder.Factory())
-            }
-        }
-        .build()
-
-    val imageUrl = "https://cdn.7tv.app/emote/01FJ9019000005ZW4QCZF2JSZQ/4x.gif"
-
-    Image(
-        painter = rememberAsyncImagePainter(
-            model = ImageRequest.Builder(context)
-                .data(imageUrl)
-                .placeholder(android.R.drawable.ic_menu_camera) // Mientras carga
-                .error(android.R.drawable.stat_notify_error)    // Si falla
-                .build(),
-            imageLoader = imageLoader
-        ),
-        contentDescription = "Emote AVIF con Coil",
-        modifier = Modifier
-            .size(120.dp)
-            .padding(10.dp)
     )
 }

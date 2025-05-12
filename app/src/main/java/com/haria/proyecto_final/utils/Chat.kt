@@ -79,7 +79,7 @@ import kotlinx.serialization.json.encodeToJsonElement
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun Chat(userId: String, emotes: List<Emote>) {
+fun Chat(userId: String, emotes: List<Emote>, imageLoader: ImageLoader) {
     val mensajes = remember { mutableStateListOf<Mensaje>() }
     var input by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
     var user by remember { mutableStateOf<Perfil?>(null) }
@@ -156,7 +156,7 @@ fun Chat(userId: String, emotes: List<Emote>) {
                         maxItemsInEachRow = 6
                     ) {
                         emotes.forEach{ emote ->
-                            AVIFEmoteWithLoader(emote.id)
+                            AVIFEmoteWithLoader(emote.id, imageLoader)
                         }
                     }
                 }
@@ -239,39 +239,3 @@ fun Chat(userId: String, emotes: List<Emote>) {
     }
 }
 
-@Composable
-fun AVIFEmoteWithLoader(emoteId: String) {
-    val context = LocalContext.current
-
-    // Configuración explícita del ImageLoader (opcional pero recomendado para control avanzado)
-    val imageLoader = ImageLoader.Builder(context)
-        .components {
-            if (Build.VERSION.SDK_INT >= 28) {
-                // Prioriza ImageDecoder para AVIF en Android 9+
-                add(ImageDecoderDecoder.Factory())
-            } else {
-                // Fallback a GIF decoder en dispositivos antiguos (si necesitas compatibilidad con GIF)
-                add(GifDecoder.Factory())
-            }
-        }
-        .build()
-
-    val imageUrl = "https://cdn.7tv.app/emote/${emoteId.trim()}/2x.gif"
-    Log.i("Emote", "Cargando emote desde: $imageUrl")
-
-    Image(
-        painter = rememberAsyncImagePainter(
-            model = ImageRequest.Builder(context)
-                .data(imageUrl)
-                .placeholder(android.R.drawable.ic_menu_camera) // Mientras carga
-                .error(android.R.drawable.stat_notify_error)    // Si falla
-                .build(),
-            imageLoader = imageLoader,
-
-        ),
-        contentDescription = "Emote AVIF con Coil",
-        modifier = Modifier
-            .size(80.dp)
-            .padding(10.dp)
-    )
-}

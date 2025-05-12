@@ -1,5 +1,6 @@
 package com.haria.proyecto_final.navigation
 
+import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
@@ -8,6 +9,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import coil.ImageLoader
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import com.haria.proyecto_final.ChatPropioScreen
 import com.haria.proyecto_final.estiloCancion.EstiloCancionScreen
 import com.haria.proyecto_final.LoginScreen
@@ -28,12 +32,24 @@ fun NavigationGraph(
     checkAuthentication: Boolean,
     musicViewModel: MusicViewModel
 ) {
+    // Configuración explícita del ImageLoader (opcional pero recomendado para control avanzado)
+    val imageLoader = ImageLoader.Builder(context)
+        .components {
+            if (Build.VERSION.SDK_INT >= 28) {
+                // Prioriza ImageDecoder para AVIF en Android 9+
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                // Fallback a GIF decoder en dispositivos antiguos (si necesitas compatibilidad con GIF)
+                add(GifDecoder.Factory())
+            }
+        }
+        .build()
     NavHost(
         navController = navController,
         startDestination = if (checkAuthentication) "mainScreen" else "loginScreen",
     ) {
         composable("mainScreen") {
-            MainScreen(context, navController)
+            MainScreen(context, navController, imageLoader)
         }
         composable("musicaScreen") {
             MusicaScreen(context, navController)
@@ -63,15 +79,16 @@ fun NavigationGraph(
                 estilo = backStackEntry.arguments?.getString("estilo") ?: "default",
                 icon = painterResource(id = iconResId),
                 navController = navController,
-                musicViewModel = musicViewModel
+                musicViewModel = musicViewModel,
+                imageLoader = imageLoader
             )
         }
         composable("salaScreen/{perfilId}") { backStackEntry ->
             val perfilId = backStackEntry.arguments?.getString("perfilId") ?: "default"
-            SalaScreen(context, navController, perfilId, musicViewModel)
+            SalaScreen(context, navController, perfilId, musicViewModel, imageLoader)
         }
         composable("chatPropioScreen") {
-            ChatPropioScreen(context, navController)
+            ChatPropioScreen(context, navController, imageLoader)
         }
     }
 }
