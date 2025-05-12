@@ -226,10 +226,23 @@ object SupabaseManager {
 
     fun obtenerCanal(nombre: String) = client.channel(nombre)
 
-    suspend fun getEmotes(): List<Emote> {
+    suspend fun getEmotesEstaticos(): List<Emote> {
         return client.postgrest
             .from("emote")
-            .select()
+            .select(){filter {
+                eq("animado", false)
+            }
+            }
+            .decodeList<Emote>()
+    }
+
+    suspend fun getEmotesAnimados(): List<Emote> {
+        return client.postgrest
+            .from("emote")
+            .select(){filter {
+                eq("animado", true)
+            }
+            }
             .decodeList<Emote>()
     }
 }
