@@ -52,10 +52,10 @@ fun NavigationGraph(
             MainScreen(context, navController, imageLoader)
         }
         composable("musicaScreen") {
-            MusicaScreen(context, navController)
+            MusicaScreen(context, navController, imageLoader)
         }
         composable("perfilScreen") {
-            PerfilScreen(context, navController)
+            PerfilScreen(context, navController, imageLoader)
         }
         composable("loginScreen") {
             LoginScreen(onLoginSuccess = {

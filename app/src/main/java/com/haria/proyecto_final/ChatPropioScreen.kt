@@ -11,7 +11,7 @@ import com.haria.proyecto_final.menu.TopAppBar
 @Composable
 fun ChatPropioScreen(context: ComponentActivity, navController: NavHostController, imageLoader: ImageLoader) {
     Scaffold(
-        topBar = { TopAppBar(navController, salaPropia = true) },
+        topBar = { TopAppBar(navController, salaPropia = true, imageLoader = imageLoader) },
         content = { innerPadding ->
             // Contenido principal de la pantalla
             ChatPropioContent(innerPadding, context, imageLoader)

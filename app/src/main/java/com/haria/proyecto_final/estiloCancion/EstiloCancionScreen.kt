@@ -23,7 +23,7 @@ fun EstiloCancionScreen(context: ComponentActivity, estilo: String, icon: Painte
     val scope = rememberCoroutineScope()
 
     Scaffold(
-        topBar = { TopAppBar(navController) },
+        topBar = { TopAppBar(navController, imageLoader = imageLoader) },
         content = { innerPadding ->
             // Contenido principal de la pantalla
             ContentEstiloCancion(

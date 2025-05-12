@@ -12,9 +12,9 @@ import com.haria.proyecto_final.menu.TopAppBar
 import kotlinx.coroutines.launch
 
 @Composable
-fun MusicaScreen(context: ComponentActivity, navController: NavHostController) {
+fun MusicaScreen(context: ComponentActivity, navController: NavHostController, imageLoader: ImageLoader) {
     Scaffold(
-        topBar = { TopAppBar(navController) },
+        topBar = { TopAppBar(navController, imageLoader = imageLoader) },
         content = { innerPadding ->
             // Contenido principal de la pantalla
             ContentMusica(innerPadding, context, navController)

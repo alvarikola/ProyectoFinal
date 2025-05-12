@@ -13,13 +13,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
+import coil.ImageLoader
 import com.haria.proyecto_final.SupabaseManager
 import com.haria.proyecto_final.data.Emote
 import com.haria.proyecto_final.menu.TopAppBar
 import kotlinx.coroutines.launch
 
 @Composable
-fun PerfilScreen(context: ComponentActivity, navController: NavHostController) {
+fun PerfilScreen(context: ComponentActivity, navController: NavHostController, imageLoader: ImageLoader) {
 
     var emotes by remember { mutableStateOf<List<Emote>>(emptyList()) }
     LaunchedEffect(true) {
@@ -28,10 +29,10 @@ fun PerfilScreen(context: ComponentActivity, navController: NavHostController) {
     }
 
     Scaffold(
-        topBar = { TopAppBar(navController) },
+        topBar = { TopAppBar(navController, imageLoader = imageLoader) },
         content = { innerPadding ->
             // Contenido principal de la pantalla
-            ContentPerfil(innerPadding, context, emotes)
+            ContentPerfil(innerPadding, context, emotes, imageLoader)
         }
     )
 

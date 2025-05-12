@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen(context: ComponentActivity, navController: NavHostController, imageLoader: ImageLoader) {
     Scaffold(
-        topBar = { TopAppBar(navController, main = true) },
+        topBar = { TopAppBar(navController, main = true, imageLoader = imageLoader) },
         content = { innerPadding ->
             // Contenido principal de la pantalla
             ContentMain(innerPadding, context, navController, imageLoader)

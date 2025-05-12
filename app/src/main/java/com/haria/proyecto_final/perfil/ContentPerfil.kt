@@ -3,7 +3,6 @@ package com.haria.proyecto_final.perfil
 import androidx.compose.material3.Text
 import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,12 +23,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,22 +39,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
+import coil.ImageLoader
 import com.haria.proyecto_final.SupabaseManager
 import com.haria.proyecto_final.data.Emote
 import com.haria.proyecto_final.data.Perfil
-import com.haria.proyecto_final.estiloCancion.PlayerAction
-import com.haria.proyecto_final.utils.AVIFEmoteExample
+import com.haria.proyecto_final.utils.AVIFEmoteStatic
 import com.haria.proyecto_final.utils.Loading
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
 
 @Composable
-fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Emote>) {
+fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Emote>, imageLoader: ImageLoader) {
     val formatoEntrada = DateTimeFormatter.ISO_DATE_TIME
     val formatoSalida = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
@@ -126,7 +120,7 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Em
                         )
                     }
                     else {
-                        AVIFEmoteExample(perfil?.emoteid!!, 170)
+                        AVIFEmoteStatic(perfil?.emoteid!!, 170, imageLoader)
                     }
                     Text(perfil?.nombre ?: "Nombre", fontSize = 50.sp, fontWeight = FontWeight.Bold, lineHeight = 60.sp)
                 }
@@ -212,7 +206,7 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Em
                         ) {
                             if (perfil?.emoteid != null) {
                                 // Muestra la imagen del emote seleccionado
-                                AVIFEmoteExample(perfil?.emoteid!!, 150)
+                                AVIFEmoteStatic(perfil?.emoteid!!, 150, imageLoader)
                             } else {
                                 Icon(
                                     imageVector = Icons.Filled.AccountCircle,
@@ -229,7 +223,7 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Em
                         ) {
                             emotes.forEach { emote ->
                                 DropdownMenuItem(
-                                    text = { AVIFEmoteExample(emote.id, 100) },
+                                    text = { AVIFEmoteStatic(emote.id, 100, imageLoader) },
                                     onClick = {
                                         scope.launch {
                                             SupabaseManager.establecerEmote(emote.id)

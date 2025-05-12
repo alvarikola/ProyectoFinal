@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,21 +32,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.ImageLoader
 import com.haria.proyecto_final.R
 import com.haria.proyecto_final.SupabaseManager
 import com.haria.proyecto_final.data.Perfil
-import com.haria.proyecto_final.estiloCancion.PlayerAction
 import com.haria.proyecto_final.musicaService.MusicService
-import com.haria.proyecto_final.utils.AVIFEmoteExample
+import com.haria.proyecto_final.utils.AVIFEmoteStatic
 import com.haria.proyecto_final.utils.BotonFlotante
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.OffsetDateTime
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropia: Boolean = false) {
+fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropia: Boolean = false, imageLoader: ImageLoader) {
     val expanded = remember { mutableStateOf(false) } // Estado para abrir y cerrar el DropdownMenu
     val icon = painterResource(id = R.drawable.logo_circular) // Reemplaza con tu recurso de icono
     val scope = rememberCoroutineScope()
@@ -100,7 +97,7 @@ fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropi
                             )
                         }
                         else {
-                            AVIFEmoteExample(perfil?.emoteid!!, 50)
+                            AVIFEmoteStatic(perfil?.emoteid!!, 50, imageLoader)
                         }
                         // DropdownMenu que se abre al hacer clic en el ícono de perfil
                         DropdownMenu(

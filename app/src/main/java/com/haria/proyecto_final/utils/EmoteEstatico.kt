@@ -6,12 +6,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import coil.ImageLoader
 import coil.compose.rememberImagePainter
-import com.haria.proyecto_final.data.Emote
 
 //Imagenes estaticas
 @Composable
-fun AVIFEmoteExample(emoteid: String, medida: Int) {
+fun AVIFEmoteStatic(emoteid: String, medida: Int, imageLoader: ImageLoader) {
     val imageUrl = "https://cdn.7tv.app/emote/${emoteid.trim()}/2x.avif "
     Image(
         painter = rememberImagePainter(
@@ -19,7 +19,8 @@ fun AVIFEmoteExample(emoteid: String, medida: Int) {
             builder = {
                 // Opcional: Imagen de respaldo para dispositivos sin soporte AVIF
                 error(android.R.drawable.ic_menu_report_image)
-            }
+            },
+            imageLoader = imageLoader,
         ),
         contentDescription = "Emote AVIF",
         modifier = Modifier
