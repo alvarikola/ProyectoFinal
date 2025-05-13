@@ -1,4 +1,4 @@
- # Proyecto-final
+ # Proyecto-final (Sala404)
 
 ### Descripción de la aplicación
 Es una aplicación realizada en kotlin donde los usuarios puedan crear salas para escuchar música junto a otros usuarios, la música esta sincronizada entre todos los usuarios de la sala. Estas salas tienen un chat que permite escribir con los otros usuarios e interactuar con emotes, además los usuarios tienen su propio perfil que pueden editar su nombre, país y foto de perfil.
@@ -6,11 +6,8 @@ Es una aplicación realizada en kotlin donde los usuarios puedan crear salas par
 ### Figma con el prediseño de la aplicación:
 ![image](https://github.com/user-attachments/assets/d40abcd9-891d-42ff-b53a-708b208c571b)
 
-### Nombre y logo de la aplicación
-<div>
-  <p>Sala404</p>
-  <img src="https://github.com/user-attachments/assets/4d8be488-fa33-4366-97a0-9dc4381b81cd " width="100" />
-</div>
+### Logo de la aplicación
+<img src="https://github.com/user-attachments/assets/4d8be488-fa33-4366-97a0-9dc4381b81cd " width="200" />
 
 ### Requisitos funcionales
 - Los usuarios pueden crear salas.
