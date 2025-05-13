@@ -41,7 +41,7 @@ Es una aplicación realizada en kotlin donde los usuarios puedan crear salas par
   - Animado
  
  
- ![image](https://github.com/user-attachments/assets/e5992d01-e36f-4bde-8103-d92d2150bfd3)
+![image](https://github.com/user-attachments/assets/6f67f621-fba4-401a-8fb2-3bbe385d7e3f)
 
 
 ## Tecnologías a utilizar
@@ -53,7 +53,9 @@ Es una aplicación realizada en kotlin donde los usuarios puedan crear salas par
   - Kotlin multiplataforma
 
 - **Desarrollo de servicios**:  
-  - Supabase, Jamendo(música) y 7TV(emotes)
+  - Supabase: https://supabase.com/
+  - Jamendo(música): https://www.jamendo.com/start
+  - 7TV(emotes): https://7tv.app/emotes
 
 - **Entornos de desarrollo**:  
   - Android Studio
