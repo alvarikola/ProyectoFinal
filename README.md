@@ -23,6 +23,7 @@ Aplicación móvil desarrollada en **Kotlin Multiplataforma** que permite a los 
 
 - **Chat en tiempo real** con emotes (estáticos y animados)
 - **Perfiles de usuario personalizables** (nombre, país, avatar)
+- **Salas con música sincronizada**
 
 ---
 
