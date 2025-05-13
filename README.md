@@ -7,8 +7,10 @@ Es una aplicación realizada en kotlin donde los usuarios puedan crear salas par
 ![image](https://github.com/user-attachments/assets/d40abcd9-891d-42ff-b53a-708b208c571b)
 
 ### Nombre y logo de la aplicación
-- Sala404
-- <img src="https://github.com/user-attachments/assets/4d8be488-fa33-4366-97a0-9dc4381b81cd " width="100" />
+<div align="center">
+  <p><strong>Sala404</strong></p>
+  <img src="https://github.com/user-attachments/assets/4d8be488-fa33-4366-97a0-9dc4381b81cd " width="100" />
+</div>
 
 ### Requisitos funcionales
 - Los usuarios pueden crear salas.
