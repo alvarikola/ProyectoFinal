@@ -3,8 +3,6 @@ package com.haria.proyecto_final.navigation
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -12,18 +10,17 @@ import androidx.navigation.compose.composable
 import coil.ImageLoader
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
-import com.haria.proyecto_final.ChatPropioScreen
+import com.haria.proyecto_final.chatPropio.ChatPropioScreen
 import com.haria.proyecto_final.estiloCancion.EstiloCancionScreen
-import com.haria.proyecto_final.LoginScreen
+import com.haria.proyecto_final.login.LoginScreen
 import com.haria.proyecto_final.R
-import com.haria.proyecto_final.SalaScreen
-import com.haria.proyecto_final.SupabaseManager
+import com.haria.proyecto_final.sala.SalaScreen
+import com.haria.proyecto_final.supabase.SupabaseManager
 import com.haria.proyecto_final.perfil.PerfilScreen
 import com.haria.proyecto_final.seleccionMusica.MusicaScreen
 import com.haria.proyecto_final.main.MainScreen
 import com.haria.proyecto_final.musicaService.MusicViewModel
 import com.haria.proyecto_final.utils.UserSessionManager
-import kotlinx.coroutines.launch
 
 @Composable
 fun NavigationGraph(

@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.ImageLoader
 import com.haria.proyecto_final.R
-import com.haria.proyecto_final.SupabaseManager
+import com.haria.proyecto_final.supabase.SupabaseManager
 import com.haria.proyecto_final.data.Perfil
 import com.haria.proyecto_final.musicaService.MusicService
 import com.haria.proyecto_final.utils.AVIFEmoteStatic

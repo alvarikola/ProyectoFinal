@@ -1,6 +1,5 @@
-package com.haria.proyecto_final
+package com.haria.proyecto_final.login
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,9 +31,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
-import com.haria.proyecto_final.SupabaseManager.login
-import com.haria.proyecto_final.SupabaseManager.register
+import com.haria.proyecto_final.R
+import com.haria.proyecto_final.supabase.SupabaseManager.login
+import com.haria.proyecto_final.supabase.SupabaseManager.register
 import kotlinx.coroutines.launch
 
 @Composable

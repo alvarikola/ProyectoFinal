@@ -40,7 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.ImageLoader
-import com.haria.proyecto_final.SupabaseManager
+import com.haria.proyecto_final.supabase.SupabaseManager
 import com.haria.proyecto_final.data.Emote
 import com.haria.proyecto_final.data.Perfil
 import com.haria.proyecto_final.utils.AVIFEmoteStatic

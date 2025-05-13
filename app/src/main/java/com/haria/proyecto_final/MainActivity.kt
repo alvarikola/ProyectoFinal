@@ -19,15 +19,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
-import com.haria.proyecto_final.SupabaseManager.init
+import com.haria.proyecto_final.supabase.SupabaseManager.init
 import com.haria.proyecto_final.musicaService.MusicService
 import com.haria.proyecto_final.musicaService.MusicViewModel
 import com.haria.proyecto_final.navigation.NavigationGraph
+import com.haria.proyecto_final.supabase.SupabaseManager
 import com.haria.proyecto_final.ui.theme.ProyectoFinalTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity() {
     private var musicService: MusicService? = null
@@ -74,8 +73,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-    private val serviceScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

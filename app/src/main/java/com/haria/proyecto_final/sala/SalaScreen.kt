@@ -1,22 +1,16 @@
-package com.haria.proyecto_final
+package com.haria.proyecto_final.sala
 
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import coil.ImageLoader
-import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.estiloCancion.PlayerAction
 import com.haria.proyecto_final.menu.TopAppBar
 import com.haria.proyecto_final.musicaService.MusicViewModel
-import com.haria.proyecto_final.seleccionMusica.ContentMusica
-import kotlinx.coroutines.launch
 
 @Composable
 fun SalaScreen(context: ComponentActivity, navController: NavHostController, perfilId: String, musicViewModel: MusicViewModel, imagenLoader: ImageLoader) {

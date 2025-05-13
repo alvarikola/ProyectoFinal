@@ -3,16 +3,13 @@ package com.haria.proyecto_final.estiloCancion
 import android.content.Intent
 import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.ImageLoader
-import com.haria.proyecto_final.SupabaseManager
+import com.haria.proyecto_final.supabase.SupabaseManager
 import com.haria.proyecto_final.musicaService.MusicViewModel
 import com.haria.proyecto_final.menu.TopAppBar
 import kotlinx.coroutines.launch

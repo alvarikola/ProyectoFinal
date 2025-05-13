@@ -8,16 +8,10 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.app.NotificationCompat
 import com.haria.proyecto_final.MainActivity
-import com.haria.proyecto_final.MusicServiceEvents
 import com.haria.proyecto_final.R
-import com.haria.proyecto_final.SupabaseManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.haria.proyecto_final.supabase.SupabaseManager
 import kotlinx.coroutines.runBlocking
 
 

@@ -1,4 +1,4 @@
-package com.haria.proyecto_final
+package com.haria.proyecto_final.sala
 
 import android.content.Context
 import android.util.Log
@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.ImageLoader
 import coil.compose.AsyncImage
+import com.haria.proyecto_final.R
+import com.haria.proyecto_final.supabase.SupabaseManager
 import com.haria.proyecto_final.data.Cancion
 import com.haria.proyecto_final.data.Emote
 import com.haria.proyecto_final.data.Perfil
