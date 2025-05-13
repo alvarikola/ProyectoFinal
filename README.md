@@ -1,84 +1,137 @@
- # Proyecto-final (Sala404)
+# 🎧 Sala404 – Proyecto Final
 
-### Descripción de la aplicación
-Es una aplicación realizada en kotlin donde los usuarios puedan crear salas para escuchar música junto a otros usuarios, la música esta sincronizada entre todos los usuarios de la sala. Estas salas tienen un chat que permite escribir con los otros usuarios e interactuar con emotes, además los usuarios tienen su propio perfil que pueden editar su nombre, país y foto de perfil.
+Aplicación móvil desarrollada en **Kotlin Multiplataforma** que permite a los usuarios **crear salas de música sincronizada** con otros usuarios. Incluye funcionalidades sociales como **chat con emotes** y **perfiles personalizables**.
 
-### Figma con el prediseño de la aplicación:
-![image](https://github.com/user-attachments/assets/d40abcd9-891d-42ff-b53a-708b208c571b)
+---
 
-### Logo de la aplicación
-<img src="https://github.com/user-attachments/assets/4d8be488-fa33-4366-97a0-9dc4381b81cd " width="200" />
+## 📚 Índice
 
-### Requisitos funcionales
-- Los usuarios pueden crear salas.
-- En las salas se reproduce música.
-- La música de cada sala es seleccionada por el creador de la sala.
-- Cada usuario tiene su perfil personalizable.
-- Las salas contienen un chat para que los usuarios interactuen.
+- [🔍 Descripción General](#-descripción-general)
+- [🖼 Diseño de la Aplicación](#-diseño-de-la-aplicación)
+- [✅ Requisitos Funcionales](#-requisitos-funcionales)
+- [🧩 Modelo de Datos](#-modelo-de-datos)
+- [🛠 Tecnologías Utilizadas](#-tecnologías-utilizadas)
+- [🔧 Detalles del Sistema](#-detalles-del-sistema)
+- [📆 Cronograma](#-cronograma)
+- [📌 Créditos / Recursos](#-créditos--recursos)
 
-### Entidades
+---
 
-#### Perfil
-- **Atributos**:  
-  - ID (PK)
-  - Created_at  
-  - Nombre  
-  - Email  
-  - Trackid
-  - Fecha_inicio_cancion
-  - Pais
-  - Emoteid  
+## 🔍 Descripción General
 
-#### Cancion
-- **Atributos**:  
-  - ID (PK)
-  - Created_at
-  - Nombre  
-  - Estilo  
-  - Cantante
-  - ImagenUrl
+**Sala404** es una app en la que los usuarios pueden crear salas virtuales para **escuchar música en sincronía** con otros participantes. Además de la música, la app incluye:
 
-#### Emote
-- **Atributos**:  
-  - ID (PK)  
-  - Animado
- 
- ### Modelo Entidad Relación
- 
-![image](https://github.com/user-attachments/assets/6f67f621-fba4-401a-8fb2-3bbe385d7e3f)
+- **Chat en tiempo real** con emotes (estáticos y animados)
+- **Perfiles de usuario personalizables** (nombre, país, avatar)
 
+---
 
-## Tecnologías a utilizar
+## 🖼 Diseño de la Aplicación
 
-- **Base de datos**:  
-  - Supabase (PostgreSQL)
+### 📱 Figma (Prediseño)
 
-- **Desarrollo multiplataforma**:  
-  - Kotlin multiplataforma
+> ![Figma](https://github.com/user-attachments/assets/d40abcd9-891d-42ff-b53a-708b208c571b)
 
-- **Desarrollo de servicios**:  
-  - Supabase: https://supabase.com/
-  - Jamendo(música): https://www.jamendo.com/start
-  - 7TV(emotes): https://7tv.app/emotes
+### 🪩 Logo de la App
 
-- **Entornos de desarrollo**:  
-  - Android Studio
+> <img src="https://github.com/user-attachments/assets/4d8be488-fa33-4366-97a0-9dc4381b81cd" width="200" />
 
-### Descripción detallada del sistema
+---
 
-- **Perfil**:  
-  El usuario puede crear una cuenta, personalizar su perfil con su foto, nombre y país. Además cuando selecciona una música para escuchar el usuario se transforma en una sala donde otros usuarios se pueden unir para escuchar los mismo. Por otro lado puede unirse a otros usuarios y escuchar lo que ellos pongan.
-  
-- **Canción**:  
-  Las canciones son seleccionadas por los usuarios y están divididas por estilo, cada una tiene su nombre, cantante, foto y estilo de música.
+## ✅ Requisitos Funcionales
 
-- **Emote**:  
-  Los emotes son escritos por los usuarios en el chat para interactuar, estos pueden ser animados o no. Los emotes animados se usan en el chat mientras que los estaticos se usan como foto de perfil para los usuarios.
+- [x] Los usuarios pueden crear salas.
+- [x] En las salas se reproduce música sincronizada.
+- [x] El creador de la sala elige la música.
+- [x] Perfiles de usuario personalizables.
+- [x] Chat con soporte para emotes.
 
+---
 
-## Cronograma
-- **26/03/2025** - Realizar una acercación pequeña a la vista de la aplicación
-- **09/04/2025** - Mejorar la interfaz 
-- **30/04/2025** - Implementación de la base de datos en la aplicación
-- **14/05/2025** - Corregir errores, terminar la interfaz
+## 🧩 Modelo de Datos
 
+### 🔸 Entidades principales
+
+#### 🧑 Perfil
+
+- `ID` (PK)
+- `created_at`
+- `nombre`
+- `email`
+- `track_id`
+- `fecha_inicio_cancion`
+- `pais`
+- `emote_id`
+
+#### 🎵 Canción
+
+- `ID` (PK)
+- `created_at`
+- `nombre`
+- `estilo`
+- `cantante`
+- `imagen_url`
+
+#### 😊 Emote
+
+- `ID` (PK)
+- `animado` (booleano)
+
+### 🔗 Diagrama Entidad-Relación
+
+> ![ERD](https://github.com/user-attachments/assets/6f67f621-fba4-401a-8fb2-3bbe385d7e3f)
+
+---
+
+## 🛠 Tecnologías Utilizadas
+
+| Categoría           | Herramienta / Servicio |
+|---------------------|------------------------|
+| Base de datos       | [Supabase (PostgreSQL)](https://supabase.com/) |
+| Backend/Servicios   | Supabase REST, [Jamendo](https://www.jamendo.com/start) (API de música), [7TV](https://7tv.app/emotes) (API de emotes) |
+| Desarrollo móvil    | Kotlin Multiplataforma |
+| IDE                 | Android Studio |
+
+---
+
+## 🔧 Detalles del Sistema
+
+### 👤 Perfil
+
+- El usuario puede registrarse, y editar su nombre, país y foto.
+- Puede convertirse en "host" de una sala al seleccionar una canción.
+- Otros usuarios pueden unirse a su sala para escuchar la música sincronizada.
+
+### 🎵 Canción
+
+- Seleccionada por el host.
+- Incluye atributos como nombre, estilo, cantante e imagen.
+
+### 😄 Emote
+
+- Emotes animados: usados en el chat.
+- Emotes estáticos: pueden usarse como avatar del perfil.
+
+---
+
+## 📆 Cronograma
+
+| Fecha        | Entregable                                    |
+|--------------|-----------------------------------------------|
+| 26/03/2025   | Primer boceto visual de la app                |
+| 09/04/2025   | Mejoras de interfaz                           |
+| 30/04/2025   | Integración de base de datos con la app       |
+| 14/05/2025   | Corrección de errores y finalización de UI    |
+
+---
+
+## 📌 Créditos / Recursos
+
+- Música: [Jamendo API](https://www.jamendo.com/start)
+- Emotes: [7TV API](https://7tv.app/emotes)
+- Backend: [Supabase](https://supabase.com/)
+- Diseño UI: [Figma](https://www.figma.com/)
+
+---
+
+Desarrollado por: Álvaro Eugenio García
