@@ -70,7 +70,7 @@ fun Chat(userId: String, emotes: List<Emote>, imageLoader: ImageLoader) {
     val userColors = remember { mutableStateMapOf<String, Color>() }
     var subscribersCount by remember { mutableStateOf(0) }
     var showEmojiMenu by remember { mutableStateOf(false) }
-    var scrollState = rememberScrollState()
+    val scrollState = rememberScrollState()
 
     // Crear canal
     val channel = SupabaseManager.obtenerCanal(userId)
@@ -143,7 +143,6 @@ fun Chat(userId: String, emotes: List<Emote>, imageLoader: ImageLoader) {
                                 Modifier.clickable{
                                     val currentText = input.text
                                     input = TextFieldValue(currentText + "#emoji:" + emote.id.trim() + "#")
-                                    showEmojiMenu = false
                                 }
                             ) {
                                 AVIFEmoteWithLoader(emote.id, imageLoader)
