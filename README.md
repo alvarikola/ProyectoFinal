@@ -1,69 +1,45 @@
  # Proyecto-final
-## AnteProyecto
 
 ### Descripción de la aplicación
-Es una aplicación realizada en kotlin donde los usuarios puedan crear salas para escuchar música junto a otros usuarios. Estas salas pueden ser públicas o privadas, además los usuarios tienen su propio perfil donde tienen una lista con sus canciones más escuchadas.
+Es una aplicación realizada en kotlin donde los usuarios puedan crear salas para escuchar música junto a otros usuarios, la música esta sincronizada entre todos los usuarios de la sala. Estas salas tienen un chat que permite escribir con los otros usuarios e interactuar con emotes, además los usuarios tienen su propio perfil que pueden editar su nombre, país y foto de perfil.
 
 ### Figma con el prediseño de la aplicación:
 ![image](https://github.com/user-attachments/assets/d40abcd9-891d-42ff-b53a-708b208c571b)
 
 ### Requisitos funcionales
 - Los usuarios pueden crear salas.
-- Las salas pueden ser públicas o privadas.
 - En las salas se reproduce música.
-- La música de cada sala es seleccionada por el creador de la sala, pero los otros usuarios pueden sugerir canciones.
-- Cada usuario tiene su perfil con el historial de canciones más escuchadas.
+- La música de cada sala es seleccionada por el creador de la sala.
+- Cada usuario tiene su perfil personalizable.
+- Las salas contienen un chat para que los usuarios interactuen.
 
-### Entidades y Relaciones
+### Entidades
 
-#### Usuario
+#### Perfil
 - **Atributos**:  
-  - ID (PK)  
+  - ID (PK)
+  - Created_at  
   - Nombre  
-  - FotoPerfil  
   - Email  
-  - Contraseña  
+  - Trackid
+  - Fecha_inicio_cancion
+  - Pais
+  - Emoteid  
 
-- **Relaciones**:  
-  - Crea -> Sala (1:N)  
-  - Se conecta -> Sala (N:M)  
-  - Propone -> Canción (N:M)  
-  - Tiene -> Historial de Canciones (1:N)
-
-#### Sala
+#### Cancion
 - **Atributos**:  
-  - ID (PK)  
+  - ID (PK)
+  - Created_at
   - Nombre  
-  - Tipo (Pública/Privada)  
-  - UsuarioLiderID (FK)  
+  - Estilo  
+  - Cantante
+  - ImagenUrl
 
-- **Relaciones**:  
-  - Tiene -> Usuarios (N:M)  
-  - Contiene -> Canción (N:M)  
-  - Es creada por -> Usuario (N:1)
-
-#### Canción
+#### Emote
 - **Atributos**:  
   - ID (PK)  
-  - Título  
-  - Artista  
-  - Duración  
-
-- **Relaciones**:  
-  - Es propuesta por -> Usuario (N:M)  
-  - Se encuentra en -> Sala (N:M)  
-  - Aparece en -> Historial de Canciones (N:1)
-
-#### Historial de Canciones
-- **Atributos**:  
-  - ID (PK)  
-  - UsuarioID (FK)  
-  - CanciónID (FK)  
-  - VecesEscuchada
-  
-- **Relaciones**:  
-  - Pertenece a -> Usuario (N:1)  
-  - Contiene -> Canción (N:1)
+  - Animado
+ 
  
  ![image](https://github.com/user-attachments/assets/e5992d01-e36f-4bde-8103-d92d2150bfd3)
 
@@ -77,29 +53,26 @@ Es una aplicación realizada en kotlin donde los usuarios puedan crear salas par
   - Kotlin multiplataforma
 
 - **Desarrollo de servicios**:  
-  - Supabase y la API de SoundCloud
+  - Supabase, Jamendo(música) y 7TV(emotes)
 
 - **Entornos de desarrollo**:  
   - Android Studio
 
 ### Descripción detallada del sistema
 
-- **Usuario**:  
-  El usuario puede crear una cuenta, personalizar su perfil con su foto y nombre, y acceder a su historial de canciones. Además, puede crear salas, sugerir canciones, y unirse a salas ya creadas.
-  
-- **Sala**:  
-  Una sala es creada por un usuario y puede ser pública o privada. Los usuarios se pueden unir a salas para escuchar música. Solo el creador tiene el control inicial de las canciones, pero otros usuarios pueden sugerir canciones.
+- **Perfil**:  
+  El usuario puede crear una cuenta, personalizar su perfil con su foto, nombre y país. Además cuando selecciona una música para escuchar el usuario se transforma en una sala donde otros usuarios se pueden unir para escuchar los mismo. Por otro lado puede unirse a otros usuarios y escuchar lo que ellos pongan.
   
 - **Canción**:  
-  Las canciones son propuestas por los usuarios y pueden formar parte de una o varias salas.
+  Las canciones son seleccionadas por los usuarios y están divididas por estilo, cada una tiene su nombre, cantante, foto y estilo de música.
 
-- **Historial de canciones**:  
-  Cada usuario tiene un historial que muestra las canciones más escuchadas.
+- **Emote**:  
+  Los emotes son escritos por los usuarios en el chat para interactuar, estos pueden ser animados o no. Los emotes animados se usan en el chat mientras que los estaticos se usan como foto de perfil para los usuarios.
 
 
 ## Cronograma
 - **26/03/2025** - Realizar una acercación pequeña a la vista de la aplicación
 - **09/04/2025** - Mejorar la interfaz 
 - **30/04/2025** - Implementación de la base de datos en la aplicación
-- **14/05/2025** - Corregir errores, terminar la interfaz y muestra de datos de la base de datos
+- **14/05/2025** - Corregir errores, terminar la interfaz
 
