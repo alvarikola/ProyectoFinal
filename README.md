@@ -8,7 +8,7 @@ Es una aplicación realizada en kotlin donde los usuarios puedan crear salas par
 
 ### Nombre y logo de la aplicación
 <div>
-  <p><strong>Sala404</strong></p>
+  <p>Sala404</p>
   <img src="https://github.com/user-attachments/assets/4d8be488-fa33-4366-97a0-9dc4381b81cd " width="100" />
 </div>
 
