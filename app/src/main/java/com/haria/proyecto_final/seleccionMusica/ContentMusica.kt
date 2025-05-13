@@ -33,7 +33,7 @@ fun ContentMusica(innerPadding: PaddingValues, context: Context, navController: 
         ContenedorMusica("hiphop", navController)
         ContenedorMusica("pop", navController)
         ContenedorMusica("jazz", navController)
-        ContenedorMusica("generica", navController)
+        ContenedorMusica("chillout", navController)
     }
 }
 
@@ -64,6 +64,10 @@ fun ContenedorMusica(estilo: String, navController: NavHostController) {
         "jazz" -> {
             icon = painterResource(id = R.drawable.portada_jazz)
             iconName = "portada_jazz"
+        }
+        "chillout" -> {
+            icon = painterResource(id = R.drawable.portada_chillout)
+            iconName = "portada_chillout"
         }
         else -> {
             icon
