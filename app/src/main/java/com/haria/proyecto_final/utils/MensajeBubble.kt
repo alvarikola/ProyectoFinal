@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 import com.google.accompanist.flowlayout.FlowRow
@@ -26,11 +27,12 @@ fun MessageBubble(mensaje: Mensaje, userColors: MutableMap<String, Color>, image
     FlowRow (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(vertical = 4.dp),
     ) {
         Text(
             text = (mensaje.userNombre ?: userDefecto) + ": ",
-            color = userColor
+            color = userColor,
+            fontWeight = FontWeight.Bold
         )
         text.forEach{
             if(it.startsWith("#emoji:") && it.endsWith("#")) {
