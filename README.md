@@ -40,6 +40,7 @@ Es una aplicación realizada en kotlin donde los usuarios puedan crear salas par
   - ID (PK)  
   - Animado
  
+ ### Modelo Entidad Relación
  
 ![image](https://github.com/user-attachments/assets/6f67f621-fba4-401a-8fb2-3bbe385d7e3f)
 
