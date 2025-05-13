@@ -1,15 +1,12 @@
 package com.haria.proyecto_final.seleccionMusica
 
 import androidx.activity.ComponentActivity
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import coil.ImageLoader
 import com.haria.proyecto_final.menu.TopAppBar
-import kotlinx.coroutines.launch
+
 
 @Composable
 fun MusicaScreen(context: ComponentActivity, navController: NavHostController, imageLoader: ImageLoader) {

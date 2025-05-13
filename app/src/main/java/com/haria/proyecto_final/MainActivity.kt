@@ -25,8 +25,7 @@ import com.haria.proyecto_final.musicaService.MusicViewModel
 import com.haria.proyecto_final.navigation.NavigationGraph
 import com.haria.proyecto_final.supabase.SupabaseManager
 import com.haria.proyecto_final.ui.theme.ProyectoFinalTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+
 
 class MainActivity : ComponentActivity() {
     private var musicService: MusicService? = null

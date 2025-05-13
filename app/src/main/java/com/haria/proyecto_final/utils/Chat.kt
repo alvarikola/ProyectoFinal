@@ -145,7 +145,7 @@ fun Chat(userId: String, emotes: List<Emote>, imageLoader: ImageLoader) {
                                     input = TextFieldValue(currentText + "#emoji:" + emote.id.trim() + "#")
                                 }
                             ) {
-                                AVIFEmoteWithLoader(emote.id, imageLoader)
+                                AVIFEmoteMovement(emote.id, imageLoader)
                             }
                         }
                     }

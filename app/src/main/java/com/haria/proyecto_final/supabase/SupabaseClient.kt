@@ -93,9 +93,6 @@ object SupabaseManager {
         return client.auth.currentUserOrNull() != null
     }
 
-    fun getCurrentUserEmail(): String? {
-        return client.auth.currentUserOrNull()?.email
-    }
     fun getCurrentUserId(): String? {
         return client.auth.currentUserOrNull()?.id
     }
