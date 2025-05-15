@@ -22,6 +22,15 @@ import com.haria.proyecto_final.main.MainScreen
 import com.haria.proyecto_final.musicaService.MusicViewModel
 import com.haria.proyecto_final.utils.UserSessionManager
 
+
+/**
+ * Configura y gestiona la navegación de la aplicación utilizando Jetpack Navigation.
+ *
+ * @param context Contexto de la actividad principal.
+ * @param navController Controlador de navegación para gestionar las rutas.
+ * @param checkAuthentication Indica si se debe verificar la autenticación del usuario.
+ * @param musicViewModel ViewModel para gestionar el estado de la música.
+ */
 @Composable
 fun NavigationGraph(
     context: ComponentActivity,
@@ -41,19 +50,24 @@ fun NavigationGraph(
             }
         }
         .build()
+    // Define las rutas de navegación y sus pantallas asociadas.
     NavHost(
         navController = navController,
         startDestination = if (checkAuthentication) "mainScreen" else "loginScreen",
     ) {
+        // Pantalla principal.
         composable("mainScreen") {
             MainScreen(context, navController, imageLoader)
         }
+        // Pantalla de selección de música.
         composable("musicaScreen") {
             MusicaScreen(context, navController, imageLoader)
         }
+        // Pantalla de perfil del usuario.
         composable("perfilScreen") {
             PerfilScreen(context, navController, imageLoader)
         }
+        // Pantalla de inicio de sesión.
         composable("loginScreen") {
             LoginScreen(onLoginSuccess = {
                 navController.navigate("mainScreen")
@@ -63,6 +77,7 @@ fun NavigationGraph(
                 }
             })
         }
+        // Pantalla de estilo de canción con parámetros.
         composable("estiloCancionScreen/{estilo}/{iconName}") { backStackEntry ->
             val iconName = backStackEntry.arguments?.getString("iconName")
             val iconResId = if (!iconName.isNullOrEmpty()) {
@@ -80,10 +95,12 @@ fun NavigationGraph(
                 imageLoader = imageLoader
             )
         }
+        // Pantalla de sala con parámetros.
         composable("salaScreen/{perfilId}") { backStackEntry ->
             val perfilId = backStackEntry.arguments?.getString("perfilId") ?: "default"
             SalaScreen(context, navController, perfilId, musicViewModel, imageLoader)
         }
+        // Pantalla de chat propio.
         composable("chatPropioScreen") {
             ChatPropioScreen(context, navController, imageLoader)
         }
