@@ -15,22 +15,41 @@ import com.haria.proyecto_final.supabase.SupabaseManager
 import kotlinx.coroutines.runBlocking
 
 
+/**
+ * Servicio para la reproducción de música en segundo plano.
+ * Gestiona la reproducción, pausa, detención y notificaciones relacionadas con la música.
+ */
 class MusicService : Service() {
     private val binder = MusicBinder()
     private var mediaPlayer: MediaPlayer? = null
     private var currentUrl: String? = null
 
-
+    /**
+     * Clase interna que permite a los clientes interactuar con el servicio.
+     */
     inner class MusicBinder : Binder() {
         fun getService(): MusicService = this@MusicService
     }
 
+    /**
+     * Método llamado al crear el servicio.
+     * Configura el canal de notificaciones.
+     */
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
         Log.d("MusicService", "Servicio creado")
     }
 
+    /**
+     * Método llamado al iniciar el servicio.
+     * Gestiona las acciones de reproducción, pausa y detención.
+     *
+     * @param intent Intent que contiene la acción a realizar.
+     * @param flags Indicadores adicionales sobre cómo iniciar el servicio.
+     * @param startId Identificador único para esta solicitud de inicio.
+     * @return Tipo de inicio del servicio.
+     */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("MusicService", "onStartCommand: ${intent?.action}")
         when (intent?.action) {
@@ -51,6 +70,12 @@ class MusicService : Service() {
         return START_NOT_STICKY
     }
 
+    /**
+     * Devuelve la posición actual en el bucle de reproducción.
+     *
+     * @param startTimeMillis Tiempo de inicio en milisegundos.
+     * @return Posición actual en segundos.
+     */
     fun getCurrentPositionInLoop(startTimeMillis: Long): Int {
         val currentTimeMillis = System.currentTimeMillis()
         val elapsedTimeMillis = currentTimeMillis - startTimeMillis
@@ -68,6 +93,11 @@ class MusicService : Service() {
         return (currentPositionInLoopMillis / 1000).toInt() // Devolvemos los segundos
     }
 
+    /**
+     * Busca la posición actual en el bucle de reproducción y la establece en el MediaPlayer.
+     *
+     * @param startTimeMillis Tiempo de inicio en milisegundos.
+     */
     fun seekToCurrentLoopPosition(startTimeMillis: Long) {
         mediaPlayer?.let {
             val position = getCurrentPositionInLoop(startTimeMillis) * 1000
@@ -80,6 +110,12 @@ class MusicService : Service() {
         }
     }
 
+    /**
+     * Reproduce música desde una URL específica.
+     *
+     * @param url URL de la música a reproducir.
+     * @param startTimeMillis Tiempo de inicio en milisegundos (opcional).
+     */
     fun playMusic(url: String, startTimeMillis: Long? = null) {
         Log.d("MusicService", "Intentando reproducir música: $url")
         // Si ya hay un MediaPlayer activo y es la misma URL, reanudamos
@@ -132,6 +168,9 @@ class MusicService : Service() {
         }
     }
 
+    /**
+     * Pausa la reproducción de música.
+     */
     fun pauseMusic() {
         mediaPlayer?.let {
             if (it.isPlaying) {
@@ -143,6 +182,9 @@ class MusicService : Service() {
         }
     }
 
+    /**
+     * Detiene la reproducción de música y libera los recursos del MediaPlayer.
+     */
     fun stopMusic() {
         Log.d("MusicService", "Deteniendo y liberando MediaPlayer")
         releaseMediaPlayer()
@@ -151,6 +193,9 @@ class MusicService : Service() {
 
     }
 
+    /**
+     * Detiene la música y limpia el track asociado en Supabase.
+     */
     fun stopMusicAndClearTrack() {
         stopMusic() // Detiene la reproducción y libera recursos
         try {
@@ -166,6 +211,9 @@ class MusicService : Service() {
         }
     }
 
+    /**
+     * Libera los recursos del MediaPlayer.
+     */
     private fun releaseMediaPlayer() {
         mediaPlayer?.apply {
             if (isPlaying) {
@@ -177,6 +225,9 @@ class MusicService : Service() {
         mediaPlayer = null
     }
 
+    /**
+     * Crea un canal de notificación para el servicio.
+     */
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -193,6 +244,11 @@ class MusicService : Service() {
         }
     }
 
+    /**
+     * Actualiza la notificación del servicio con un mensaje específico.
+     *
+     * @param contentText Texto a mostrar en la notificación.
+     */
     private fun updateNotification(contentText: String) {
         Log.d("MusicService", "Actualizando notificación: $contentText")
         val notificationIntent = Intent(this, MainActivity::class.java)
@@ -244,11 +300,22 @@ class MusicService : Service() {
         }
     }
 
+    /**
+     * Método llamado al enlazar el servicio.
+     *
+     * @param intent Intent que solicita el enlace.
+     * @return Binder para interactuar con el servicio.
+     */
     override fun onBind(intent: Intent?): IBinder {
         Log.d("MusicService", "Service bound")
         return binder
     }
 
+    /**
+     * Método llamado cuando la tarea asociada al servicio es eliminada.
+     *
+     * @param rootIntent Intent raíz de la tarea eliminada.
+     */
     override fun onTaskRemoved(rootIntent: Intent?) {
         Log.d("MusicService", "onTaskRemoved: app cerrada desde recientes")
         stopMusicAndClearTrack()
@@ -256,6 +323,9 @@ class MusicService : Service() {
         super.onTaskRemoved(rootIntent)
     }
 
+    /**
+     * Método llamado al destruir el servicio.
+     */
     override fun onDestroy() {
         Log.d("MusicService", "Servicio destruido")
         stopMusicAndClearTrack() // Limpia el trackId al destruir
