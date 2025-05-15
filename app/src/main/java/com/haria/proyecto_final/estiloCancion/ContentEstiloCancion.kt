@@ -48,6 +48,17 @@ enum class PlayerAction {
     Play, Pause, Stop
 }
 
+
+/**
+ * Composable que muestra una lista de canciones de un estilo específico.
+ *
+ * @param innerPadding Espaciado interno para el contenido.
+ * @param estilo Estilo o género musical de las canciones a mostrar.
+ * @param icon Icono que representa el estilo musical.
+ * @param viewModel ViewModel que gestiona el estado de la música.
+ * @param imageLoader Cargador de imágenes para las carátulas de las canciones.
+ * @param onAction Callback que maneja las acciones del reproductor (Play, Pause, Stop).
+ */
 @Composable
 fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Painter, viewModel: MusicViewModel, imageLoader: ImageLoader, onAction: (PlayerAction, Cancion) -> Unit) {
 
@@ -56,6 +67,7 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
     val isPlaying by viewModel.isPlaying.collectAsState()
     val currentSong by viewModel.currentSong.collectAsState()
 
+    // Efecto lanzado al inicializar el Composable para cargar las canciones del estilo dado
     LaunchedEffect(key1 = true) {
         try {
             Log.d("ContentEstilo", "Obteniendo canciones para estilo: $estilo")
@@ -66,6 +78,7 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
         }
     }
 
+    // Muestra un indicador de carga si no hay canciones disponibles
     if(listaCanciones.isEmpty()) {
         Loading()
     } else {
@@ -76,6 +89,7 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            // Muestra el icono del estilo musical
             Image(
                 painter = icon,
                 contentDescription = null,
@@ -87,6 +101,7 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                 modifier = Modifier
                     .padding(8.dp),
             ) {
+                // Itera sobre la lista de canciones y las muestra
                 listaCanciones.forEach { cancion ->
                     val isCurrentSong = currentSong?.id == cancion.id
                     Row(
@@ -94,6 +109,7 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                             .fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
+                        // Muestra la imagen de la canción si está disponible
                         if (cancion.imagenUrl == null) {
                             Log.d("CancionImagen", "URL de la imagen: ${cancion.imagenUrl}")
                         } else {
@@ -111,6 +127,7 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                                 )
                             }
                         }
+                        // Muestra el nombre de la canción y los botones de control
                         Column(
                             modifier = Modifier
                                 .weight(0.7f) // hace que el texto y botones ocupen el resto del espacio
@@ -169,6 +186,7 @@ fun ContentEstiloCancion(innerPadding: PaddingValues, estilo: String, icon: Pain
                             }
                         }
                     }
+                    // Muestra un divisor entre las canciones
                     HorizontalDivider(
                         modifier = Modifier
                             .fillMaxWidth()
