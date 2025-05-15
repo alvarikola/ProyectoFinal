@@ -36,17 +36,23 @@ import com.haria.proyecto_final.supabase.SupabaseManager.login
 import com.haria.proyecto_final.supabase.SupabaseManager.register
 import kotlinx.coroutines.launch
 
+
+/**
+ * Composable que representa la pantalla de inicio de sesión y registro.
+ *
+ * @param onLoginSuccess Callback que se ejecuta cuando el inicio de sesión es exitoso.
+ */
 @Composable
 fun LoginScreen(onLoginSuccess: () -> Unit = {}) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
-    var isRegisterMode by remember { mutableStateOf(false) }
-    val icon = painterResource(id = R.drawable.logo_circular)
+    var email by remember { mutableStateOf("") } // Estado para almacenar el correo electrónico ingresado.
+    var password by remember { mutableStateOf("") } // Estado para almacenar la contraseña ingresada.
+    var confirmPassword by remember { mutableStateOf("") } // Estado para confirmar la contraseña en modo registro.
+    var errorMessage by remember { mutableStateOf("") } // Estado para mostrar mensajes de error o éxito.
+    var isLoading by remember { mutableStateOf(false) } // Estado para indicar si hay una operación en curso.
+    var isRegisterMode by remember { mutableStateOf(false) } // Estado para alternar entre los modos de registro e inicio de sesión.
+    val icon = painterResource(id = R.drawable.logo_circular) // Recurso de imagen para el logo de la aplicación.
 
-    val scope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope() // Alcance de corrutinas para manejar operaciones asíncronas.
 
     Column(
         modifier = Modifier
@@ -56,12 +62,14 @@ fun LoginScreen(onLoginSuccess: () -> Unit = {}) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Muestra el logo de la aplicación.
         Image(
             painter = icon,
             contentDescription = "Icono de aplicación",
             contentScale = ContentScale.Fit,
             modifier = Modifier.size(200.dp).padding(bottom = 24.dp),
         )
+        // Muestra el título de la pantalla según el modo actual.
         Text(
             if (isRegisterMode) "Registro" else "Log-in",
             fontSize = 26.sp,
@@ -69,6 +77,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit = {}) {
         )
         Spacer(modifier = Modifier.height(24.dp))
 
+        // Campo de texto para ingresar el correo electrónico.
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -79,6 +88,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit = {}) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Campo de texto para ingresar la contraseña.
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -88,6 +98,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit = {}) {
             modifier = Modifier.fillMaxWidth()
         )
 
+        // Campo de texto adicional para confirmar la contraseña en modo registro.
         if (isRegisterMode) {
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
@@ -102,6 +113,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit = {}) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // Botón para iniciar sesión o registrarse.
         Button(
             onClick = {
                 isLoading = true
@@ -115,6 +127,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit = {}) {
                             return@launch
                         }
 
+                        // Intentar registrar al usuario.
                         val success = register(email.trim(), password.trim())
                         isLoading = false
                         if (success) {
@@ -127,6 +140,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit = {}) {
                             errorMessage = "Error al registrarse. Intenta con otro correo."
                         }
                     } else {
+                        // Intentar iniciar sesión.
                         val success = login(email.trim(), password.trim())
                         isLoading = false
                         if (success) {
@@ -141,12 +155,14 @@ fun LoginScreen(onLoginSuccess: () -> Unit = {}) {
             enabled = !isLoading
         ) {
             if (isLoading) {
+                // Indicador de carga mientras se realiza una operación.
                 CircularProgressIndicator(
                     color = Color.White,
                     strokeWidth = 2.dp,
                     modifier = Modifier.size(20.dp)
                 )
             } else {
+                // Texto del botón según el modo actual.
                 Text(
                     if (isRegisterMode) "Registrarse" else "Iniciar sesión",
                     color = MaterialTheme.colorScheme.onPrimary
@@ -156,6 +172,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit = {}) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Texto y botón para alternar entre los modos de registro e inicio de sesión.
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -177,6 +194,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit = {}) {
             )
         }
 
+        // Muestra mensajes de error o éxito.
         if (errorMessage.isNotEmpty()) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
