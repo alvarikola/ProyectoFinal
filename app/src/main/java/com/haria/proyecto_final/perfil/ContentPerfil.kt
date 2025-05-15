@@ -50,25 +50,42 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
+/**
+ * Composable que representa el contenido de la pantalla de perfil del usuario.
+ *
+ * @param innerPadding Espaciado interno para ajustar el diseño.
+ * @param context Contexto de la aplicación.
+ * @param emotes Lista de emotes disponibles para seleccionar.
+ * @param imageLoader Cargador de imágenes para mostrar emotes personalizados.
+ */
 @Composable
 fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Emote>, imageLoader: ImageLoader) {
+    // Formato de entrada para fechas.
     val formatoEntrada = DateTimeFormatter.ISO_DATE_TIME
+    // Formato de salida para fechas.
     val formatoSalida = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
+    // Estado del perfil del usuario.
     var perfil by remember { mutableStateOf<Perfil?>(null) }
+    // Estado para alternar entre modo edición y visualización.
     var isEditing by remember { mutableStateOf(false) }
+    // Nombre editado por el usuario.
     var nombreEditado by remember { mutableStateOf("") }
+    // País editado por el usuario.
     var paisEditado by remember { mutableStateOf("") }
+    // Estado para el menú desplegable de países.
     var expandedPaisMenu by remember { mutableStateOf(false) }
-    var expandedEmoteMenu by remember { mutableStateOf(false) } // Estado para el menú de emotes
+    // Estado para el menú desplegable de emotes.
+    var expandedEmoteMenu by remember { mutableStateOf(false) }
 
-
+    // Alcance de corrutinas para operaciones asíncronas.
     val scope = rememberCoroutineScope()
 
 
-    // Lista de países para el dropdown
+    // Lista de países para el menú desplegable.
     val paises = listOf("España", "México", "Argentina", "Colombia", "Chile", "Perú", "Ecuador", "Venezuela", "Uruguay", "Bolivia", "Otro")
 
+    // Efecto lanzado al inicializar el Composable para obtener el perfil del usuario.
     LaunchedEffect(key1 = true) {
         try {
             perfil = SupabaseManager.getPerfil()
@@ -93,6 +110,7 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Em
     }
 
     if (perfil == null) {
+        // Muestra un indicador de carga mientras se obtiene el perfil.
         Loading()
     } else {
         Column(
@@ -111,6 +129,7 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Em
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (perfil?.emoteid == null) {
+                        // Muestra un ícono genérico si no hay emote seleccionado.
                         Icon(
                             imageVector = Icons.Filled.AccountCircle,
                             contentDescription = "perfil",
@@ -120,12 +139,13 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Em
                         )
                     }
                     else {
+                        // Muestra el emote seleccionado
                         AVIFEmoteStatic(perfil?.emoteid!!, 170, imageLoader)
                     }
                     Text(perfil?.nombre ?: "Nombre", fontSize = 50.sp, fontWeight = FontWeight.Bold, lineHeight = 60.sp)
                 }
 
-                // Botón de editar
+                // Botón para activar el modo edición.
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -174,7 +194,7 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Em
                     Text("Fecha de creación de la cuenta: $fechaFormateada", fontSize = 20.sp)
                 }
             } else {
-                // Modo edición
+                // Modo edición del perfil
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -208,6 +228,7 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Em
                                 // Muestra la imagen del emote seleccionado
                                 AVIFEmoteStatic(perfil?.emoteid!!, 150, imageLoader)
                             } else {
+                                // Muestra un ícono genérico si no hay emote seleccionado.
                                 Icon(
                                     imageVector = Icons.Filled.AccountCircle,
                                     contentDescription = "Icono de perfil",
@@ -264,6 +285,7 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Em
                             }
                         )
 
+                        // Menú desplegable para seleccionar el país.
                         DropdownMenu(
                             expanded = expandedPaisMenu,
                             onDismissRequest = { expandedPaisMenu = false },
@@ -281,7 +303,7 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Em
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        // Botones de acción
+                        // Botones de acción para guardar o cancelar cambios.
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly
@@ -294,7 +316,7 @@ fun ContentPerfil(innerPadding: PaddingValues, context: Context, emotes: List<Em
 
                             Button(
                                 onClick = {
-                                    // Aquí guardar los cambios en la base de datos
+                                    // Guarda los cambios en la base de datos.
                                     perfil = perfil?.copy(
                                         nombre = nombreEditado,
                                         pais = paisEditado
