@@ -39,8 +39,17 @@ import com.haria.proyecto_final.utils.Loading
 import kotlinx.coroutines.launch
 
 
+/**
+ * Composable que representa el contenido principal de la aplicación.
+ *
+ * @param innerPadding Espaciado interno para el contenido.
+ * @param context Contexto de la aplicación.
+ * @param navController Controlador de navegación para gestionar la navegación entre pantallas.
+ * @param imageLoader Cargador de imágenes para las carátulas de las canciones.
+ */
 @Composable
 fun ContentMain(innerPadding: PaddingValues, context: Context, navController: NavHostController, imageLoader: ImageLoader) {
+    // Estado que almacena la lista de perfiles que están emitiendo música.
     var perfilesEmitiendo by remember { mutableStateOf<List<Perfil>>(emptyList()) }
     val scrollState = rememberScrollState()
     val frasesMain = listOf(
@@ -60,9 +69,11 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
         "Explora salas, descubre vibes",
         "Rompe el silencio con tu Flow Rosa"
     )
+    // Selecciona una frase aleatoria de la lista.
     val fraseAleatoria = remember { frasesMain.random() }
     val coroutineScope = rememberCoroutineScope()
 
+    // Efecto lanzado al inicializar el Composable para obtener los perfiles desde Supabase.
     LaunchedEffect(key1 = true) {
         try {
             val perfiles = SupabaseManager.getPerfiles()
@@ -83,6 +94,7 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
         }
     }
 
+    // Muestra un indicador de carga si no hay perfiles disponibles.
     if(perfilesEmitiendo.isEmpty()) {
         Loading()
     } else {
@@ -95,6 +107,7 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Muestra la frase aleatoria seleccionada.
             Text(
                 text = fraseAleatoria,
                 modifier = Modifier.padding(8.dp),
@@ -103,6 +116,7 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
                 fontSize = 30.sp,
                 color = MaterialTheme.colorScheme.primary
             )
+            // Muestra un mensaje si nadie está escuchando música.
             if (perfilesEmitiendo.all { it.trackid == null }) {
                 Text(
                     text = "Nadie está escuchando. Sé el primero en compartir tu música",
@@ -110,9 +124,11 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
                     fontSize = 20.sp
                 )
             } else {
+                // Itera sobre los perfiles y muestra la información de cada uno.
                 perfilesEmitiendo.forEach { perfil ->
                     var cancion by remember(perfil.trackid) { mutableStateOf<Cancion?>(null) }
 
+                    // Efecto lanzado para obtener la canción asociada al perfil.
                     LaunchedEffect(perfil.trackid) {
                         try {
                             cancion = perfil.trackid?.let { SupabaseManager.getCancionPorId(it) }
@@ -134,6 +150,7 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
                                },
                             verticalAlignment = Alignment.CenterVertically // Centra verticalmente el contenido
                         ) {
+                            // Muestra la imagen de la canción.
                             Image(
                                 painter = rememberAsyncImagePainter(model = cancion?.imagenUrl, imageLoader = imageLoader),
                                 contentDescription = null,
@@ -141,6 +158,7 @@ fun ContentMain(innerPadding: PaddingValues, context: Context, navController: Na
                                     .weight(0.35f)
                                     .aspectRatio(1f),
                             )
+                            // Muestra el nombre del perfil y la canción que está escuchando.
                             Column(
                                 modifier = Modifier
                                     .weight(0.65f)
