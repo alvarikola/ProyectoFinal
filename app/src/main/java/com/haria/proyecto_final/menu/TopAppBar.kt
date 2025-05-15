@@ -42,14 +42,26 @@ import com.haria.proyecto_final.utils.BotonFlotante
 import kotlinx.coroutines.launch
 
 
+/**
+ * Composable que representa una barra superior personalizada para la aplicación.
+ *
+ * @param navController Controlador de navegación para gestionar la navegación entre pantallas.
+ * @param main Indica si la barra superior pertenece a la pantalla principal.
+ * @param salaPropia Indica si el usuario está en su propia sala.
+ * @param imageLoader Cargador de imágenes para mostrar emotes personalizados.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropia: Boolean = false, imageLoader: ImageLoader) {
-    val expanded = remember { mutableStateOf(false) } // Estado para abrir y cerrar el DropdownMenu
-    val icon = painterResource(id = R.drawable.logo_circular) // Reemplaza con tu recurso de icono
+    // Estado para abrir y cerrar el DropdownMenu
+    val expanded = remember { mutableStateOf(false) }
+    // Recurso de imagen para el icono de la aplicación.
+    val icon = painterResource(id = R.drawable.logo_circular)
     val scope = rememberCoroutineScope()
+    // Estado para almacenar el perfil del usuario.
     var perfil by remember { mutableStateOf<Perfil?>(null) }
 
+    // Efecto lanzado al inicializar el Composable para obtener el perfil del usuario.
     LaunchedEffect(key1 = true) {
         try {
             perfil = SupabaseManager.getPerfil()
@@ -77,17 +89,19 @@ fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropi
         ),
         title = {
             if (main) {
+                // Diseño de la barra superior para la pantalla principal.
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth().padding(10.dp)
                 ) {
+                    // Muestra el icono de la aplicación.
                     Image(
                         painter = icon,
                         contentDescription = "Icono de aplicación",
                         Modifier.size(60.dp),
                     )
-                    // Ícono de perfil
+                    // Botón de perfil con menú desplegable.
                     IconButton(onClick = { expanded.value = !expanded.value }, modifier = Modifier.size(50.dp)) {
                         if(perfil?.emoteid == null) {
                             Icon(
@@ -99,7 +113,7 @@ fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropi
                         else {
                             AVIFEmoteStatic(perfil?.emoteid!!, 50, imageLoader)
                         }
-                        // DropdownMenu que se abre al hacer clic en el ícono de perfil
+                        // Menú desplegable con opciones de navegación.
                         DropdownMenu(
                             expanded = expanded.value,
                             onDismissRequest = { expanded.value = false } // Cierra el menú si se hace clic fuera
@@ -137,14 +151,17 @@ fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropi
                     }
                 }
             } else {
+                // Diseño de la barra superior para otras pantallas.
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ){
+                    // Botón para volver a la pantalla anterior.
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", Modifier.size(50.dp))
                     }
+                    // Botón flotante para navegar a la pantalla de chat propio si corresponde.
                     if(perfil?.trackid != null && !salaPropia) {
                         BotonFlotante(
                             onClick = {
@@ -156,6 +173,7 @@ fun TopAppBar(navController: NavHostController, main: Boolean = false, salaPropi
                 }
             }
         },
+        // Comportamiento de desplazamiento de la barra superior.
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
             rememberTopAppBarState()
         )
