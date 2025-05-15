@@ -29,19 +29,30 @@ import com.haria.proyecto_final.data.Emote
 import com.haria.proyecto_final.data.Perfil
 import com.haria.proyecto_final.utils.Chat
 
+
+/**
+ * Composable que representa el contenido principal del chat propio.
+ *
+ * @param innerPadding Espaciado interno proporcionado por el contenedor padre.
+ * @param context Contexto de la actividad actual.
+ * @param imageLoader Cargador de imágenes utilizado para manejar las imágenes en el chat.
+ */
 @Composable
 fun ChatPropioContent(innerPadding: PaddingValues, context: ComponentActivity, imageLoader: ImageLoader) {
 
+    // Estado para almacenar el perfil del usuario.
     var perfil by remember { mutableStateOf<Perfil?>(null) }
+    // Estado para almacenar la lista de emotes animados.
     var emotes by remember { mutableStateOf<List<Emote>>(emptyList()) }
 
+    // Efecto lanzado al inicializar el Composable para cargar el perfil y los emotes.
     LaunchedEffect(true) {
         perfil = SupabaseManager.getPerfil()
         emotes = SupabaseManager.getEmotesAnimados()
         Log.i("Perfil", emotes.toString())
     }
 
-    // Escucha cambios en tiempo real
+    // Efecto lanzado para escuchar cambios en tiempo real en el perfil del usuario.
     LaunchedEffect(perfil?.id) {
         try {
             perfil?.id?.let {
