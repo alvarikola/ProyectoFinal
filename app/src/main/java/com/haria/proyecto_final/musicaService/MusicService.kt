@@ -32,7 +32,7 @@ class MusicService : Service() {
     }
 
     /**
-     * Método llamado al crear el servicio.
+     * Method llamado al crear el servicio.
      * Configura el canal de notificaciones.
      */
     override fun onCreate() {
@@ -42,7 +42,7 @@ class MusicService : Service() {
     }
 
     /**
-     * Método llamado al iniciar el servicio.
+     * Method llamado al iniciar el servicio.
      * Gestiona las acciones de reproducción, pausa y detención.
      *
      * @param intent Intent que contiene la acción a realizar.
@@ -301,7 +301,7 @@ class MusicService : Service() {
     }
 
     /**
-     * Método llamado al enlazar el servicio.
+     * Method llamado al enlazar el servicio.
      *
      * @param intent Intent que solicita el enlace.
      * @return Binder para interactuar con el servicio.
@@ -312,7 +312,7 @@ class MusicService : Service() {
     }
 
     /**
-     * Método llamado cuando la tarea asociada al servicio es eliminada.
+     * Method llamado cuando la tarea asociada al servicio es eliminada.
      *
      * @param rootIntent Intent raíz de la tarea eliminada.
      */
@@ -324,7 +324,7 @@ class MusicService : Service() {
     }
 
     /**
-     * Método llamado al destruir el servicio.
+     * Method llamado al destruir el servicio.
      */
     override fun onDestroy() {
         Log.d("MusicService", "Servicio destruido")

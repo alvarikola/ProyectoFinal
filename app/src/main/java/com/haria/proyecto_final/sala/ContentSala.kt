@@ -55,16 +55,34 @@ import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
 
 
+/**
+ * Composable que representa el contenido de la sala de música.
+ *
+ * @param innerPadding Espaciado interno para ajustar el diseño.
+ * @param context Contexto de la aplicación.
+ * @param perfilId ID del perfil del usuario al que pertenece la sala.
+ * @param musicViewModel ViewModel para gestionar el estado de la música.
+ * @param imageLoader Cargador de imágenes para mostrar emotes y portadas.
+ * @param onAction Función de callback para manejar acciones del reproductor (Play, Pause, etc.).
+ * @param onExit Función de callback para manejar la salida de la sala con un mensaje de razón.
+ */
 @Composable
 fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String, musicViewModel: MusicViewModel, imageLoader: ImageLoader, onAction: (PlayerAction, Int, Long?) -> Unit, onExit: (reason: String) -> Unit) {
+
+    // Estado que almacena el perfil del usuario.
     var perfil by remember { mutableStateOf<Perfil?>(null) }
+    // Estado que almacena la canción actual.
     var cancion by remember { mutableStateOf<Cancion?>(null) }
+    // Estado que almacena el tiempo de inicio de la canción en milisegundos.
     var startTimeMillis by remember { mutableStateOf<Long?>(null) }
+    // Alcance de corrutinas para operaciones asíncronas.
     val scope = rememberCoroutineScope()
+    // Estado que indica si la música está en reproducción.
     val isPlaying by musicViewModel.isPlaying.collectAsState()
+    // Estado que almacena la lista de emotes animados.
     var emotes by remember { mutableStateOf<List<Emote>>(emptyList()) }
 
-
+    // Efecto lanzado al inicializar el Composable para obtener datos iniciales.
     LaunchedEffect(key1 = true) {
         try {
             perfil = SupabaseManager.getPerfilPorId(perfilId)
@@ -110,6 +128,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
     }
 
     if (perfil == null || cancion == null) {
+        // Muestra un indicador de carga mientras se obtienen los datos.
         Loading()
     }
     else {
@@ -119,6 +138,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            // Sección superior con la portada de la canción y su información.
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -175,6 +195,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                     }
                 }
             }
+            // Sección con el emote del DJ y su nombre.
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -198,6 +219,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                     modifier = Modifier.padding(8.dp)
                 )
             }
+            // Sección con el botón de reproducción/pausa.
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -232,6 +254,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                     }
                 }
             }
+            // Sección inferior con el chat de la sala.
             Row(
                 modifier = Modifier
                     .weight(0.45f)

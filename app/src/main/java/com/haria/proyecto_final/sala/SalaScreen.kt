@@ -12,9 +12,20 @@ import com.haria.proyecto_final.estiloCancion.PlayerAction
 import com.haria.proyecto_final.menu.TopAppBar
 import com.haria.proyecto_final.musicaService.MusicViewModel
 
+
+/**
+ * Composable que representa la pantalla de la sala de música.
+ *
+ * @param context Contexto de la actividad principal.
+ * @param navController Controlador de navegación para gestionar las rutas.
+ * @param perfilId ID del perfil del usuario al que pertenece la sala.
+ * @param musicViewModel ViewModel para gestionar el estado de la música.
+ * @param imagenLoader Cargador de imágenes para mostrar emotes y portadas.
+ */
 @Composable
 fun SalaScreen(context: ComponentActivity, navController: NavHostController, perfilId: String, musicViewModel: MusicViewModel, imagenLoader: ImageLoader) {
     Scaffold(
+        // Barra superior de la pantalla con opciones de navegación.
         topBar = { TopAppBar(navController, salaPropia = true, imageLoader = imagenLoader) },
         content = { innerPadding ->
             // Contenido principal de la pantalla
@@ -35,6 +46,7 @@ fun SalaScreen(context: ComponentActivity, navController: NavHostController, per
                                 "Enviando broadcast para reproducir: ${cancion}, URL: $musicUrl"
                             )
 
+                            // Enviar un broadcast para iniciar la reproducción de música.
                             val intent = Intent("PLAY_MUSIC").apply {
                                 putExtra("music_url", musicUrl)
                                 startTimeMilis?.let { putExtra("start_time_millis", it) }
@@ -43,12 +55,14 @@ fun SalaScreen(context: ComponentActivity, navController: NavHostController, per
                         }
 
                         PlayerAction.Pause -> {
+                            // Enviar un broadcast para pausar la música.
                             Log.d("EstiloCancionScreen", "Enviando broadcast para pausar")
                             val intent = Intent("PAUSE_MUSIC")
                             context.sendBroadcast(intent)
                         }
 
                         PlayerAction.Stop -> {
+                            // Enviar un broadcast para detener la música.
                             Log.d("EstiloCancionScreen", "Enviando broadcast para detener")
                             val intent = Intent("STOP_MUSIC")
                             context.sendBroadcast(intent)
@@ -56,6 +70,7 @@ fun SalaScreen(context: ComponentActivity, navController: NavHostController, per
                     }
                 },
                 onExit = { reason ->
+                    // Mostrar un mensaje al usuario y navegar a la pantalla principal.
                     Toast.makeText(context, reason, Toast.LENGTH_SHORT).show()
                     navController.navigate("mainScreen")
                 }
