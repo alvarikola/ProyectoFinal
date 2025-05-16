@@ -27,6 +27,10 @@ import kotlinx.serialization.json.Json
 
 // Jamendo (app para música)
 
+/**
+ * Objeto que gestiona la interacción con Supabase, incluyendo autenticación,
+ * operaciones en la base de datos y escucha de cambios en tiempo real.
+ */
 object SupabaseManager {
     private const val SUPABASE_URL = "https://vxyxtbqtbujipctpwjgo.supabase.co"
     private const val SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4eXh0YnF0YnVqaXBjdHB3amdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI0NjgwOTMsImV4cCI6MjA1ODA0NDA5M30.EaXTHXuob_hRCXxDkyqw1oU-hP2Ng2l9JwztyjuA4nM"
@@ -36,6 +40,11 @@ object SupabaseManager {
 
     private lateinit var appContext: Context
 
+    /**
+     * Inicializa el cliente de Supabase con el contexto de la aplicación.
+     *
+     * @param context Contexto de la aplicación.
+     */
     fun init(context: Context){
         appContext = context.applicationContext
         client = createSupabaseClient(
@@ -53,6 +62,13 @@ object SupabaseManager {
         }
     }
 
+    /**
+     * Inicia sesión en Supabase con un correo electrónico y contraseña.
+     *
+     * @param email Correo electrónico del usuario.
+     * @param password Contraseña del usuario.
+     * @return `true` si el inicio de sesión fue exitoso, `false` en caso contrario.
+     */
     suspend fun login(email: String, password: String): Boolean {
         return try {
             client.auth.signInWith(Email) {
@@ -66,6 +82,13 @@ object SupabaseManager {
         }
     }
 
+    /**
+     * Registra un nuevo usuario en Supabase con un correo electrónico y contraseña.
+     *
+     * @param email Correo electrónico del usuario.
+     * @param password Contraseña del usuario.
+     * @return `true` si el registro fue exitoso, `false` en caso contrario.
+     */
     suspend fun register(email: String, password: String): Boolean {
         return try {
             client.auth.signUpWith(Email) {
@@ -80,6 +103,9 @@ object SupabaseManager {
         }
     }
 
+    /**
+     * Cierra la sesión del usuario actual en Supabase.
+     */
     suspend fun logout() {
         try {
             client.auth.signOut()
@@ -89,15 +115,29 @@ object SupabaseManager {
         }
     }
 
+    /**
+     * Verifica si hay un usuario autenticado en Supabase.
+     *
+     * @return `true` si hay un usuario autenticado, `false` en caso contrario.
+     */
     fun isLoggedIn(): Boolean {
         return client.auth.currentUserOrNull() != null
     }
 
+    /**
+     * Obtiene el ID del usuario autenticado actualmente.
+     *
+     * @return ID del usuario autenticado o `null` si no hay usuario autenticado.
+     */
     fun getCurrentUserId(): String? {
         return client.auth.currentUserOrNull()?.id
     }
 
-
+    /**
+     * Obtiene el perfil del usuario autenticado actualmente.
+     *
+     * @return Objeto `Perfil` del usuario autenticado.
+     */
     suspend fun getPerfil(): Perfil {
 
         return client.postgrest
@@ -108,6 +148,12 @@ object SupabaseManager {
                 .decodeSingle<Perfil>()
     }
 
+    /**
+     * Obtiene el perfil de un usuario por su ID.
+     *
+     * @param perfilId ID del perfil a buscar.
+     * @return Objeto `Perfil` correspondiente al ID proporcionado.
+     */
     suspend fun getPerfilPorId(perfilId: String): Perfil {
 
         return client.postgrest
@@ -118,6 +164,12 @@ object SupabaseManager {
             .decodeSingle<Perfil>()
     }
 
+    /**
+     * Obtiene una lista de canciones filtradas por estilo.
+     *
+     * @param estilo Estilo de música a filtrar.
+     * @return Lista de objetos `Cancion` que coinciden con el estilo.
+     */
     suspend fun getCancionesPorEstilo(estilo: String): List<Cancion> {
         return client.postgrest
             .from("cancion")
@@ -127,6 +179,12 @@ object SupabaseManager {
             .decodeList<Cancion>()
     }
 
+    /**
+     * Actualiza el perfil del usuario con los datos proporcionados.
+     *
+     * @param perfil Objeto `Perfil` con los datos actualizados.
+     * @return `true` si la actualización fue exitosa, `false` en caso contrario.
+     */
     suspend fun actualizarPerfil(perfil: Perfil?): Boolean {
         try {
             // Actualizar los datos en la tabla de perfiles
@@ -147,6 +205,11 @@ object SupabaseManager {
         }
     }
 
+    /**
+     * Obtiene una lista de perfiles excluyendo al usuario autenticado.
+     *
+     * @return Lista de objetos `Perfil` de otros usuarios.
+     */
     suspend fun getPerfiles(): List<Perfil> {
         return client.postgrest
             .from("perfil")
@@ -156,6 +219,12 @@ object SupabaseManager {
             .decodeList<Perfil>()
     }
 
+    /**
+     * Obtiene una canción por su ID.
+     *
+     * @param id ID de la canción a buscar.
+     * @return Objeto `Cancion` correspondiente al ID proporcionado.
+     */
     suspend fun getCancionPorId(id: Int): Cancion {
         return client.postgrest
             .from("cancion")
@@ -165,6 +234,12 @@ object SupabaseManager {
             .decodeSingle<Cancion>()
     }
 
+    /**
+     * Establece el track ID de una canción en el perfil del usuario autenticado.
+     *
+     * @param trackid ID del track a establecer.
+     * @return `true` si la operación fue exitosa, `false` en caso contrario.
+     */
     suspend fun establecerCancion(trackid: Int?): Boolean {
         val userId = UserSessionManager.obtenerUserId(appContext)
         Log.d("SupabaseManager", "Usuario ID obtenido: $userId") // Log adicional
@@ -186,6 +261,12 @@ object SupabaseManager {
         }
     }
 
+    /**
+     * Establece un emote en el perfil del usuario autenticado.
+     *
+     * @param emoteId ID del emote a establecer.
+     * @return `true` si la operación fue exitosa, `false` en caso contrario.
+     */
     suspend fun establecerEmote(emoteId: String): Boolean {
         val userId = UserSessionManager.obtenerUserId(appContext)
         if (userId == null) {
@@ -204,6 +285,12 @@ object SupabaseManager {
         }
     }
 
+    /**
+     * Escucha cambios en el perfil de un usuario específico.
+     *
+     * @param id ID del perfil a escuchar.
+     * @param onProfileUpdate Callback que se ejecuta cuando el perfil se actualiza.
+     */
     @OptIn(SupabaseExperimental::class)
     suspend fun escucharCambiosPerfil(id: String, onProfileUpdate: (Perfil) -> Unit) {
         val flow: Flow<Perfil> = client.from("perfil").selectSingleValueAsFlow(Perfil::id) {
@@ -214,14 +301,30 @@ object SupabaseManager {
         }
     }
 
+    /**
+     * Escucha cambios en los perfiles de otros usuarios.
+     *
+     * @return Flujo de una lista de objetos `Perfil` actualizados.
+     */
     @OptIn(SupabaseExperimental::class)
     fun escucharCambiosPerfiles(): Flow<List<Perfil>> {
         return client.from("perfil")
             .selectAsFlow(Perfil::id, filter = FilterOperation("id", FilterOperator.NEQ, getCurrentUserId() ?: ""))
     }
 
+    /**
+     * Obtiene un canal de Supabase por su nombre.
+     *
+     * @param nombre Nombre del canal.
+     * @return Objeto del canal correspondiente.
+     */
     fun obtenerCanal(nombre: String) = client.channel(nombre)
 
+    /**
+     * Obtiene una lista de emotes estáticos.
+     *
+     * @return Lista de objetos `Emote` que no son animados.
+     */
     suspend fun getEmotesEstaticos(): List<Emote> {
         return client.postgrest
             .from("emote")
@@ -232,6 +335,11 @@ object SupabaseManager {
             .decodeList<Emote>()
     }
 
+    /**
+     * Obtiene una lista de emotes animados.
+     *
+     * @return Lista de objetos `Emote` que son animados.
+     */
     suspend fun getEmotesAnimados(): List<Emote> {
         return client.postgrest
             .from("emote")
