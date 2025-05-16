@@ -10,6 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 
+/**
+ * Composable que muestra un indicador de carga centrado en la pantalla.
+ *
+ * Este componente utiliza un `CircularProgressIndicator` para indicar que una operación está en progreso.
+ *
+ * @constructor No requiere parámetros.
+ */
 @Composable
 fun Loading() {
     Column(

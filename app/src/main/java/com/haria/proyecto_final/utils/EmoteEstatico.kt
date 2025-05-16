@@ -9,7 +9,14 @@ import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 import coil.compose.rememberImagePainter
 
-//Imagenes estaticas
+
+/**
+ * Composable que muestra una imagen estática en formato AVIF.
+ *
+ * @param emoteid ID del emote a mostrar.
+ * @param medida Tamaño en dp de la imagen.
+ * @param imageLoader Cargador de imágenes utilizado para cargar la imagen.
+ */
 @Composable
 fun AVIFEmoteStatic(emoteid: String, medida: Int, imageLoader: ImageLoader) {
     val imageUrl = "https://cdn.7tv.app/emote/${emoteid.trim()}/2x.avif "

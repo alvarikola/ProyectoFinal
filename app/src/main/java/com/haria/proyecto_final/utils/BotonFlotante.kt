@@ -24,6 +24,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+
+/**
+ * Composable que representa un botón flotante animado.
+ *
+ * @param onClick Acción que se ejecuta al hacer clic en el botón.
+ * @param modifier Modificador opcional para personalizar el diseño del botón.
+ */
 @Composable
 fun BotonFlotante(
     onClick: () -> Unit,
@@ -51,6 +58,7 @@ fun BotonFlotante(
         )
     )
 
+    // Contenedor del botón con animaciones y diseño circular
     Box(
         modifier = modifier
             .offset(x = offsetX.dp, y = offsetY.dp)
@@ -60,6 +68,7 @@ fun BotonFlotante(
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
+        // Ícono dentro del botón
         Icon(
             imageVector = Icons.Default.Send,
             contentDescription = "Bubble Button",

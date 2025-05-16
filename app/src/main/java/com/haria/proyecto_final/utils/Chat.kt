@@ -60,6 +60,14 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 
+
+/**
+ * Composable que representa un chat en tiempo real con soporte para emojis y mensajes.
+ *
+ * @param userId ID del usuario actual.
+ * @param emotes Lista de emojis disponibles para usar en el chat.
+ * @param imageLoader Cargador de imágenes para mostrar los emojis.
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun Chat(userId: String, emotes: List<Emote>, imageLoader: ImageLoader) {
@@ -72,9 +80,10 @@ fun Chat(userId: String, emotes: List<Emote>, imageLoader: ImageLoader) {
     var showEmojiMenu by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
 
-    // Crear canal
+    // Crear canal de comunicación en tiempo real
     val channel = SupabaseManager.obtenerCanal(userId)
 
+    // Obtener el perfil del usuario al iniciar el composable
     LaunchedEffect(key1 = true) {
         user = SupabaseManager.getPerfil()
     }
@@ -93,11 +102,12 @@ fun Chat(userId: String, emotes: List<Emote>, imageLoader: ImageLoader) {
                 }
             }
 
+            // Enviar estado de presencia del usuario
             val id = PresenceState(userId)
             val jsonMessageUserId = Json.encodeToJsonElement(id) as JsonObject
             channel.track(jsonMessageUserId)
 
-            // 3. Coleccionar el flujo de presencia para obtener usuarios conectados
+            // Coleccionar el flujo de presencia para obtener usuarios conectados
             channel.presenceDataFlow<PresenceState>()
                 .collect { presenceList ->
                     subscribersCount = presenceList.size // Actualizar contador
@@ -154,10 +164,12 @@ fun Chat(userId: String, emotes: List<Emote>, imageLoader: ImageLoader) {
         )
     }
 
+    // Estructura principal del chat
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(8.dp)) {
 
+        // Mostrar el número de usuarios conectados
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -169,6 +181,7 @@ fun Chat(userId: String, emotes: List<Emote>, imageLoader: ImageLoader) {
             )
         }
 
+        // Lista de mensajes
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
@@ -182,6 +195,7 @@ fun Chat(userId: String, emotes: List<Emote>, imageLoader: ImageLoader) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Campo de entrada de texto y botón de envío
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically

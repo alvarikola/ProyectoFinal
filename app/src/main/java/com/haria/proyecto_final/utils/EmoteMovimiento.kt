@@ -12,6 +12,12 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 
 
+/**
+ * Composable que muestra un emote animado en formato GIF utilizando Coil.
+ *
+ * @param emoteid ID del emote a mostrar.
+ * @param imageLoader Cargador de imágenes utilizado para cargar el emote.
+ */
 @Composable
 fun AVIFEmoteMovement(emoteid: String, imageLoader: ImageLoader) {
     val context = LocalContext.current
