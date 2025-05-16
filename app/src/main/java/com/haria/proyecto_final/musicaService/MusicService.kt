@@ -56,7 +56,7 @@ class MusicService : Service() {
             ACTION_PLAY -> {
                 val musicUrl = intent.getStringExtra(EXTRA_MUSIC_URL)
                 val startTimeMillis = intent.getLongExtra("start_time_millis", -1L).takeIf { it != -1L }
-                Log.d("MusicService", "URL de música recibida en servicio: $musicUrl")
+                Log.d("MusicService", "URL de música recibida en servicio: $musicUrl, startTimeMillis: $startTimeMillis")
                 if (!musicUrl.isNullOrEmpty()) {
                     playMusic(musicUrl, startTimeMillis)
                 }
@@ -120,7 +120,11 @@ class MusicService : Service() {
         Log.d("MusicService", "Intentando reproducir música: $url")
         // Si ya hay un MediaPlayer activo y es la misma URL, reanudamos
         if (mediaPlayer != null && url == currentUrl && !mediaPlayer!!.isPlaying) {
-            mediaPlayer?.start()
+            if (startTimeMillis != null) {
+                seekToCurrentLoopPosition(startTimeMillis)
+            } else {
+                mediaPlayer?.start()
+            }
             updateNotification("Reproduciendo música")
             MusicServiceEvents.setIsPlaying(true)
             return

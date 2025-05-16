@@ -241,7 +241,10 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                     }
                 } else {
                     Button(
-                        onClick = { onAction(PlayerAction.Play, perfil?.trackid ?: 0, null) },
+                        onClick = {
+                            onAction(PlayerAction.Play, perfil?.trackid ?: 0, startTimeMillis)
+                            Log.i("Perfil",startTimeMillis.toString())
+                        },
                         shape = CircleShape,
                         contentPadding = PaddingValues(0.dp),
                         modifier = Modifier.size(45.dp) // Tamaño del botón redondo
