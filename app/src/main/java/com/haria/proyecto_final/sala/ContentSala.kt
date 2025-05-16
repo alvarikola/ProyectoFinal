@@ -121,6 +121,7 @@ fun ContentSala(innerPadding: PaddingValues, context: Context, perfilId: String,
                     .toInstant()
                     .toEpochMilli()
                 onAction(PlayerAction.Play, perfil?.trackid ?: 0, startTimeMillis)
+
             }
         } catch (e: Exception) {
             Log.e("Error", "Error al escuchar cambios en el perfil: ${e.message}", e)

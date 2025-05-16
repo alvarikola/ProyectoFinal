@@ -70,7 +70,9 @@ fun SalaScreen(context: ComponentActivity, navController: NavHostController, per
                     }
                 },
                 onExit = { reason ->
-                    // Mostrar un mensaje al usuario y navegar a la pantalla principal.
+                    // Mostrar un mensaje al usuario, navegar a la pantalla principal y quitar la musica.
+                    val intent = Intent("STOP_MUSIC")
+                    context.sendBroadcast(intent)
                     Toast.makeText(context, reason, Toast.LENGTH_SHORT).show()
                     navController.navigate("mainScreen")
                 }
