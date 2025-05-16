@@ -27,11 +27,18 @@ import com.haria.proyecto_final.supabase.SupabaseManager
 import com.haria.proyecto_final.ui.theme.ProyectoFinalTheme
 
 
+/**
+ * Actividad principal de la aplicación que gestiona la interfaz de usuario y la interacción con el servicio de música.
+ */
 class MainActivity : ComponentActivity() {
+    // Referencia al servicio de música.
     private var musicService: MusicService? = null
+    // Indica si el servicio está vinculado.
     private var isBound = false
+    // ViewModel para gestionar el estado de la música.
     private lateinit var musicViewModel: MusicViewModel
 
+    // Conexión al servicio de música.
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as MusicService.MusicBinder
@@ -47,6 +54,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Receptor de broadcast para manejar acciones relacionadas con la música.
     private val musicReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             Log.d("MainActivity", "Broadcast recibido: ${intent?.action}")
@@ -73,6 +81,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Method llamado al crear la actividad.
+     *
+     * @param savedInstanceState Estado guardado de la actividad.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -115,9 +128,16 @@ class MainActivity : ComponentActivity() {
     }
 
     companion object {
+        // Código de solicitud de permiso.
         private const val NOTIFICATION_PERMISSION_REQUEST_CODE = 100
     }
 
+    /**
+     * Inicia la reproducción de música.
+     *
+     * @param musicUrl URL de la música a reproducir.
+     * @param startTimeMilis Tiempo de inicio en milisegundos (opcional).
+     */
     private fun playMusic(musicUrl: String, startTimeMilis: Long?) {
         Log.d("MainActivity", "Iniciando servicio de música con URL: $musicUrl")
         val intent = Intent(this, MusicService::class.java).apply {
@@ -131,6 +151,9 @@ class MainActivity : ComponentActivity() {
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
+    /**
+     * Pausa la reproducción de música.
+     */
     private fun pauseMusic() {
         Log.d("MainActivity", "Pausando música")
         if (isBound && musicService != null) {
@@ -143,6 +166,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Detiene la reproducción de música.
+     */
     private fun stopMusic() {
         Log.d("MainActivity", "Deteniendo música")
         if (isBound) {
@@ -156,6 +182,9 @@ class MainActivity : ComponentActivity() {
         stopService(intent)
     }
 
+    /**
+     * Method llamado al destruir la actividad.
+     */
     override fun onDestroy() {
         try {
             stopMusic()
