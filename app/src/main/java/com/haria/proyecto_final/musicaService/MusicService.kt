@@ -289,11 +289,7 @@ class MusicService : Service() {
             .setSmallIcon(R.drawable.ic_music_note)
             .setOngoing(true)
             .setContentIntent(pendingIntent)
-            .addAction(R.drawable.ic_play, "Reproducir", playPendingIntent)
-            .addAction(R.drawable.ic_pause, "Pausar", pausePendingIntent)
             .addAction(R.drawable.ic_stop, "Detener", stopPendingIntent)
-            .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
-                .setShowActionsInCompactView(0, 1, 2))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
 
